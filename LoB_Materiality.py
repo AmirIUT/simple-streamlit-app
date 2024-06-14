@@ -78,8 +78,8 @@ def create_gradient_heatmap(fire_physical_rating, fire_transitional_rating, gl_p
     ax.set_title('Insurance Lines of Business Heatmap')
 
     # Set axis limits
-    ax.set_xlim(1, 3)
-    ax.set_ylim(1, 3)
+    ax.set_xlim(1, 3.5)
+    ax.set_ylim(1, 3.5)
 
     # Show plot
     st.pyplot(fig)
