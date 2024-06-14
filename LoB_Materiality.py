@@ -66,15 +66,16 @@ def create_gradient_heatmap(fire_physical_rating, fire_transitional_rating, gl_p
     cmap = LinearSegmentedColormap.from_list('custom', colors)
 
     # Create grid for heatmap
-    X, Y = np.meshgrid(np.linspace(0, 4, 100), np.linspace(0, 4, 100))
+    X, Y = np.meshgrid(np.linspace(1, 3, 100), np.linspace(1, 3, 100))
+    Z = X + Y  # Combine X and Y to form a grid
 
     # Plot the gradient heatmap
-    im = ax.imshow(X + Y, cmap=cmap, origin='lower', extent=[0, 4, 0, 4], alpha=0.5)
+    im = ax.imshow(Z, cmap=cmap, origin='lower', extent=[1, 3, 1, 3], alpha=0.5)
 
-    # Scatter plot for Fire LoB
-    ax.scatter(physical_ratings[0], transitional_ratings[0], color='red', label='Fire', zorder=2)
-    # Scatter plot for General Liability LoB
-    ax.scatter(physical_ratings[1], transitional_ratings[1], color='blue', label='General Liability', zorder=2)
+    # Scatter plot for LoBs with labels
+    for i, lob in enumerate(lobs):
+        ax.scatter(physical_ratings[i], transitional_ratings[i], color='black', zorder=2)
+        ax.text(physical_ratings[i] + 0.05, transitional_ratings[i], lob, color='black', fontsize=12, zorder=3)
 
     # Set labels and title
     ax.set_xlabel('Physical Risk')
@@ -82,11 +83,8 @@ def create_gradient_heatmap(fire_physical_rating, fire_transitional_rating, gl_p
     ax.set_title('Insurance Lines of Business Heatmap')
 
     # Set axis limits
-    ax.set_xlim(0, 4)
-    ax.set_ylim(0, 4)
-
-    # Add legend
-    ax.legend()
+    ax.set_xlim(1, 3)
+    ax.set_ylim(1, 3)
 
     # Show plot
     st.pyplot(fig)
