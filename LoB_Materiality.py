@@ -26,8 +26,8 @@ def main():
     gl_physical_rating = calculate_rating(gl_exposure_value, physical=True)
     gl_transitional_rating = calculate_rating(gl_exposure_value, physical=False)
 
-    # Create the heatmap with 2D colormap
-    create_2d_colormap_heatmap(fire_physical_rating, fire_transitional_rating, gl_physical_rating, gl_transitional_rating)
+    # Create the gradient heatmap and overlay dots
+    create_gradient_heatmap(fire_physical_rating, fire_transitional_rating, gl_physical_rating, gl_transitional_rating)
 
 def map_exposure_to_value(exposure_level):
     if exposure_level == "Low":
@@ -52,33 +52,41 @@ def calculate_rating(exposure_value, physical=True):
 
     return rating
 
-def create_2d_colormap_heatmap(fire_physical_rating, fire_transitional_rating, gl_physical_rating, gl_transitional_rating):
+def create_gradient_heatmap(fire_physical_rating, fire_transitional_rating, gl_physical_rating, gl_transitional_rating):
     # Define labels and ratings for each Line of Business (LoB)
     lobs = ["Fire", "General Liability"]
     physical_ratings = [fire_physical_rating, gl_physical_rating]
     transitional_ratings = [fire_transitional_rating, gl_transitional_rating]
 
-    # Plotting the heatmap with 2D colormap
+    # Plotting the gradient heatmap
     fig, ax = plt.subplots()
 
-    # Define a custom 2D colormap
+    # Define a custom gradient colormap
     colors = ['green', 'yellow', 'red']
     cmap = LinearSegmentedColormap.from_list('custom', colors)
 
     # Create grid for heatmap
     X, Y = np.meshgrid(np.linspace(0, 4, 100), np.linspace(0, 4, 100))
 
-    # Plot the heatmap with scatter points
-    sc = ax.scatter(physical_ratings, transitional_ratings, c=np.arange(len(lobs)), cmap=cmap, label=lobs, marker='o', s=100)
+    # Plot the gradient heatmap
+    im = ax.imshow(X + Y, cmap=cmap, origin='lower', extent=[0, 4, 0, 4], alpha=0.5)
 
-    # Add colorbar
-    cbar = fig.colorbar(sc, ax=ax, ticks=np.arange(len(lobs)))
-    cbar.set_label('Insurance Lines of Business')
+    # Scatter plot for Fire LoB
+    ax.scatter(physical_ratings[0], transitional_ratings[0], color='red', label='Fire', zorder=2)
+    # Scatter plot for General Liability LoB
+    ax.scatter(physical_ratings[1], transitional_ratings[1], color='blue', label='General Liability', zorder=2)
 
     # Set labels and title
     ax.set_xlabel('Physical Risk')
     ax.set_ylabel('Transitional Risk')
     ax.set_title('Insurance Lines of Business Heatmap')
+
+    # Set axis limits
+    ax.set_xlim(0, 4)
+    ax.set_ylim(0, 4)
+
+    # Add legend
+    ax.legend()
 
     # Show plot
     st.pyplot(fig)
