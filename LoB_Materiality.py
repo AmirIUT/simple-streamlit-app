@@ -1,4 +1,5 @@
 import streamlit as st
+import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
@@ -6,28 +7,38 @@ from matplotlib.colors import LinearSegmentedColormap
 def main():
     st.title("Insurance Lines of Business Heatmap")
     
-    st.write("Select the exposure level for each Insurance Line of Business (LoB):")
+    st.write("Upload an Excel file with the following columns: Name, Transitional Risk Factor, Physical Risk Factor, Explanation")
 
-    # Dropdown for Fire LoB exposure
-    st.subheader("Fire LoB")
-    fire_exposure = st.selectbox("Exposure Rating:", options=["Low", "Medium", "High", "Not Relevant"], key="fire_exposure")
+    # File uploader
+    uploaded_file = st.file_uploader("Choose a CSV file", type="csv")
 
-    # Dropdown for General Liability LoB exposure
-    st.subheader("General Liability LoB")
-    gl_exposure = st.selectbox("Exposure Rating:", options=["Low", "Medium", "High", "Not Relevant"], key="gl_exposure")
+    if uploaded_file is not None:
+        # Read the CSV file
+        df = pd.read_csv(uploaded_file)
+        
+        # Display the uploaded file
+        st.write("Uploaded file:")
+        st.write(df)
+        
+        # Add inputs to overwrite risk factors
+        for index, row in df.iterrows():
+            df.at[index, 'Transitional Risk Factor'] = st.number_input(f"Transitional Risk Factor for {row['Lines of Business']}", value=row['Transitional Risk Factor'])
+            df.at[index, 'Physical Risk Factor'] = st.number_input(f"Physical Risk Factor for {row['Lines of Business']}", value=row['Physical Risk Factor'])
+            df.at[index, 'Explanation'] = st.text_input(f"Explanation for {row['Lines of Business']}", value=row['Explanation'])
 
-    # Convert exposure levels to numerical values
-    fire_exposure_value = map_exposure_to_value(fire_exposure)
-    gl_exposure_value = map_exposure_to_value(gl_exposure)
+        # Create a dropdown for each LoB to select exposure level
+        exposure_levels = ["Low", "Medium", "High", "Not Relevant"]
+        df['Exposure'] = df['Lines of Business'].apply(lambda x: st.selectbox(f"Select exposure for {x}:", options=exposure_levels))
 
-    # Calculate ratings for heatmap
-    fire_physical_rating = calculate_rating(fire_exposure_value, risk_factor=3)
-    fire_transitional_rating = calculate_rating(fire_exposure_value, risk_factor=1)
-    gl_physical_rating = calculate_rating(gl_exposure_value, risk_factor=1)
-    gl_transitional_rating = calculate_rating(gl_exposure_value, risk_factor=3)
+        # Convert exposure levels to numerical values
+        df['Exposure Value'] = df['Exposure'].apply(map_exposure_to_value)
 
-    # Create the gradient heatmap and overlay dots
-    create_gradient_heatmap(fire_physical_rating, fire_transitional_rating, gl_physical_rating, gl_transitional_rating)
+        # Calculate ratings
+        df['Physical Rating'] = df.apply(lambda row: calculate_rating(row['Exposure Value'], row['Physical Risk Factor']), axis=1)
+        df['Transitional Rating'] = df.apply(lambda row: calculate_rating(row['Exposure Value'], row['Transitional Risk Factor']), axis=1)
+
+        # Create the gradient heatmap and overlay dots
+        create_gradient_heatmap(df)
 
 def map_exposure_to_value(exposure_level):
     if exposure_level == "Low":
@@ -46,12 +57,7 @@ def calculate_rating(exposure_value, risk_factor):
     else:
         return (exposure_value + risk_factor) / 2
 
-def create_gradient_heatmap(fire_physical_rating, fire_transitional_rating, gl_physical_rating, gl_transitional_rating):
-    # Define labels and ratings for each Line of Business (LoB)
-    lobs = ["Fire", "General Liability"]
-    physical_ratings = [fire_physical_rating, gl_physical_rating]
-    transitional_ratings = [fire_transitional_rating, gl_transitional_rating]
-
+def create_gradient_heatmap(df):
     # Plotting the gradient heatmap
     fig, ax = plt.subplots()
 
@@ -67,10 +73,10 @@ def create_gradient_heatmap(fire_physical_rating, fire_transitional_rating, gl_p
     im = ax.imshow(Z, cmap=cmap, origin='lower', extent=[1, 3.5, 1, 3.5], alpha=0.5)
 
     # Scatter plot for LoBs with labels
-    for i, lob in enumerate(lobs):
-        if not np.isnan(physical_ratings[i]) and not np.isnan(transitional_ratings[i]):
-            ax.scatter(physical_ratings[i], transitional_ratings[i], color='black', zorder=2)
-            ax.text(physical_ratings[i] + 0.05, transitional_ratings[i], lob, color='black', fontsize=12, zorder=3)
+    for _, row in df.iterrows():
+        if not np.isnan(row['Physical Rating']) and not np.isnan(row['Transitional Rating']):
+            ax.scatter(row['Physical Rating'], row['Transitional Rating'], color='black', zorder=2)
+            ax.text(row['Physical Rating'] + 0.05, row['Transitional Rating'], row['Lines of Business'], color='black', fontsize=12, zorder=3)
 
     # Set labels and title
     ax.set_xlabel('Physical Risk')
