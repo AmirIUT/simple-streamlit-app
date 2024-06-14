@@ -21,10 +21,10 @@ def main():
     gl_exposure_value = map_exposure_to_value(gl_exposure)
 
     # Calculate ratings for heatmap
-    fire_physical_rating = calculate_rating(fire_exposure_value, physical=True)
-    fire_transitional_rating = calculate_rating(fire_exposure_value, physical=False)
-    gl_physical_rating = calculate_rating(gl_exposure_value, physical=True)
-    gl_transitional_rating = calculate_rating(gl_exposure_value, physical=False)
+    fire_physical_rating = calculate_rating(fire_exposure_value, risk_factor=3)
+    fire_transitional_rating = calculate_rating(fire_exposure_value, risk_factor=1)
+    gl_physical_rating = calculate_rating(gl_exposure_value, risk_factor=1)
+    gl_transitional_rating = calculate_rating(gl_exposure_value, risk_factor=3)
 
     # Create the gradient heatmap and overlay dots
     create_gradient_heatmap(fire_physical_rating, fire_transitional_rating, gl_physical_rating, gl_transitional_rating)
@@ -39,18 +39,12 @@ def map_exposure_to_value(exposure_level):
     else:
         return 0  # Not Relevant
 
-def calculate_rating(exposure_value, physical=True):
-    # Factors defined for physical and transitional ratings
-    physical_factor = 3  # Adjust this based on your requirements
-    transitional_factor = 1  # Adjust this based on your requirements
-
-    # Determine which factor to use based on the physical parameter
-    if physical:
-        rating = (exposure_value + physical_factor) / 2
+def calculate_rating(exposure_value, risk_factor):
+    # Calculate average rating based on exposure value and risk factor
+    if exposure_value == 0:  # Not Relevant
+        return np.nan  # Return NaN for not relevant to avoid plotting
     else:
-        rating = (exposure_value + transitional_factor) / 2
-
-    return rating
+        return (exposure_value + risk_factor) / 2
 
 def create_gradient_heatmap(fire_physical_rating, fire_transitional_rating, gl_physical_rating, gl_transitional_rating):
     # Define labels and ratings for each Line of Business (LoB)
@@ -74,8 +68,9 @@ def create_gradient_heatmap(fire_physical_rating, fire_transitional_rating, gl_p
 
     # Scatter plot for LoBs with labels
     for i, lob in enumerate(lobs):
-        ax.scatter(physical_ratings[i], transitional_ratings[i], color='black', zorder=2)
-        ax.text(physical_ratings[i] + 0.05, transitional_ratings[i], lob, color='black', fontsize=12, zorder=3)
+        if not np.isnan(physical_ratings[i]) and not np.isnan(transitional_ratings[i]):
+            ax.scatter(physical_ratings[i], transitional_ratings[i], color='black', zorder=2)
+            ax.text(physical_ratings[i] + 0.05, transitional_ratings[i], lob, color='black', fontsize=12, zorder=3)
 
     # Set labels and title
     ax.set_xlabel('Physical Risk')
