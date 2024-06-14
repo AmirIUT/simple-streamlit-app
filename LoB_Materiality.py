@@ -14,8 +14,8 @@ def main():
 
     # Dropdowns for General Liability LoB
     st.subheader("General Liability LoB")
-    gl_physical_risk = st.selectbox("Physical Risk:", options=["Low", "Medium", "High", "Not Relevant"], key="fire_physical")
-    gl_transitional_risk = st.selectbox("Transitional Risk:", options=["Low", "Medium", "High", "Not Relevant"], key="fire_transitional")
+    gl_physical_risk = st.selectbox("Physical Risk:", options=["Low", "Medium", "High", "Not Relevant"], key="liab_physical")
+    gl_transitional_risk = st.selectbox("Transitional Risk:", options=["Low", "Medium", "High", "Not Relevant"], key="liab_transitional")
 
     # Convert exposure levels to numerical values
     fire_physical_value = map_exposure_to_value(fire_physical_risk)
