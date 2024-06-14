@@ -7,11 +7,11 @@ def main():
     
     st.write("Select the exposure level for each Insurance Line of Business (LoB):")
 
-    # Dropdowns for Fire LoB
+    # Dropdown for Fire LoB exposure
     st.subheader("Fire LoB")
     fire_exposure = st.selectbox("Exposure Rating:", options=["Low", "Medium", "High", "Not Relevant"], key="fire_exposure")
 
-    # Dropdowns for General Liability LoB
+    # Dropdown for General Liability LoB exposure
     st.subheader("General Liability LoB")
     gl_exposure = st.selectbox("Exposure Rating:", options=["Low", "Medium", "High", "Not Relevant"], key="gl_exposure")
 
@@ -40,13 +40,16 @@ def map_exposure_to_value(exposure_level):
 
 def calculate_rating(exposure_value, physical=True):
     # Factors defined for physical and transitional ratings
-    if physical:
-        physical_factor = 3  # Adjust this based on your requirements
-    else:
-        transitional_factor = 1  # Adjust this based on your requirements
+    physical_factor = 3  # Adjust this based on your requirements
+    transitional_factor = 1  # Adjust this based on your requirements
 
-    # Calculate average rating
-    return (exposure_value + physical_factor) / 2
+    # Determine which factor to use based on the physical parameter
+    if physical:
+        rating = (exposure_value + physical_factor) / 2
+    else:
+        rating = (exposure_value + transitional_factor) / 2
+
+    return rating
 
 def create_heatmap(fire_physical_rating, fire_transitional_rating, gl_physical_rating, gl_transitional_rating):
     # Define labels and values
