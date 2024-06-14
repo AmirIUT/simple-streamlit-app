@@ -52,37 +52,32 @@ def calculate_rating(exposure_value, physical=True):
     return rating
 
 def create_heatmap(fire_physical_rating, fire_transitional_rating, gl_physical_rating, gl_transitional_rating):
-    # Define labels and values
-    lob_labels = ["Fire", "General Liability"]
-    risk_labels = ["Physical Risk", "Transitional Risk"]
+    # Define labels and ratings for each Line of Business (LoB)
+    lobs = ["Fire", "General Liability"]
+    physical_ratings = [fire_physical_rating, gl_physical_rating]
+    transitional_ratings = [fire_transitional_rating, gl_transitional_rating]
 
-    # Create data for heatmap
-    data = np.array([[fire_physical_rating, fire_transitional_rating],
-                     [gl_physical_rating, gl_transitional_rating]])
-
-    # Plot the heatmap
+    # Plotting the heatmap
     fig, ax = plt.subplots()
-    im = ax.imshow(data, cmap="YlOrRd")
+    
+    # Scatter plot for Fire LoB
+    ax.scatter(physical_ratings[0], transitional_ratings[0], color='red', label='Fire')
+    # Scatter plot for General Liability LoB
+    ax.scatter(physical_ratings[1], transitional_ratings[1], color='blue', label='General Liability')
 
-    # Set ticks and labels
-    ax.set_xticks(np.arange(len(risk_labels)))
-    ax.set_yticks(np.arange(len(lob_labels)))
-    ax.set_xticklabels(risk_labels)
-    ax.set_yticklabels(lob_labels)
+    # Set labels and title
+    ax.set_xlabel('Physical Risk')
+    ax.set_ylabel('Transitional Risk')
+    ax.set_title('Insurance Lines of Business Heatmap')
 
-    # Rotate the tick labels and set alignment
-    plt.setp(ax.get_xticklabels(), rotation=45, ha="right", rotation_mode="anchor")
+    # Set axis limits
+    ax.set_xlim(0, 4)
+    ax.set_ylim(0, 4)
 
-    # Loop over data dimensions and create text annotations
-    for i in range(len(lob_labels)):
-        for j in range(len(risk_labels)):
-            text = ax.text(j, i, f"{data[i, j]:.2f}", ha="center", va="center", color="black")
+    # Add legend
+    ax.legend()
 
-    ax.set_title("Insurance Lines of Business Heatmap")
-    ax.set_xlabel("Risk Dimension")
-    ax.set_ylabel("Insurance Lines of Business")
-
-    # Show heatmap
+    # Show plot
     st.pyplot(fig)
 
 if __name__ == "__main__":
