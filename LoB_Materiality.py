@@ -1,6 +1,7 @@
 import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.colors import LinearSegmentedColormap
 
 def main():
     st.title("Insurance Lines of Business Heatmap")
@@ -25,8 +26,8 @@ def main():
     gl_physical_rating = calculate_rating(gl_exposure_value, physical=True)
     gl_transitional_rating = calculate_rating(gl_exposure_value, physical=False)
 
-    # Create the heatmap
-    create_heatmap(fire_physical_rating, fire_transitional_rating, gl_physical_rating, gl_transitional_rating)
+    # Create the heatmap with faded colors
+    create_faded_heatmap(fire_physical_rating, fire_transitional_rating, gl_physical_rating, gl_transitional_rating)
 
 def map_exposure_to_value(exposure_level):
     if exposure_level == "Low":
@@ -51,15 +52,19 @@ def calculate_rating(exposure_value, physical=True):
 
     return rating
 
-def create_heatmap(fire_physical_rating, fire_transitional_rating, gl_physical_rating, gl_transitional_rating):
+def create_faded_heatmap(fire_physical_rating, fire_transitional_rating, gl_physical_rating, gl_transitional_rating):
     # Define labels and ratings for each Line of Business (LoB)
     lobs = ["Fire", "General Liability"]
     physical_ratings = [fire_physical_rating, gl_physical_rating]
     transitional_ratings = [fire_transitional_rating, gl_transitional_rating]
 
-    # Plotting the heatmap
+    # Plotting the heatmap with faded colors
     fig, ax = plt.subplots()
-    
+
+    # Define a custom colormap with faded colors
+    colors = ['green', 'yellow', 'red']
+    cmap = LinearSegmentedColormap.from_list('custom', colors)
+
     # Scatter plot for Fire LoB
     ax.scatter(physical_ratings[0], transitional_ratings[0], color='red', label='Fire')
     # Scatter plot for General Liability LoB
@@ -76,6 +81,10 @@ def create_heatmap(fire_physical_rating, fire_transitional_rating, gl_physical_r
 
     # Add legend
     ax.legend()
+
+    # Show plot with the custom colormap
+    sc = ax.scatter(physical_ratings, transitional_ratings, c=np.arange(len(lobs)), cmap=cmap)
+    fig.colorbar(sc, ticks=np.arange(len(lobs)), label='Insurance Lines of Business')
 
     # Show plot
     st.pyplot(fig)
