@@ -86,4 +86,41 @@ Fire and other damage to property insurance,3,3,"Transition Risk: High as underw
 
     # Display the CSV table (without editable Explanation column)
     st.header("Insurance Lines of Business Table")
-    df_display = df.drop(columns=['Explanation'])  include possible
+    df_display = df.drop(columns=['Explanation'])  # Remove 'Explanation' column for display
+    st.write(df_display)
+
+def create_gradient_heatmap(df):
+    # Plotting the gradient heatmap
+    fig, ax = plt.subplots()
+
+    # Define a custom gradient colormap
+    colors = ['green', 'yellow', 'red']
+    cmap = LinearSegmentedColormap.from_list('custom', colors)
+
+    # Create grid for heatmap
+    X, Y = np.meshgrid(np.linspace(1, 3.5, 100), np.linspace(1, 3.5, 100))
+    Z = X + Y  # Combine X and Y to form a grid
+
+    # Plot the gradient heatmap
+    im = ax.imshow(Z, cmap=cmap, origin='lower', extent=[1, 3.5, 1, 3.5], alpha=0.5)
+
+    # Scatter plot for LoBs with labels
+    for _, row in df.iterrows():
+        if not np.isnan(row['Physical Risk Result']) and not np.isnan(row['Transitional Risk Result']):
+            ax.scatter(row['Physical Risk Result'], row['Transitional Risk Result'], color='black', zorder=2)
+            ax.text(row['Physical Risk Result'] + 0.05, row['Transitional Risk Result'], row['Lines of Business'], color='black', fontsize=12, zorder=3)
+
+    # Set labels and title
+    ax.set_xlabel('Physical Risk')
+    ax.set_ylabel('Transitional Risk')
+    ax.set_title('Insurance Lines of Business Heatmap')
+
+    # Set axis limits
+    ax.set_xlim(1, 3.5)
+    ax.set_ylim(1, 3.5)
+
+    # Show plot
+    st.pyplot(fig)
+
+if __name__ == "__main__":
+    main()
