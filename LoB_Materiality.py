@@ -108,7 +108,8 @@ def create_gradient_heatmap(df):
     # Scatter plot for LoBs with labels and varying circle sizes based on exposure
     for _, row in df.iterrows():
         if not np.isnan(row['Physical Risk Result']) and not np.isnan(row['Transitional Risk Result']):
-            ax.scatter(row['Physical Risk Result'], row['Transitional Risk Result'], color='black', zorder=2, s=size_map[row['Exposure']])
+            circle_size = size_map[row['Exposure']]
+            ax.scatter(row['Physical Risk Result'], row['Transitional Risk Result'], color='black', zorder=2, s=circle_size)
             # Shorten name if longer than 15 characters for heatmap only
             short_name = row['Short Name'] if len(row['Lines of Business']) > 15 else row['Lines of Business']
             ax.text(row['Physical Risk Result'] + 0.1, row['Transitional Risk Result'], short_name, color='black', fontsize=8, zorder=3, ha='left', va='center')
