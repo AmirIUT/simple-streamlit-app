@@ -3,34 +3,18 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
-import io
-
-class SessionState:
-    def __init__(self, **kwargs):
-        self.__dict__.update(kwargs)
-
-    def get_state(self):
-        return self.__dict__
-
-    @staticmethod
-    def get(**kwargs):
-        if not hasattr(SessionState, "_instance"):
-            SessionState._instance = SessionState(**kwargs)
-        return SessionState._instance
 
 def main():
     st.set_page_config(page_title="Insurance Materiality Assessment", layout="wide")
 
-    # Initialize session state
-    session_state = SessionState.get()
+    # Load data
+    df = load_data()
 
-    # Display Materiality Assessment
-    materiality_assessment(session_state)
+    # Display materiality assessment
+    materiality_assessment(df)
 
-def materiality_assessment(session_state):
-    st.header("Materiality Assessment")
-
-    # Define the CSV data as a multiline string
+def load_data():
+    # Sample data
     csv_data = """Lines of Business,Short Name,Transition Risk Factor,Physical Risk Factor,Exposure,Explanation
 Medical expenses,ME,1,2,Low,"Transition Risk: Low as medical underwriting is less impacted by climate policies. Physical Risk: Moderate due to increased health claims from heatwaves, diseases, etc. caused by climate change."
 Worker compensation,WC,2,2,Medium,"Transition Risk: Moderate due to changes in workplace safety regulations and standards. Physical Risk: Moderate due to increased workplace injuries from extreme weather."
@@ -43,108 +27,60 @@ Assistance,ASS,1,2,Low,"Transition Risk: Low impact on underwriting as service m
 \"Marine, aviation and transport insurance\",MAT,3,3,High,"Transition Risk: High due to significant regulatory changes in these sectors. Physical Risk: High due to susceptibility to severe weather events and long-term climate impacts on these modes of transport."
 Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High as underwriting is impacted by changing building regulations and property values. Physical Risk: High due to increased risk of fires, floods, and other climate-related damages"
 """
+    # Read CSV data into DataFrame
+    df = pd.read_csv(pd.compat.StringIO(csv_data.strip()))
+    return df
 
-    # Read the CSV from the multiline string
-    df = pd.read_csv(io.StringIO(csv_data.strip()))
+def materiality_assessment(df):
+    st.header("Materiality Assessment")
 
-    # Initialize an empty list to store updated materiality values
-    exposure_materiality = []
+    # Display exposure assessment
+    st.subheader("Exposure Assessment")
+    df['Exposure Level'] = df.apply(lambda row: st.selectbox(f"{row['Lines of Business']} - Exposure Level",
+                                                             options=["Low", "Medium", "High"],
+                                                             index=0),
+                                    axis=1)
 
-    st.write("### Exposure Assessment")
+    # Filter out rows with 'Not relevant/No exposure'
+    df_filtered = df[df['Exposure Level'] != 'Not relevant/No exposure'].copy()
 
-    # Create a table layout for exposures
-    exp_cols = st.columns([0.1, 1, 1])  # Column layout for index, LoB names, and dropdowns
-    exp_cols[0].write("**#**")
-    exp_cols[1].write("**Line of Business**")
-    exp_cols[2].write("**Exposure**")
+    # Calculate average risk factors
+    df_filtered['Average Risk Factor'] = (df_filtered['Transition Risk Factor'] + df_filtered['Physical Risk Factor']) / 2
 
-    for idx, row in df.iterrows():
-        exp_cols = st.columns([0.1, 1, 1])
-        exp_cols[0].write(f"**{idx+1}**")
-        exp_cols[1].write(row['Lines of Business'])
-        materiality = exp_cols[2].selectbox("", options=["Low", "Medium", "High", "Not relevant/No exposure"], index=1, key=f"materiality_{idx}", help=f"Select exposure level for {row['Lines of Business']}", label_visibility="collapsed")
-        exposure_materiality.append(materiality)
+    # Display heatmap and summary
+    st.subheader("Heatmap and Summary")
 
-    # Update the DataFrame with the selected exposure materiality
-    df['Exposure Materiality'] = exposure_materiality
+    create_heatmap(df_filtered)
 
-    # Filter out rows where exposure materiality is "Not relevant/No exposure"
-    df_filtered = df[df['Exposure Materiality'] != "Not relevant/No exposure"].copy()
-
-    # Calculate average risk factors based on exposure materiality
-    df_filtered['Physical Risk Result'] = df_filtered.apply(lambda row: (["Low", "Medium", "High"].index(row['Exposure Materiality']) + 1 + row['Physical Risk Factor']) / 2, axis=1)
-    df_filtered['Transitional Risk Result'] = df_filtered.apply(lambda row: (["Low", "Medium", "High"].index(row['Exposure Materiality']) + 1 + row['Transition Risk Factor']) / 2, axis=1)
-
-    # Display the heatmap and final table
-    st.write("### Heatmap and Results")
-
-    create_gradient_heatmap(df_filtered)
-
-    # Splitting the Risk Factor Table into two parts
-    st.header("Risk Factor Table")
-
-    # Create a copy of filtered dataframe for editable table
-    df_editable = df_filtered[['Lines of Business', 'Short Name', 'Transition Risk Factor', 'Physical Risk Factor']].copy()
-    df_editable['User Defined Transition Risk'] = df_editable['Transition Risk Factor']
-    df_editable['User Defined Physical Risk'] = df_editable['Physical Risk Factor']
-
-    st.write(df_editable)
-
-    st.header("Summary - Environmental Materiality Analysis")
-
-    # Prepare detailed text summary using the Explanation column
+    st.subheader("Summary - Environmental Materiality Analysis")
     for idx, row in df_filtered.iterrows():
-        transition_risk_level = ["Low", "Medium", "High"][row['Transition Risk Factor'] - 1]
-        physical_risk_level = ["Low", "Medium", "High"][row['Physical Risk Factor'] - 1]
+        if row['Average Risk Factor'] >= 2:
+            st.markdown(f"**{row['Lines of Business']}** - {row['Explanation']}")
+            st.markdown(f"Since the average risk factor is >= 2, a further deep dive and quantification is suggested for two climate scenarios: one below 2 degrees Celsius and one above 2 degrees Celsius of global warming.")
+        else:
+            st.markdown(f"**{row['Lines of Business']}** - {row['Explanation']}")
+            st.markdown("The risk is not material enough to warrant quantification at this stage.")
 
-        summary_text = f"**{row['Lines of Business']}**: {row['Explanation']}"
-
-        # Determine material risks and suggest further quantitative assessment
-        if row['Physical Risk Result'] >= 2:
-            summary_text += f" Since physical risk is >= Medium, a further deep dive and quantification is suggested for two climate scenarios: one below 2 degrees Celsius and one above 2 degrees Celsius of global warming."
-        if row['Transitional Risk Result'] >= 2:
-            summary_text += f" Since transitional risk is >= Medium, a further deep dive and quantification is suggested for two climate scenarios: one below 2 degrees Celsius and one above 2 degrees Celsius of global warming."
-
-        if row['Physical Risk Result'] < 2 and row['Transitional Risk Result'] < 2:
-            summary_text += " The risk is not material enough to warrant quantification at this stage."
-
-        st.markdown(summary_text)
-
-def create_gradient_heatmap(df):
-    # Plotting the gradient heatmap
-    fig, ax = plt.subplots(figsize=(8, 6))
-
-    # Define a custom gradient colormap
+def create_heatmap(df):
+    # Define colormap
     colors = ['green', 'yellow', 'red']
     cmap = LinearSegmentedColormap.from_list('custom', colors)
 
-    # Create grid for heatmap
-    X, Y = np.meshgrid(np.linspace(0.5, 3.5, 100), np.linspace(0.5, 3.5, 100))
-    Z = X + Y  # Combine X and Y to form a grid
+    # Create figure and axis
+    fig, ax = plt.subplots(figsize=(8, 6))
 
-    # Map exposure levels to circle sizes
-    size_map = {'Low': 50, 'Medium': 150, 'High': 450}
-
-    # Plot the gradient heatmap
-    im = ax.imshow(Z, cmap=cmap, origin='lower', extent=[0.5, 3.5, 0.5, 3.5], alpha=0.5)
-
-    # Scatter plot for LoBs with labels and varying circle sizes based on exposure
-    for _, row in df.iterrows():
-        if not np.isnan(row['Physical Risk Result']) and not np.isnan(row['Transitional Risk Result']):
-            ax.scatter(row['Physical Risk Result'], row['Transitional Risk Result'], color='black', zorder=2, s=size_map[row['Exposure']])
-            # Shorten name if longer than 15 characters for heatmap only
-            short_name = row['Short Name'] if len(row['Lines of Business']) > 15 else row['Lines of Business']
-            ax.text(row['Physical Risk Result'] + 0.1, row['Transitional Risk Result'], short_name, color='black', fontsize=8, zorder=3, ha='left', va='center')
+    # Plot heatmap
+    sc = ax.scatter(df['Transition Risk Factor'], df['Physical Risk Factor'], c=df['Average Risk Factor'], cmap=cmap, edgecolors='k', s=200)
+    fig.colorbar(sc, ax=ax, label='Average Risk Factor')
 
     # Set labels and title
-    ax.set_xlabel('Physical Risk')
-    ax.set_ylabel('Transitional Risk')
-    ax.set_xticks([1, 2, 3])
-    ax.set_xticklabels(['Low', 'Medium', 'High'])
-    ax.set_yticks([1, 2, 3])
-    ax.set_yticklabels(['Low', 'Medium', 'High'])
-    ax.set_title('Insurance Lines of Business Heatmap')
+    ax.set_xlabel('Transition Risk Factor')
+    ax.set_ylabel('Physical Risk Factor')
+    ax.set_title('Insurance Materiality Assessment')
+    ax.grid(True)
 
-    # Set axis limits
-    ax.set_xlim(0.5, 3.5)
-    ax.set_ylim(0.5, 3.5)
+    # Show plot
+    st.pyplot(fig)
+
+if __name__ == "__main__":
+    main()
