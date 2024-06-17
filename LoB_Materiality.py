@@ -53,17 +53,11 @@ Fire and other damage to property insurance,3,3,"Transition Risk: High as underw
     st.write("### Exposure Assessment")
 
     # Create table layout for exposures
-    exp_cols = st.columns([2, 1])
-    with exp_cols[0]:
-        st.write("**Lines of Business**")
-    with exp_cols[1]:
-        st.write("**Exposure**")
+    exp_cols = st.columns([1, 2])
     
-    # Loop through each line of business
     for idx, row in df.iterrows():
-        exp_cols = st.columns([2, 1])
         with exp_cols[0]:
-            st.write(row['Lines of Business'])
+            st.write(f"**{row['Lines of Business']}**")
         with exp_cols[1]:
             materiality = st.selectbox("", options=["Low", "Medium", "High", "Not relevant/No exposure"], index=1, key=f"materiality_{idx}")
             exposure_materiality.append(materiality)
