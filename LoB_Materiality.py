@@ -3,14 +3,23 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
+import io
 
 def main():
     st.title("Insurance Lines of Business Heatmap")
 
-    # Read the CSV file
-    df = pd.read_csv('/mnt/data/LoBs_Risk Factors.csv')
+    # Define the CSV data as a multiline string
+    csv_data = """
+    Lines of Business,Transitional Risk Factor,Physical Risk Factor,Explanation
+    Business Interruption,3.2,2.5,Some explanation
+    Property Damage,2.7,3.0,Another explanation
+    Liability,2.9,2.8,More explanation
+    """
 
-    # Display the uploaded file
+    # Read the CSV from the multiline string
+    df = pd.read_csv(io.StringIO(csv_data))
+
+    # Display the table
     st.write("Default table:")
     st.write(df)
 
