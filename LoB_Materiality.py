@@ -51,7 +51,7 @@ Fire and other damage to property insurance,3,3,"Transition Risk: High as underw
     exposure_materiality = []
 
     st.write("### Exposure Assessment")
-    
+
     # Create table layout for exposures
     st.write("#### Set Exposure Levels for Lines of Business")
     exp_cols = st.columns([2, 1])
@@ -79,25 +79,28 @@ Fire and other damage to property insurance,3,3,"Transition Risk: High as underw
     df_filtered['Physical Risk Result'] = df_filtered.apply(lambda row: (["Low", "Medium", "High"].index(row['Exposure Materiality']) + 1 + row['Physical Risk Factor']) / 2, axis=1)
     df_filtered['Transitional Risk Result'] = df_filtered.apply(lambda row: (["Low", "Medium", "High"].index(row['Exposure Materiality']) + 1 + row['Transition Risk Factor']) / 2, axis=1)
 
-    # Plot heatmap next to the exposure settings
-    cols = st.columns([2, 1])
-    with cols[0]:
-        create_gradient_heatmap(df_filtered)
-    with cols[1]:
-        st.write("### Exposure Settings")
+    # Adjust layout to place the heatmap next to the exposure settings
+    st.write("### Heatmap and Results")
+    layout_cols = st.columns([3, 2])
+    
+    with layout_cols[0]:
+        st.write("### Exposure Levels for Lines of Business")
         for idx, row in df.iterrows():
             materiality = st.selectbox(f"Exposure for {row['Lines of Business']}:", options=["Low", "Medium", "High", "Not relevant/No exposure"], index=1, key=f"materiality_side_{idx}")
             exposure_materiality.append(materiality)
+    
+    with layout_cols[1]:
+        create_gradient_heatmap(df_filtered)
 
     # Display the CSV table with the final column containing explanations
     st.header("Insurance Lines of Business Table")
     df_display = df_filtered.copy()
-    df_display['Explanation'] = df['Explanation']
+    df_display['Explanation'] = df_filtered['Explanation']
     st.write(df_display)
 
 def create_gradient_heatmap(df):
     # Plotting the gradient heatmap
-    fig, ax = plt.subplots(figsize=(6, 6))
+    fig, ax = plt.subplots(figsize=(5, 5))
 
     # Define a custom gradient colormap
     colors = ['blue', 'yellow', 'red']
