@@ -80,13 +80,17 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
 
     st.header("Risk Factor Table")
 
-    # Display editable table for Risk Factors
-    st.dataframe(df_filtered[['Lines of Business', 'Transition Risk Factor', 'Physical Risk Factor', 'User Defined Transition Risk', 'User Defined Physical Risk']], height=400)
+    # Display editable table for Risk Factors (Columns 1 to 6)
+    st.write("#### Editable Risk Factors")
+    editable_df = df_filtered[['Lines of Business', 'Transition Risk Factor', 'Physical Risk Factor', 'User Defined Transition Risk', 'User Defined Physical Risk']].copy()
+    st.dataframe(editable_df, height=200)
 
-    # Save button to update CSV with user-defined values
-    if st.button("Save Risk Factors"):
-        df_filtered.to_csv("updated_risk_factors.csv", index=False)
-        st.success("Risk Factors updated successfully!")
+    # Display summary of explanations (rest of the columns)
+    st.write("#### Summary")
+    summary_df = df_filtered[['Lines of Business', 'Explanation']].copy()
+    for idx, row in summary_df.iterrows():
+        st.write(f"**{row['Lines of Business']}**: {row['Explanation']}")
+        st.write("---")
 
 def create_gradient_heatmap(df):
     # Plotting the gradient heatmap
