@@ -5,6 +5,19 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
 import io
 
+class SessionState:
+    def __init__(self, **kwargs):
+        self.__dict__.update(kwargs)
+
+    def get_state(self):
+        return self.__dict__
+
+    @staticmethod
+    def get(**kwargs):
+        if not hasattr(SessionState, "_instance"):
+            SessionState._instance = SessionState(**kwargs)
+        return SessionState._instance
+
 def main():
     st.set_page_config(page_title="Insurance Materiality Assessment", layout="wide")
 
@@ -129,19 +142,6 @@ def create_gradient_heatmap(df):
 
     # Show plot
     st.pyplot(fig)
-
-class SessionState:
-    def __init__(self, **kwargs):
-        self.__dict__.update(kwargs)
-
-    def get_state(self):
-        return self.__dict__
-
-    @staticmethod
-    def get(**kwargs):
-        if not hasattr(SessionState, "_instance"):
-            SessionState._instance = SessionState(**kwargs)
-        return SessionState._instance
 
 if __name__ == "__main__":
     main()
