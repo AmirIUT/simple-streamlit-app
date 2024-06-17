@@ -52,47 +52,39 @@ Fire and other damage to property insurance,3,3,"Transition Risk: High as underw
     # Read the CSV from the multiline string
     df = pd.read_csv(io.StringIO(csv_data.strip()))
 
-    # Add inputs to overwrite risk factors
-    st.header("Exposure Assessment")
-    for index, row in df.iterrows():
-        df.at[index, 'Transition Risk Factor'] = st.number_input(f"Transition Risk Factor for {row['Lines of Business']}", value=row['Transition Risk Factor'])
-        df.at[index, 'Physical Risk Factor'] = st.number_input(f"Physical Risk Factor for {row['Lines of Business']}", value=row['Physical Risk Factor'])
-        df.at[index, 'Explanation'] = st.text_input(f"Explanation for {row['Lines of Business']}", value=row['Explanation'])
+    # Ask for materiality of exposure (Low, Medium, High) for each LoB
+    st.header("Exposure Adjustment")
+    exposure_levels = ["Low", "Medium", "High"]
+    df['Exposure Materiality'] = df['Lines of Business'].apply(lambda x: st.selectbox(f"Materiality of Exposure for {x}:", options=exposure_levels))
 
-    # Create a dropdown for each LoB to select exposure level
-    exposure_levels = ["Low", "Medium", "High", "Not Relevant"]
-    df['Exposure'] = df['Lines of Business'].apply(lambda x: st.selectbox(f"Select exposure for {x}:", options=exposure_levels))
-
-    # Convert exposure levels to numerical values
-    df['Exposure Value'] = df['Exposure'].apply(map_exposure_to_value)
-
-    # Calculate ratings
-    df['Physical Rating'] = df.apply(lambda row: calculate_rating(row['Exposure Value'], row['Physical Risk Factor']), axis=1)
-    df['Transition Rating'] = df.apply(lambda row: calculate_rating(row['Exposure Value'], row['Transition Risk Factor']), axis=1)
+    # Calculate average risk factors based on exposure materiality
+    df['Physical Risk Result'] = df.apply(lambda row: calculate_average_factor(row['Exposure Materiality'], row['Physical Risk Factor']), axis=1)
+    df['Transitional Risk Result'] = df.apply(lambda row: calculate_average_factor(row['Exposure Materiality'], row['Transition Risk Factor']), axis=1)
 
     # Create the gradient heatmap and overlay dots
     create_gradient_heatmap(df)
 
-    # Display the CSV table
+    # Display the CSV table (without editable Explanation column)
     st.header("Insurance Lines of Business Table")
-    st.write(df)
+    df_display = df.drop(columns=['Explanation'])  # Drop Explanation column for display
+    st.write(df_display)
 
-def map_exposure_to_value(exposure_level):
-    if exposure_level == "Low":
-        return 1
-    elif exposure_level == "Medium":
-        return 2
-    elif exposure_level == "High":
-        return 3
-    else:
-        return 0  # Not Relevant
+    # Allow possibility to overwrite risk factors after displaying the heatmap
+    st.header("Overwrite Risk Factors")
+    for index, row in df.iterrows():
+        df.at[index, 'Transition Risk Factor'] = st.number_input(f"Transition Risk Factor for {row['Lines of Business']}", value=row['Transition Risk Factor'])
+        df.at[index, 'Physical Risk Factor'] = st.number_input(f"Physical Risk Factor for {row['Lines of Business']}", value=row['Physical Risk Factor'])
 
-def calculate_rating(exposure_value, risk_factor):
-    # Calculate average rating based on exposure value and risk factor
-    if exposure_value == 0:  # Not Relevant
-        return np.nan  # Return NaN for not relevant to avoid plotting
-    else:
-        return (exposure_value + risk_factor) / 2
+def calculate_average_factor(materiality, risk_factor):
+    # Calculate average factor based on materiality of exposure
+    if materiality == "Low":
+        exposure_factor = 1
+    elif materiality == "Medium":
+        exposure_factor = 2
+    elif materiality == "High":
+        exposure_factor = 3
+    
+    return (exposure_factor + risk_factor) / 2
 
 def create_gradient_heatmap(df):
     # Plotting the gradient heatmap
@@ -111,13 +103,13 @@ def create_gradient_heatmap(df):
 
     # Scatter plot for LoBs with labels
     for _, row in df.iterrows():
-        if not np.isnan(row['Physical Rating']) and not np.isnan(row['Transition Rating']):
-            ax.scatter(row['Physical Rating'], row['Transition Rating'], color='black', zorder=2)
-            ax.text(row['Physical Rating'] + 0.05, row['Transition Rating'], row['Lines of Business'], color='black', fontsize=12, zorder=3)
+        if not np.isnan(row['Physical Risk Result']) and not np.isnan(row['Transitional Risk Result']):
+            ax.scatter(row['Physical Risk Result'], row['Transitional Risk Result'], color='black', zorder=2)
+            ax.text(row['Physical Risk Result'] + 0.05, row['Transitional Risk Result'], row['Lines of Business'], color='black', fontsize=12, zorder=3)
 
     # Set labels and title
-    ax.set_xlabel('Physical Risk')
-    ax.set_ylabel('Transition Risk')
+    ax.set_xlabel('Physical Risk Result')
+    ax.set_ylabel('Transition Risk Result')
     ax.set_title('Insurance Lines of Business Heatmap')
 
     # Set axis limits
