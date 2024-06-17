@@ -11,10 +11,9 @@ def main():
     # Define the CSV data as a multiline string
     csv_data = """
     Lines of Business,Transitional Risk Factor,Physical Risk Factor,Explanation
-    Business Interruption,3.2,2.5,Some explanation
-    Property Damage,2.7,3.0,Another explanation
-    Liability,2.9,2.8,More explanation
-    """
+    Medical expenses,1,2,Transition Risk: Low as medical underwriting is less impacted by climate policies 
+
+
 
     # Read the CSV from the multiline string
     df = pd.read_csv(io.StringIO(csv_data))
