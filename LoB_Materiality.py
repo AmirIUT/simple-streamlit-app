@@ -53,8 +53,6 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
     st.write("### Exposure Assessment")
 
     # Create a table layout for exposures
-    st.write("### Exposure Assessment")
-
     exp_cols = st.columns([0.1, 1, 1])  # Column layout for index, LoB names, and dropdowns
     exp_cols[0].write("**#**")
     exp_cols[1].write("**Line of Business**")
@@ -80,6 +78,7 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
     # Display the heatmap and final table
     st.write("### Heatmap and Results")
 
+    # Create a reactive plot using streamlit's st.pyplot
     create_gradient_heatmap(df_filtered)
 
     st.header("Risk Factor Table")
@@ -108,7 +107,7 @@ def create_gradient_heatmap(df):
     # Scatter plot for LoBs with labels and varying circle sizes based on exposure
     for _, row in df.iterrows():
         if not np.isnan(row['Physical Risk Result']) and not np.isnan(row['Transitional Risk Result']):
-            circle_size = size_map[row['Exposure']]
+            circle_size = size_map[row['Exposure Materiality']]  # Dynamic circle size based on exposure materiality
             ax.scatter(row['Physical Risk Result'], row['Transitional Risk Result'], color='black', zorder=2, s=circle_size)
             # Shorten name if longer than 15 characters for heatmap only
             short_name = row['Short Name'] if len(row['Lines of Business']) > 15 else row['Lines of Business']
@@ -130,7 +129,7 @@ def create_gradient_heatmap(df):
     # Automatically adjust layout
     fig.tight_layout()
 
-    # Show plot
+    # Show plot using st.pyplot to ensure it updates reactively
     st.pyplot(fig)
 
 if __name__ == "__main__":
