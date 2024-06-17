@@ -147,4 +147,4 @@ def create_gradient_heatmap(df):
 
     # Set axis limits
     ax.set_xlim(0.5, 3.5)
-    ax.set_ylim(0.5, 3.
+    ax.set_ylim(0.5, 3.5)
