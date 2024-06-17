@@ -81,7 +81,7 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
     create_gradient_heatmap(df_filtered)
 
     # Splitting the Risk Factor Table into two parts
-    st.header("Risk Factor Table")
+    st.header("Environmental Risk Factor Table")
 
     # Create a copy of filtered dataframe for editable table
     df_editable = df_filtered[['Lines of Business', 'Short Name', 'Transition Risk Factor', 'Physical Risk Factor']].copy()
