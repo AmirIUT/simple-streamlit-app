@@ -56,11 +56,17 @@ Fire and other damage to property insurance,3,3,"Transition Risk: High as underw
     st.header("Exposure Adjustment")
     exposure_levels = ["Low", "Medium", "High"]
     
+    # Initialize an empty list to store updated materiality values
+    exposure_materiality = []
+
     # Loop through each line of business
     for idx, row in df.iterrows():
         # Display the dropdown and update exposure materiality
-        materiality = st.selectbox(f"Materiality of Exposure for {row['Lines of Business']}:", options=exposure_levels, index=exposure_levels.index(row['Exposure Materiality']))
-        df.at[idx, 'Exposure Materiality'] = materiality  # Update exposure materiality directly in the DataFrame
+        materiality = st.selectbox(f"Materiality of Exposure for {row['Lines of Business']}:", options=exposure_levels, index=exposure_levels.index("Medium"))
+        exposure_materiality.append(materiality)
+
+    # Update the DataFrame with the selected exposure materiality
+    df['Exposure Materiality'] = exposure_materiality
 
     # Calculate average risk factors based on exposure materiality
     df['Physical Risk Result'] = df.apply(lambda row: calculate_average_factor(row['Exposure Materiality'], row['Physical Risk Factor']), axis=1)
