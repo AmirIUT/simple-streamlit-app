@@ -61,18 +61,21 @@ Fire and other damage to property insurance,3,3,"Transition Risk: High as underw
     # Loop through each line of business
     for idx, row in df.iterrows():
         # Display the dropdown and update exposure materiality
-        materiality = st.selectbox(f"Materiality of Exposure for {row['Lines of Business']}:", options=["Low", "Medium", "High"], index=1)
+        materiality = st.selectbox(f"Materiality of Exposure for {row['Lines of Business']}:", options=["Low", "Medium", "High", "Not relevant/No exposure"], index=1)
         exposure_materiality.append(materiality)
 
     # Update the DataFrame with the selected exposure materiality
     df['Exposure Materiality'] = exposure_materiality
 
+    # Filter out rows where exposure materiality is "Not relevant/No exposure"
+    df_filtered = df[df['Exposure Materiality'] != "Not relevant/No exposure"].copy()
+
     # Calculate average risk factors based on exposure materiality
-    df['Physical Risk Result'] = df.apply(lambda row: (["Low", "Medium", "High"].index(row['Exposure Materiality']) + 1 + row['Physical Risk Factor']) / 2, axis=1)
-    df['Transitional Risk Result'] = df.apply(lambda row: (["Low", "Medium", "High"].index(row['Exposure Materiality']) + 1 + row['Transition Risk Factor']) / 2, axis=1)
+    df_filtered['Physical Risk Result'] = df_filtered.apply(lambda row: (["Low", "Medium", "High"].index(row['Exposure Materiality']) + 1 + row['Physical Risk Factor']) / 2, axis=1)
+    df_filtered['Transitional Risk Result'] = df_filtered.apply(lambda row: (["Low", "Medium", "High"].index(row['Exposure Materiality']) + 1 + row['Transition Risk Factor']) / 2, axis=1)
 
     # Create the gradient heatmap and overlay dots
-    create_gradient_heatmap(df)
+    create_gradient_heatmap(df_filtered)
 
     # Display the CSV table (without editable Explanation column)
     st.header("Insurance Lines of Business Table")
