@@ -82,10 +82,21 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
 
     create_gradient_heatmap(df_filtered)
 
-    st.header("Risk Factor Table")
-    df_display = df_filtered.copy()
-    df_display['Explanation'] = df_filtered['Explanation']
-    st.write(df_display)
+    # Splitting the Risk Factor Table into two parts
+    st.header("Risk Factor Table - Editable")
+
+    # Create a copy of filtered dataframe for editable table
+    df_editable = df_filtered[['Lines of Business', 'Short Name', 'Transition Risk Factor', 'Physical Risk Factor']].copy()
+    df_editable['User Defined Transition Risk'] = df_editable['Transition Risk Factor']
+    df_editable['User Defined Physical Risk'] = df_editable['Physical Risk Factor']
+
+    st.write(df_editable)
+
+    st.header("Risk Factor Table - Summary")
+
+    # Prepare text summary using the Explanation column
+    for idx, row in df_filtered.iterrows():
+        st.markdown(f"**{row['Lines of Business']}**: {row['Explanation']}")
 
 def create_gradient_heatmap(df):
     # Plotting the gradient heatmap
