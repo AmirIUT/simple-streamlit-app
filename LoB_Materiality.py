@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
+import io
 
 def main():
     st.set_page_config(page_title="Insurance Materiality Assessment", layout="wide")
@@ -28,7 +29,7 @@ Assistance,ASS,1,2,Low,"Transition Risk: Low impact on underwriting as service m
 Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High as underwriting is impacted by changing building regulations and property values. Physical Risk: High due to increased risk of fires, floods, and other climate-related damages"
 """
     # Read CSV data into DataFrame
-    df = pd.read_csv(pd.compat.StringIO(csv_data.strip()))
+    df = pd.read_csv(io.StringIO(csv_data.strip()))
     return df
 
 def materiality_assessment(df):
