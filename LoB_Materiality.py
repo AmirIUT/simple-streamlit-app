@@ -22,31 +22,21 @@ def main():
     st.set_page_config(page_title="Insurance Materiality Assessment", layout="wide")
 
     # Initialize session state
-    session_state = SessionState.get(page="Application ReadMe")
+    session_state = SessionState.get()
 
-    # Sidebar navigation
-    st.sidebar.title("Navigation")
-    if st.sidebar.button("Application ReadMe"):
-        session_state.page = "Application ReadMe"
-    if st.sidebar.button("Materiality Assessment"):
-        session_state.page = "Materiality assessment"
+    # Display ReadMe
+    display_readme()
 
-    # Render the current page based on session state
-    if session_state.page == "Application ReadMe":
-        display_readme()
-    elif session_state.page == "Materiality assessment":
-        materiality_assessment(session_state)
+    # Display Materiality Assessment
+    materiality_assessment(session_state)
 
 def display_readme():
     st.title("Application ReadMe")
     st.write("Placeholder for your ReadMe text goes here.")
-    st.write("### Go to Materiality Assessment")
-    st.write("Click the link below to navigate to the Materiality Assessment page.")
-    if st.button("Go to Materiality Assessment"):
-        SessionState.get().page = "Materiality assessment"
+    st.write("### Materiality Assessment")
 
 def materiality_assessment(session_state):
-    st.title("Materiality Assessment")
+    st.header("Materiality Assessment")
 
     # Define the CSV data as a multiline string
     csv_data = """Lines of Business,Transition Risk Factor,Physical Risk Factor,Explanation
@@ -71,15 +61,15 @@ Fire and other damage to property insurance,3,3,"Transition Risk: High as underw
     # Loop through each line of business
     for idx, row in df.iterrows():
         # Display the dropdown and update exposure materiality
-        materiality = st.selectbox(f"Materiality of Exposure for {row['Lines of Business']}:", options=["Low", "Medium", "High"], index=["Low", "Medium", "High"].index("Medium"))
+        materiality = st.selectbox(f"Materiality of Exposure for {row['Lines of Business']}:", options=["Low", "Medium", "High"], index=1)
         exposure_materiality.append(materiality)
 
     # Update the DataFrame with the selected exposure materiality
     df['Exposure Materiality'] = exposure_materiality
 
     # Calculate average risk factors based on exposure materiality
-    df['Physical Risk Result'] = df.apply(lambda row: (["Low", "Medium", "High"].index(row['Exposure Materiality']) + row['Physical Risk Factor']) / 2, axis=1)
-    df['Transitional Risk Result'] = df.apply(lambda row: (["Low", "Medium", "High"].index(row['Exposure Materiality']) + row['Transition Risk Factor']) / 2, axis=1)
+    df['Physical Risk Result'] = df.apply(lambda row: (["Low", "Medium", "High"].index(row['Exposure Materiality']) + 1 + row['Physical Risk Factor']) / 2, axis=1)
+    df['Transitional Risk Result'] = df.apply(lambda row: (["Low", "Medium", "High"].index(row['Exposure Materiality']) + 1 + row['Transition Risk Factor']) / 2, axis=1)
 
     # Create the gradient heatmap and overlay dots
     create_gradient_heatmap(df)
