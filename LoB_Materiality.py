@@ -8,13 +8,20 @@ import io
 def main():
     st.set_page_config(page_title="Insurance Materiality Assessment", layout="wide")
 
+    # Initialize session state
+    session_state = SessionState.get(page="Application ReadMe")
+
     # Sidebar navigation
     st.sidebar.title("Navigation")
-    page = st.sidebar.radio("Go to", ("Application ReadMe", "Materiality assessment"))
+    if st.sidebar.button("Application ReadMe"):
+        session_state.page = "Application ReadMe"
+    if st.sidebar.button("Materiality Assessment"):
+        session_state.page = "Materiality assessment"
 
-    if page == "Application ReadMe":
+    # Render the current page based on session state
+    if session_state.page == "Application ReadMe":
         display_readme()
-    elif page == "Materiality assessment":
+    elif session_state.page == "Materiality assessment":
         materiality_assessment()
 
 def display_readme():
@@ -23,7 +30,7 @@ def display_readme():
     st.write("### Go to Materiality Assessment")
     st.write("Click the link below to navigate to the Materiality Assessment page.")
     if st.button("Go to Materiality Assessment"):
-        st.experimental_set_query_params(page="Materiality assessment")
+        SessionState.get().page = "Materiality assessment"
 
 def materiality_assessment():
     st.title("Materiality Assessment")
@@ -82,43 +89,4 @@ def map_exposure_to_value(exposure_level):
 
 def calculate_rating(exposure_value, risk_factor):
     # Calculate average rating based on exposure value and risk factor
-    if exposure_value == 0:  # Not Relevant
-        return np.nan  # Return NaN for not relevant to avoid plotting
-    else:
-        return (exposure_value + risk_factor) / 2
-
-def create_gradient_heatmap(df):
-    # Plotting the gradient heatmap
-    fig, ax = plt.subplots()
-
-    # Define a custom gradient colormap
-    colors = ['green', 'yellow', 'red']
-    cmap = LinearSegmentedColormap.from_list('custom', colors)
-
-    # Create grid for heatmap
-    X, Y = np.meshgrid(np.linspace(1, 3.5, 100), np.linspace(1, 3.5, 100))
-    Z = X + Y  # Combine X and Y to form a grid
-
-    # Plot the gradient heatmap
-    im = ax.imshow(Z, cmap=cmap, origin='lower', extent=[1, 3.5, 1, 3.5], alpha=0.5)
-
-    # Scatter plot for LoBs with labels
-    for _, row in df.iterrows():
-        if not np.isnan(row['Physical Rating']) and not np.isnan(row['Transition Rating']):
-            ax.scatter(row['Physical Rating'], row['Transition Rating'], color='black', zorder=2)
-            ax.text(row['Physical Rating'] + 0.05, row['Transition Rating'], row['Lines of Business'], color='black', fontsize=12, zorder=3)
-
-    # Set labels and title
-    ax.set_xlabel('Physical Risk')
-    ax.set_ylabel('Transition Risk')
-    ax.set_title('Insurance Lines of Business Heatmap')
-
-    # Set axis limits
-    ax.set_xlim(1, 3.5)
-    ax.set_ylim(1, 3.5)
-
-    # Show plot
-    st.pyplot(fig)
-
-if __name__ == "__main__":
-    main()
+    if exposure_value == 0:  # N
