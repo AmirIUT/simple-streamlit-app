@@ -12,7 +12,7 @@ def main():
     csv_data = """
     Lines of Business,Transitional Risk Factor,Physical Risk Factor,Explanation
     Medical expenses,1,2,Transition Risk: Low as medical underwriting is less impacted by climate policies 
-
+    """
 
 
     # Read the CSV from the multiline string
