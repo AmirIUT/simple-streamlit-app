@@ -82,7 +82,7 @@ Fire and other damage to property insurance,3,3,"Transition Risk: High as underw
 
     create_gradient_heatmap(df_filtered)
 
-    st.header("Insurance Lines of Business Table")
+    st.header("Risk Factor Table")
     df_display = df_filtered.copy()
     df_display['Explanation'] = df_filtered['Explanation']
     st.write(df_display)
@@ -92,7 +92,7 @@ def create_gradient_heatmap(df):
     fig, ax = plt.subplots(figsize=(5, 5))
 
     # Define a custom gradient colormap
-    colors = ['blue', 'yellow', 'red']
+    colors = ['green', 'yellow', 'red']
     cmap = LinearSegmentedColormap.from_list('custom', colors)
 
     # Create grid for heatmap
@@ -111,6 +111,10 @@ def create_gradient_heatmap(df):
     # Set labels and title
     ax.set_xlabel('Physical Risk')
     ax.set_ylabel('Transitional Risk')
+    ax.set_xticks([1, 2, 3])
+    ax.set_xticklabels(['Low', 'Medium', 'High'])
+    ax.set_yticks([1, 2, 3])
+    ax.set_yticklabels(['Low', 'Medium', 'High'])
     ax.set_title('Insurance Lines of Business Heatmap')
 
     # Set axis limits
