@@ -30,7 +30,7 @@ def main():
 def materiality_assessment(session_state):
     st.header("Materiality Assessment")
 
-    # Define the CSV data as a multiline string
+    # Define the CSV data directly as a multiline string
     csv_data = """
     Lines of Business,Short Name,Transition Risk Factor,Physical Risk Factor,Exposure,Explanation,User Defined Physical Risk,User Defined Transition Risk
     Medical expenses,ME,1,2,Low,"Transition Risk: Low as medical underwriting is less impacted by climate policies. Physical Risk: Moderate due to increased health claims from heatwaves, diseases, etc. caused by climate change.",2,1
@@ -45,51 +45,59 @@ def materiality_assessment(session_state):
     Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High as underwriting is impacted by changing building regulations and property values. Physical Risk: High due to increased risk of fires, floods, and other climate-related damages",3,3
     """
 
+    # Print or display the csv_data to debug
+    st.write("Debugging CSV Data:")
+    st.code(csv_data)
+
     # Read the CSV from the multiline string
-    df = pd.read_csv(io.StringIO(csv_data.strip()))
+    try:
+        df = pd.read_csv(io.StringIO(csv_data.strip()))
 
-    # Initialize an empty list to store updated materiality values
-    exposure_materiality = []
+        # Initialize an empty list to store updated materiality values
+        exposure_materiality = []
 
-    st.write("### Exposure Assessment")
+        st.write("### Exposure Assessment")
 
-    # Create a table layout for exposures
-    exp_cols = st.columns([0.1, 1, 1])  # Column layout for index, LoB names, and dropdowns
-    exp_cols[0].write("**#**")
-    exp_cols[1].write("**Line of Business**")
-    exp_cols[2].write("**Exposure**")
+        # Create a table layout for exposures
+        exp_cols = st.columns([0.1, 1, 1])  # Column layout for index, LoB names, and dropdowns
+        exp_cols[0].write("**#**")
+        exp_cols[1].write("**Line of Business**")
+        exp_cols[2].write("**Exposure**")
 
-    for idx, row in df.iterrows():
-        exp_cols = st.columns([0.1, 1, 1])
-        exp_cols[0].write(f"**{idx+1}**")
-        exp_cols[1].write(row['Lines of Business'])
-        materiality = exp_cols[2].selectbox("", options=["Low", "Medium", "High", "Not relevant/No exposure"], index=1, key=f"materiality_{idx}", help=f"Select exposure level for {row['Lines of Business']}", label_visibility="collapsed")
-        exposure_materiality.append(materiality)
+        for idx, row in df.iterrows():
+            exp_cols = st.columns([0.1, 1, 1])
+            exp_cols[0].write(f"**{idx+1}**")
+            exp_cols[1].write(row['Lines of Business'])
+            materiality = exp_cols[2].selectbox("", options=["Low", "Medium", "High", "Not relevant/No exposure"], index=1, key=f"materiality_{idx}", help=f"Select exposure level for {row['Lines of Business']}", label_visibility="collapsed")
+            exposure_materiality.append(materiality)
 
-    # Update the DataFrame with the selected exposure materiality
-    df['Exposure Materiality'] = exposure_materiality
+        # Update the DataFrame with the selected exposure materiality
+        df['Exposure Materiality'] = exposure_materiality
 
-    # Filter out rows where exposure materiality is "Not relevant/No exposure"
-    df_filtered = df[df['Exposure Materiality'] != "Not relevant/No exposure"].copy()
+        # Filter out rows where exposure materiality is "Not relevant/No exposure"
+        df_filtered = df[df['Exposure Materiality'] != "Not relevant/No exposure"].copy()
 
-    # Display the heatmap and final table
-    st.write("### Heatmap and Results")
+        # Display the heatmap and final table
+        st.write("### Heatmap and Results")
 
-    create_gradient_heatmap(df_filtered)
+        create_gradient_heatmap(df_filtered)
 
-    st.header("Risk Factor Table")
+        st.header("Risk Factor Table")
 
-    # Display editable table for Risk Factors (Columns 1 to 6)
-    st.write("#### Editable Risk Factors")
-    editable_df = df_filtered[['Lines of Business', 'Transition Risk Factor', 'Physical Risk Factor', 'User Defined Transition Risk', 'User Defined Physical Risk']].copy()
-    st.dataframe(editable_df, height=200)
+        # Display editable table for Risk Factors (Columns 1 to 6)
+        st.write("#### Editable Risk Factors")
+        editable_df = df_filtered[['Lines of Business', 'Transition Risk Factor', 'Physical Risk Factor', 'User Defined Transition Risk', 'User Defined Physical Risk']].copy()
+        st.dataframe(editable_df, height=200)
 
-    # Display summary of explanations (rest of the columns)
-    st.write("#### Summary")
-    summary_df = df_filtered[['Lines of Business', 'Explanation']].copy()
-    for idx, row in summary_df.iterrows():
-        st.write(f"**{row['Lines of Business']}**: {row['Explanation']}")
-        st.write("---")
+        # Display summary of explanations (rest of the columns)
+        st.write("#### Summary")
+        summary_df = df_filtered[['Lines of Business', 'Explanation']].copy()
+        for idx, row in summary_df.iterrows():
+            st.write(f"**{row['Lines of Business']}**: {row['Explanation']}")
+            st.write("---")
+
+    except Exception as e:
+        st.error(f"Error reading CSV data: {e}")
 
 def create_gradient_heatmap(df):
     # Plotting the gradient heatmap
@@ -124,28 +132,4 @@ def create_gradient_heatmap(df):
 
         ax.scatter(physical_risk_coord, transitional_risk_coord, color='black', zorder=2, s=size)
         
-        # Shorten name if longer than 15 characters for heatmap only
-        short_name = row['Short Name'] if len(row['Lines of Business']) > 15 else row['Lines of Business']
-        ax.text(physical_risk_coord + 0.1, transitional_risk_coord, short_name, color='black', fontsize=8, zorder=3, ha='left', va='center')
-
-    # Set labels and title
-    ax.set_xlabel('Physical Risk')
-    ax.set_ylabel('Transitional Risk')
-    ax.set_xticks([1, 2, 3])
-    ax.set_xticklabels(['Low', 'Medium', 'High'])
-    ax.set_yticks([1, 2, 3])
-    ax.set_yticklabels(['Low', 'Medium', 'High'])
-    ax.set_title('Insurance Lines of Business Heatmap')
-
-    # Set axis limits
-    ax.set_xlim(0.5, 3.5)
-    ax.set_ylim(0.5, 3.5)
-
-    # Automatically adjust layout
-    fig.tight_layout()
-
-    # Show plot
-    st.pyplot(fig)
-
-if __name__ == "__main__":
-    main()
+        #
