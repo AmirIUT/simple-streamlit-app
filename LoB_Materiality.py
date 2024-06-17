@@ -6,39 +6,33 @@ from matplotlib.colors import LinearSegmentedColormap
 
 def main():
     st.title("Insurance Lines of Business Heatmap")
-    
-    st.write("Upload an Excel file with the following columns: Name, Transitional Risk Factor, Physical Risk Factor, Explanation")
 
-    # File uploader
-    uploaded_file = st.file_uploader("Choose a CSV file", type="csv")
+    # Read the CSV file
+    df = pd.read_csv('/mnt/data/LoBs_Risk Factors.csv')
 
-    if uploaded_file is not None:
-        # Read the CSV file
-        df = pd.read_csv(uploaded_file)
-        
-        # Display the uploaded file
-        st.write("Uploaded file:")
-        st.write(df)
-        
-        # Add inputs to overwrite risk factors
-        for index, row in df.iterrows():
-            df.at[index, 'Transitional Risk Factor'] = st.number_input(f"Transitional Risk Factor for {row['Lines of Business']}", value=row['Transitional Risk Factor'])
-            df.at[index, 'Physical Risk Factor'] = st.number_input(f"Physical Risk Factor for {row['Lines of Business']}", value=row['Physical Risk Factor'])
-            df.at[index, 'Explanation'] = st.text_input(f"Explanation for {row['Lines of Business']}", value=row['Explanation'])
+    # Display the uploaded file
+    st.write("Default table:")
+    st.write(df)
 
-        # Create a dropdown for each LoB to select exposure level
-        exposure_levels = ["Low", "Medium", "High", "Not Relevant"]
-        df['Exposure'] = df['Lines of Business'].apply(lambda x: st.selectbox(f"Select exposure for {x}:", options=exposure_levels))
+    # Add inputs to overwrite risk factors
+    for index, row in df.iterrows():
+        df.at[index, 'Transitional Risk Factor'] = st.number_input(f"Transitional Risk Factor for {row['Lines of Business']}", value=row['Transitional Risk Factor'])
+        df.at[index, 'Physical Risk Factor'] = st.number_input(f"Physical Risk Factor for {row['Lines of Business']}", value=row['Physical Risk Factor'])
+        df.at[index, 'Explanation'] = st.text_input(f"Explanation for {row['Lines of Business']}", value=row['Explanation'])
 
-        # Convert exposure levels to numerical values
-        df['Exposure Value'] = df['Exposure'].apply(map_exposure_to_value)
+    # Create a dropdown for each LoB to select exposure level
+    exposure_levels = ["Low", "Medium", "High", "Not Relevant"]
+    df['Exposure'] = df['Lines of Business'].apply(lambda x: st.selectbox(f"Select exposure for {x}:", options=exposure_levels))
 
-        # Calculate ratings
-        df['Physical Rating'] = df.apply(lambda row: calculate_rating(row['Exposure Value'], row['Physical Risk Factor']), axis=1)
-        df['Transitional Rating'] = df.apply(lambda row: calculate_rating(row['Exposure Value'], row['Transitional Risk Factor']), axis=1)
+    # Convert exposure levels to numerical values
+    df['Exposure Value'] = df['Exposure'].apply(map_exposure_to_value)
 
-        # Create the gradient heatmap and overlay dots
-        create_gradient_heatmap(df)
+    # Calculate ratings
+    df['Physical Rating'] = df.apply(lambda row: calculate_rating(row['Exposure Value'], row['Physical Risk Factor']), axis=1)
+    df['Transitional Rating'] = df.apply(lambda row: calculate_rating(row['Exposure Value'], row['Transitional Risk Factor']), axis=1)
+
+    # Create the gradient heatmap and overlay dots
+    create_gradient_heatmap(df)
 
 def map_exposure_to_value(exposure_level):
     if exposure_level == "Low":
