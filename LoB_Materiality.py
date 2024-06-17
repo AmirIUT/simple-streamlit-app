@@ -10,7 +10,7 @@ def main():
 
     # Define the CSV data as a multiline string
     csv_data = """
-    Lines of Business,Transition Risk Factor,Physical Risk Factor,Explanation
+    Lines of Business, Transition Risk Factor, Physical Risk Factor, Explanation
     Medical expenses,1,2,Transition Risk: Low as medical underwriting is less impacted by climate policies. Physical Risk: Moderate due to increased health claims from heatwaves, diseases, etc. caused by climate change.
     Worker compensation,2,2,Transition Risk: Moderate due to changes in workplace safety regulations and standards.Physical Risk: Moderate due to increased workplace injuries from extreme weather.
     Income protection,1,2, Transition Risk: Low as employment shifts are less affected by climate policies.  Physical Risk: Moderate due to long-term health impacts from climate change affecting work capacity.
