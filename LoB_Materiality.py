@@ -53,8 +53,6 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
     st.write("### Exposure Assessment")
 
     # Create a table layout for exposures
-    st.write("### Exposure Assessment")
-
     exp_cols = st.columns([0.1, 1, 1])  # Column layout for index, LoB names, and dropdowns
     exp_cols[0].write("**#**")
     exp_cols[1].write("**Line of Business**")
@@ -83,7 +81,7 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
     create_gradient_heatmap(df_filtered)
 
     # Splitting the Risk Factor Table into two parts
-    st.header("Risk Factor Table - Editable")
+    st.header("Risk Factor Table")
 
     # Create a copy of filtered dataframe for editable table
     df_editable = df_filtered[['Lines of Business', 'Short Name', 'Transition Risk Factor', 'Physical Risk Factor']].copy()
@@ -92,11 +90,19 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
 
     st.write(df_editable)
 
-    st.header("Risk Factor Table - Summary")
+    st.header("Summary - Environmental Materiality Analysis")
 
-    # Prepare text summary using the Explanation column
+    # Prepare detailed text summary using the Explanation column
     for idx, row in df_filtered.iterrows():
-        st.markdown(f"**{row['Lines of Business']}**: {row['Explanation']}")
+        transition_risk_level = ["Low", "Medium", "High"][row['Transition Risk Factor'] - 1]
+        physical_risk_level = ["Low", "Medium", "High"][row['Physical Risk Factor'] - 1]
+
+        summary_text = f"**{row['Lines of Business']}**: {row['Explanation']}"
+
+        if row['Physical Risk Result'] >= 2 or row['Transitional Risk Result'] >= 2:
+            summary_text += f" Since this risk material (e.g., if Physical Risk Result >= 2, since physical risk is >= Medium), a further deep dive and quantification is suggested for two climate scenarios: one below 2 degrees Celsius and one above 2 degrees Celsius of global warming."
+
+        st.markdown(summary_text)
 
 def create_gradient_heatmap(df):
     # Plotting the gradient heatmap
