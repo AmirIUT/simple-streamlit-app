@@ -53,18 +53,19 @@ Fire and other damage to property insurance,3,3,"Transition Risk: High as underw
     st.write("### Exposure Assessment")
     
     # Create table layout for exposures
-    cols = st.columns([2, 1])
-    with cols[0]:
+    st.write("#### Set Exposure Levels for Lines of Business")
+    exp_cols = st.columns([2, 1])
+    with exp_cols[0]:
         st.write("**Lines of Business**")
-    with cols[1]:
+    with exp_cols[1]:
         st.write("**Exposure**")
     
     # Loop through each line of business
     for idx, row in df.iterrows():
-        cols = st.columns([2, 1])
-        with cols[0]:
+        exp_cols = st.columns([2, 1])
+        with exp_cols[0]:
             st.write(row['Lines of Business'])
-        with cols[1]:
+        with exp_cols[1]:
             materiality = st.selectbox("", options=["Low", "Medium", "High", "Not relevant/No exposure"], index=1, key=f"materiality_{idx}")
             exposure_materiality.append(materiality)
 
@@ -78,8 +79,15 @@ Fire and other damage to property insurance,3,3,"Transition Risk: High as underw
     df_filtered['Physical Risk Result'] = df_filtered.apply(lambda row: (["Low", "Medium", "High"].index(row['Exposure Materiality']) + 1 + row['Physical Risk Factor']) / 2, axis=1)
     df_filtered['Transitional Risk Result'] = df_filtered.apply(lambda row: (["Low", "Medium", "High"].index(row['Exposure Materiality']) + 1 + row['Transition Risk Factor']) / 2, axis=1)
 
-    # Create the gradient heatmap and overlay dots
-    create_gradient_heatmap(df_filtered)
+    # Plot heatmap next to the exposure settings
+    cols = st.columns([2, 1])
+    with cols[0]:
+        create_gradient_heatmap(df_filtered)
+    with cols[1]:
+        st.write("### Exposure Settings")
+        for idx, row in df.iterrows():
+            materiality = st.selectbox(f"Exposure for {row['Lines of Business']}:", options=["Low", "Medium", "High", "Not relevant/No exposure"], index=1, key=f"materiality_side_{idx}")
+            exposure_materiality.append(materiality)
 
     # Display the CSV table with the final column containing explanations
     st.header("Insurance Lines of Business Table")
@@ -89,7 +97,7 @@ Fire and other damage to property insurance,3,3,"Transition Risk: High as underw
 
 def create_gradient_heatmap(df):
     # Plotting the gradient heatmap
-    fig, ax = plt.subplots(figsize=(8, 8))
+    fig, ax = plt.subplots(figsize=(6, 6))
 
     # Define a custom gradient colormap
     colors = ['blue', 'yellow', 'red']
