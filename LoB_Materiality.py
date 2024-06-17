@@ -9,29 +9,18 @@ def main():
     st.title("Insurance Lines of Business Heatmap")
 
     # Define the CSV data as a multiline string
-    csv_data = """
-    Lines of Business,Transition Risk Factor,Physical Risk Factor,Explanation
-    Medical expenses,1,2,"Transition Risk: Low as medical underwriting is less impacted by climate policies. 
-    Physical Risk: Moderate due to increased health claims from heatwaves, diseases, etc. caused by climate change."
-    Worker compensation,2,2,"Transition Risk: Moderate due to changes in workplace safety regulations and standards. 
-    Physical Risk: Moderate due to increased workplace injuries from extreme weather."
-    Income protection,1,2,"Transition Risk: Low as employment shifts are less affected by climate policies. 
-    Physical Risk: Moderate due to long-term health impacts from climate change affecting work capacity."
-    Miscellaneous financial loss,1,1,"Transition Risk: Low since miscellaneous financial loss policies are less affected by climate policies. 
-    Physical Risk: Low as financial loss underwriting has limited direct physical impact from climate change."
-    Motor vehicle insurance,2,3,"Transition Risk: Moderate due to the transition to electric vehicles and new regulations. 
-    Physical Risk: High due to increased claims from weather-related accidents and damages."
-    Other motor insurance,2,3,"Transition Risk: Similar to motor vehicle insurance with moderate impact. 
-    Physical Risk: High due to similar reasons, with higher risk of accidents and damage from extreme weather."
-    General liability insurance,3,2,"Transition Risk: High as liability for environmental damage and stricter regulations increase. 
-    Physical Risk: Moderate as businesses may face claims related to climate impacts."
-    Assistance,1,2,"Transition Risk: Low impact on underwriting as service models adapt. 
-    Physical Risk: Moderate due to increased demand for assistance during extreme events."
-    \"Marine, aviation and transport insurance\",3,3,"Transition Risk: High due to significant regulatory changes in these sectors. 
-    Physical Risk: High due to susceptibility to severe weather events and long-term climate impacts on these modes of transport."
-    Fire and other damage to property insurance,3,3,"Transition Risk: High as underwriting is impacted by changing building regulations and property values.
-    Physical Risk: High due to increased risk of fires, floods, and other climate-related damages"
-    """
+    csv_data = """Lines of Business,Transition Risk Factor,Physical Risk Factor,Explanation
+Medical expenses,1,2,"Transition Risk: Low as medical underwriting is less impacted by climate policies. Physical Risk: Moderate due to increased health claims from heatwaves, diseases, etc. caused by climate change."
+Worker compensation,2,2,"Transition Risk: Moderate due to changes in workplace safety regulations and standards. Physical Risk: Moderate due to increased workplace injuries from extreme weather."
+Income protection,1,2,"Transition Risk: Low as employment shifts are less affected by climate policies. Physical Risk: Moderate due to long-term health impacts from climate change affecting work capacity."
+Miscellaneous financial loss,1,1,"Transition Risk: Low since miscellaneous financial loss policies are less affected by climate policies. Physical Risk: Low as financial loss underwriting has limited direct physical impact from climate change."
+Motor vehicle insurance,2,3,"Transition Risk: Moderate due to the transition to electric vehicles and new regulations. Physical Risk: High due to increased claims from weather-related accidents and damages."
+Other motor insurance,2,3,"Transition Risk: Similar to motor vehicle insurance with moderate impact. Physical Risk: High due to similar reasons, with higher risk of accidents and damage from extreme weather."
+General liability insurance,3,2,"Transition Risk: High as liability for environmental damage and stricter regulations increase. Physical Risk: Moderate as businesses may face claims related to climate impacts."
+Assistance,1,2,"Transition Risk: Low impact on underwriting as service models adapt. Physical Risk: Moderate due to increased demand for assistance during extreme events."
+\"Marine, aviation and transport insurance\",3,3,"Transition Risk: High due to significant regulatory changes in these sectors. Physical Risk: High due to susceptibility to severe weather events and long-term climate impacts on these modes of transport."
+Fire and other damage to property insurance,3,3,"Transition Risk: High as underwriting is impacted by changing building regulations and property values. Physical Risk: High due to increased risk of fires, floods, and other climate-related damages"
+"""
 
     # Read the CSV from the multiline string
     df = pd.read_csv(io.StringIO(csv_data))
