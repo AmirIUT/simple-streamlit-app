@@ -52,15 +52,20 @@ Fire and other damage to property insurance,3,3,"Transition Risk: High as underw
 
     st.write("### Exposure Assessment")
 
-    # Create table layout for exposures
-    exp_cols = st.columns([1, 1])
-    
+    # Create a table layout for exposures
+    st.write("### Exposure Assessment")
+
+    exp_cols = st.columns([0.1, 1, 1])  # Column layout for index, LoB names, and dropdowns
+    exp_cols[0].write("**#**")
+    exp_cols[1].write("**Line of Business**")
+    exp_cols[2].write("**Exposure**")
+
     for idx, row in df.iterrows():
-        with exp_cols[0]:
-            st.write(f"**{row['Lines of Business']}**")
-        with exp_cols[1]:
-            materiality = st.selectbox("", options=["Low", "Medium", "High", "Not relevant/No exposure"], index=1, key=f"materiality_{idx}", help=f"Select exposure level for {row['Lines of Business']}", label_visibility="collapsed")
-            exposure_materiality.append(materiality)
+        exp_cols = st.columns([0.1, 1, 1])
+        exp_cols[0].write(f"**{idx+1}**")
+        exp_cols[1].write(row['Lines of Business'])
+        materiality = exp_cols[2].selectbox("", options=["Low", "Medium", "High", "Not relevant/No exposure"], index=1, key=f"materiality_{idx}", help=f"Select exposure level for {row['Lines of Business']}", label_visibility="collapsed")
+        exposure_materiality.append(materiality)
 
     # Update the DataFrame with the selected exposure materiality
     df['Exposure Materiality'] = exposure_materiality
@@ -74,9 +79,9 @@ Fire and other damage to property insurance,3,3,"Transition Risk: High as underw
 
     # Display the heatmap and final table
     st.write("### Heatmap and Results")
-    
+
     create_gradient_heatmap(df_filtered)
-    
+
     st.header("Insurance Lines of Business Table")
     df_display = df_filtered.copy()
     df_display['Explanation'] = df_filtered['Explanation']
