@@ -100,7 +100,7 @@ def create_gradient_heatmap(df):
     Z = X + Y  # Combine X and Y to form a grid
 
     # Map exposure levels to circle sizes
-    size_map = {'Low': 50, 'Medium': 150, 'High': 300}
+    size_map = {'Low': 50, 'Medium': 150, 'High': 450}
 
     # Plot the gradient heatmap
     im = ax.imshow(Z, cmap=cmap, origin='lower', extent=[0.5, 3.5, 0.5, 3.5], alpha=0.5)
