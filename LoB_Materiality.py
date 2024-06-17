@@ -24,16 +24,8 @@ def main():
     # Initialize session state
     session_state = SessionState.get()
 
-    # Display ReadMe
-    display_readme()
-
     # Display Materiality Assessment
     materiality_assessment(session_state)
-
-def display_readme():
-    st.title("Application ReadMe")
-    st.write("Placeholder for your ReadMe text goes here.")
-    st.write("### Materiality Assessment")
 
 def materiality_assessment(session_state):
     st.header("Materiality Assessment")
@@ -58,11 +50,23 @@ Fire and other damage to property insurance,3,3,"Transition Risk: High as underw
     # Initialize an empty list to store updated materiality values
     exposure_materiality = []
 
+    st.write("### Exposure Assessment")
+    
+    # Create table layout for exposures
+    cols = st.columns([2, 1])
+    with cols[0]:
+        st.write("**Lines of Business**")
+    with cols[1]:
+        st.write("**Exposure**")
+    
     # Loop through each line of business
     for idx, row in df.iterrows():
-        # Display the dropdown and update exposure materiality
-        materiality = st.selectbox(f"Materiality of Exposure for {row['Lines of Business']}:", options=["Low", "Medium", "High", "Not relevant/No exposure"], index=1)
-        exposure_materiality.append(materiality)
+        cols = st.columns([2, 1])
+        with cols[0]:
+            st.write(row['Lines of Business'])
+        with cols[1]:
+            materiality = st.selectbox("", options=["Low", "Medium", "High", "Not relevant/No exposure"], index=1, key=f"materiality_{idx}")
+            exposure_materiality.append(materiality)
 
     # Update the DataFrame with the selected exposure materiality
     df['Exposure Materiality'] = exposure_materiality
@@ -77,31 +81,32 @@ Fire and other damage to property insurance,3,3,"Transition Risk: High as underw
     # Create the gradient heatmap and overlay dots
     create_gradient_heatmap(df_filtered)
 
-    # Display the CSV table (without editable Explanation column)
+    # Display the CSV table with the final column containing explanations
     st.header("Insurance Lines of Business Table")
-    df_display = df.drop(columns=['Explanation'])  # Remove 'Explanation' column for display
+    df_display = df_filtered.copy()
+    df_display['Explanation'] = df['Explanation']
     st.write(df_display)
 
 def create_gradient_heatmap(df):
     # Plotting the gradient heatmap
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=(8, 8))
 
     # Define a custom gradient colormap
-    colors = ['green', 'yellow', 'red']
+    colors = ['blue', 'yellow', 'red']
     cmap = LinearSegmentedColormap.from_list('custom', colors)
 
     # Create grid for heatmap
-    X, Y = np.meshgrid(np.linspace(1, 3.5, 100), np.linspace(1, 3.5, 100))
+    X, Y = np.meshgrid(np.linspace(0.5, 3.5, 100), np.linspace(0.5, 3.5, 100))
     Z = X + Y  # Combine X and Y to form a grid
 
     # Plot the gradient heatmap
-    im = ax.imshow(Z, cmap=cmap, origin='lower', extent=[1, 3.5, 1, 3.5], alpha=0.5)
+    im = ax.imshow(Z, cmap=cmap, origin='lower', extent=[0.5, 3.5, 0.5, 3.5], alpha=0.5)
 
     # Scatter plot for LoBs with labels
     for _, row in df.iterrows():
         if not np.isnan(row['Physical Risk Result']) and not np.isnan(row['Transitional Risk Result']):
             ax.scatter(row['Physical Risk Result'], row['Transitional Risk Result'], color='black', zorder=2)
-            ax.text(row['Physical Risk Result'] + 0.05, row['Transitional Risk Result'], row['Lines of Business'], color='black', fontsize=12, zorder=3)
+            ax.text(row['Physical Risk Result'] + 0.05, row['Transitional Risk Result'], row['Lines of Business'], color='black', fontsize=8, zorder=3)
 
     # Set labels and title
     ax.set_xlabel('Physical Risk')
@@ -109,8 +114,8 @@ def create_gradient_heatmap(df):
     ax.set_title('Insurance Lines of Business Heatmap')
 
     # Set axis limits
-    ax.set_xlim(1, 3.5)
-    ax.set_ylim(1, 3.5)
+    ax.set_xlim(0.5, 3.5)
+    ax.set_ylim(0.5, 3.5)
 
     # Show plot
     st.pyplot(fig)
