@@ -90,7 +90,7 @@ def materiality_assessment(session_state):
 
 def display_section_2_2():
     # New question: Are the sectoral and regional breakdown of the investment activities available?
-    st.subheader("2.2 Placeholder for Next Sub-section")
+    st.subheader("2.2 Asset Sectoral and Regional Granularity")
 
     
     breakdown_available = st.radio("Are the sectoral and regional breakdown of the investment activities available?", ("Yes", "No"))
