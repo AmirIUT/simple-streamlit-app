@@ -48,12 +48,12 @@ def display_intro_and_disclaimer():
     st.write(disclaimer_text)
     
 def materiality_assessment(session_state):
-    st.header("Materliaty Assessment Questionnaire")
+    st.header("Materiality Assessment Questionnaire")
 
     # Insurance Sector 
     Sector = st.selectbox("Field of (re)insurance operation", ["Life/Health", "NonLife", "Pension", "Composite"])
 
-    # Define the CSV data as a multiline string
+    # Define the CSV data as a multiline string (assuming it's unchanged)
     csv_data = """Lines of Business,Short Name,Transition Risk Factor,Physical Risk Factor,Exposure,Explanation
 Medical expenses,ME,1,2,Low,"Transition Risk: Low as medical underwriting is less impacted by climate policies. Physical Risk: Moderate due to increased health claims from heatwaves, diseases, etc. caused by climate change."
 Worker compensation,WC,2,2,Medium,"Transition Risk: Moderate due to changes in workplace safety regulations and standards. Physical Risk: Moderate due to increased workplace injuries from extreme weather."
@@ -159,14 +159,28 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
         asset_cols = st.columns([0.1, 1, 1])
         asset_cols[0].write(f"**{idx+1}**")
         asset_cols[1].write(row['Asset class'])
-        exposure = asset_cols[2].selectbox("", options=["Low", "Medium", "High", "Not relevant/No exposure"], index=1, key=f"asset_exposure_{idx}", help=f"Select exposure level for {row['Asset class']}", label_visibility="collapsed")
+        exposure = asset_cols[2].selectbox("", options=["Low", "Medium", "High"], index=1, key=f"exposure_{idx}", help=f"Select exposure level for {row['Asset class']}", label_visibility="collapsed")
         asset_exposure.append(exposure)
 
-    # Update the DataFrame with the selected asset exposure
+    # Add the updated exposure values to the DataFrame
     asset_df['Exposure'] = asset_exposure
 
-    st.subheader("2.2 Placeholder for Next Sub-section")
-    st.write("More information will be added here.")
+    # Display the asset allocation table
+    st.write(asset_df)
+
+    # New question before section 2.2
+    st.write("### Are the sectoral and regional breakdown of the investment activities available?")
+    breakdown_available = st.radio("Choose option:", ("Yes", "No"))
+
+    if breakdown_available == "Yes":
+        # Section 2.2: Display sectoral and regional breakdown
+        st.header("2.2 Sectoral and Regional Breakdown of Investment Activities")
+        st.write("Placeholder for sectoral and regional breakdown.")
+    else:
+        st.write("Sectoral and regional breakdown of investment activities are not available.")
+
+    # Additional sections can be added as per your requirement
+
 
 def create_gradient_heatmap(df):
     # Plotting the gradient heatmap
