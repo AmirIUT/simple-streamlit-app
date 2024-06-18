@@ -46,11 +46,12 @@ def display_intro_and_disclaimer():
     For those interested in more detailed information about the NGFS scenarios, please refer to the [NGFS scenario portal](https://www.ngfs.net/ngfs-scenarios-portal/).
     """
     st.write(disclaimer_text)
-    # Add a dropdown question
-    Sector = st.selectbox("Field of (re)insurance operation", ["Life/Health", "NonLife", "Pension", "Composite"])
-
+    
 def materiality_assessment(session_state):
-    st.header("Environmental")
+    st.header("Materliaty Assessment Questionnaire")
+
+    # Insurance Sector 
+    Sector = st.selectbox("Field of (re)insurance operation", ["Life/Health", "NonLife", "Pension", "Composite"])
 
     # Define the CSV data as a multiline string
     csv_data = """Lines of Business,Short Name,Transition Risk Factor,Physical Risk Factor,Exposure,Explanation
