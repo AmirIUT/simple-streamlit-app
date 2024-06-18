@@ -89,9 +89,10 @@ def materiality_assessment(session_state):
     display_section_2_2()
 
 def display_section_2_2():
+    # New question: Are the sectoral and regional breakdown of the investment activities available?
     st.subheader("2.2 Placeholder for Next Sub-section")
 
-    # New question: Are the sectoral and regional breakdown of the investment activities available?
+    
     breakdown_available = st.radio("Are the sectoral and regional breakdown of the investment activities available?", ("Yes", "No"))
 
     if breakdown_available == "Yes":
