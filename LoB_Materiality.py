@@ -77,7 +77,7 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
 
     # Define the width ratio for the legend and table sections
     legend_width = 0.5  # Width ratio for legend
-    table_width = 1   # Width ratio for table
+    table_width = 2   # Width ratio for table
 
     # Create a layout using st.columns to divide the page
     columns = st.columns([legend_width, table_width])
