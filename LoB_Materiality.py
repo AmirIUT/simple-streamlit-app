@@ -104,7 +104,10 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
             exposure_materiality.append(materiality)
     # Column 2: Legend for materiality definitions
     with columns[1]:
-        st.markdown("Legend: Exposure Share Definition")
+        st.markdown("Legend: Exposure Share Definition") 
+        """
+
+        """
         st.markdown("- **Low:** Less than 10%")
         st.markdown("- **Medium:** Between 10% and 30%")
         st.markdown("- **High:** More than 30%")
