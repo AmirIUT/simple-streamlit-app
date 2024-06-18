@@ -75,8 +75,20 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
 
     st.write("### Insurance Activities - Exposure Information")
 
+    # Define the width ratio for the legend and table sections
+    legend_width = 0.3  # Width ratio for legend
+    table_width = 0.7   # Width ratio for table
+
     # Create a layout using st.columns to divide the page
     columns = st.columns([legend_width, table_width])
+
+    # Column 1: Legend for materiality definitions
+    with columns[0]:
+        st.subheader("Legend")
+        st.markdown("Materiality definition:")
+        st.markdown("- **Low:** Less than 10%")
+        st.markdown("- **Medium:** Between 10% and 30%")
+        st.markdown("- **High:** More than 30%")
 
     # Column 2: Table layout for exposures
     with columns[1]:
@@ -97,13 +109,6 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
             materiality = exp_cols[2].selectbox("", options=["Low", "Medium", "High", "Not relevant/No exposure"], index=1, key=f"materiality_{idx}", help=f"Select exposure level for {row['Lines of Business']}", label_visibility="collapsed")
             exposure_materiality.append(materiality)
 
-    # Display legend for materiality definitions
-    st.subheader("Legend")
-    st.markdown("Materiality definition:")
-    st.markdown("- **Low:** Less than 10%")
-    st.markdown("- **Medium:** Between 10% and 30%")
-    st.markdown("- **High:** More than 30%")
-    
     # Update the DataFrame with the selected exposure materiality
     df['Exposure Materiality'] = exposure_materiality
 
