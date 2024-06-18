@@ -76,7 +76,7 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
     st.write("### Insurance Activities - Exposure Information")
 
     # Define the width ratio for the legend and table sections
-    legend_width = 0.5  # Width ratio for legend
+    legend_width = 0.6  # Width ratio for legend
     table_width = 0.2   # Width ratio for table
 
     # Create a layout using st.columns to divide the page
@@ -104,8 +104,7 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
             exposure_materiality.append(materiality)
     # Column 2: Legend for materiality definitions
     with columns[1]:
-        st.subheader("Legend")
-        st.markdown("Materiality definition:")
+        st.markdown("Legend: Exposure Share Definition")
         st.markdown("- **Low:** Less than 10%")
         st.markdown("- **Medium:** Between 10% and 30%")
         st.markdown("- **High:** More than 30%")
