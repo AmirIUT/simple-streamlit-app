@@ -74,7 +74,14 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
     exposure_materiality = []
 
     st.write("### Insurance Activities - Exposure Information")
-
+    
+    # Display legend for materiality definitions
+    st.subheader("Legend")
+    st.markdown("Materiality definition:")
+    st.markdown("- **Low:** Less than 10%")
+    st.markdown("- **Medium:** Between 10% and 30%")
+    st.markdown("- **High:** More than 30%")
+   
     # Create a table layout for exposures
     exp_cols = st.columns([0.1, 1, 1])  # Column layout for index, LoB names, and dropdowns
     exp_cols[0].write("**#**")
