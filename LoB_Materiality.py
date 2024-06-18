@@ -31,10 +31,10 @@ def main():
     materiality_assessment(session_state)
 
 def display_intro_and_disclaimer():
-    st.title("ESG Risk Materiality Assessment Narrative Tool (ESG RMAN)")
+    st.title("ESG Risk Materiality Assessment Narrative Tool ")
     
     intro_text = """
-    This tool, ESG Risk Materiality Assessment Narrative Tool (ESG RMAN), provides functionality for (re)insurers to perform ESG risk materiality assessments reflecting requirements and guidelines by EIOPA. The ESG RMAN supports identifying the activities that are related to ESG risk factors with a focus on climate and social aspects. The governance aspect is under development. The aim is to gauge the materiality of activities prone to ESG risks and pick up on the material risks for the quantitative analysis as required by the regulatory basis for the ORSA process. Upon materiality assessment, the tool suggests performing quantification based on the scenario starting either from NGFS, RCP, or even tailor-made scenarios. This tool helps CROs and risk experts perform bottom-up materiality assessments.
+    This tool, ESG Risk Materiality Assessment Narrative Tool, provides functionality for (re)insurers to perform ESG risk materiality assessments reflecting requirements and guidelines by EIOPA. The ESG RMAN supports identifying the activities that are related to ESG risk factors with a focus on climate and social aspects. The governance aspect is under development. The aim is to gauge the materiality of activities prone to ESG risks and pick up on the material risks for the quantitative analysis as required by the regulatory basis for the ORSA process. Upon materiality assessment, the tool suggests performing quantification based on the scenario starting either from NGFS, RCP, or even tailor-made scenarios. This tool helps CROs and risk experts perform bottom-up materiality assessments.
     """
     st.write(intro_text)
     
