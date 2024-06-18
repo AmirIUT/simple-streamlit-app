@@ -73,7 +73,7 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
     # Initialize an empty list to store updated materiality values
     exposure_materiality = []
 
-    st.write("### Insurance Activities - Exposure Information")
+    st.write("### 1. Insurance Activities - Exposure Information")
 
     # Define the width ratio for the legend and table sections
     legend_width = 0.6  # Width ratio for legend
@@ -129,9 +129,9 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
     st.write(df_display)
 
     # New section: Insurance Activities - Exposure Information
-    st.header("Insurance Activities - Exposure Information")
+    st.header("2. Insurance Activities - Exposure Information")
 
-    st.subheader("1. Asset Allocation")
+    st.subheader("2.1. Asset Allocation")
     # Define the asset allocation data as a list of dictionaries
     asset_data = [
         {"Asset class": "Bonds", "Exposure": ""},
@@ -165,7 +165,7 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
     # Update the DataFrame with the selected asset exposure
     asset_df['Exposure'] = asset_exposure
 
-    st.subheader("2. Placeholder for Next Sub-section")
+    st.subheader("2.2 Placeholder for Next Sub-section")
     st.write("More information will be added here.")
 
 def create_gradient_heatmap(df):
