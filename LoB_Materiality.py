@@ -73,13 +73,13 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
     # Initialize an empty list to store updated materiality values
     exposure_materiality = []
 
-    st.write("### Exposure Assessment")
+    st.write("### Insurance Activities - Exposure Information")
 
     # Create a table layout for exposures
     exp_cols = st.columns([0.1, 1, 1])  # Column layout for index, LoB names, and dropdowns
     exp_cols[0].write("**#**")
-    exp_cols[1].write("**Line of Business**")
-    exp_cols[2].write("**Exposure**")
+    exp_cols[1].write("**Line of Business (LoB)**")
+    exp_cols[2].write("**LoB Share in Total Net Premium**")
 
     for idx, row in df.iterrows():
         exp_cols = st.columns([0.1, 1, 1])
