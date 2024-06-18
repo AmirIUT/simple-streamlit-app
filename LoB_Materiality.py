@@ -50,17 +50,7 @@ def display_intro_and_disclaimer():
 def materiality_assessment(session_state):
     st.header("Materiality Assessment Questionnaire")
 
-    # New question: Are the sectoral and regional breakdown of the investment activities available?
-    breakdown_available = st.radio("Are the sectoral and regional breakdown of the investment activities available?", ("Yes", "No"))
-
-    if breakdown_available == "Yes":
-        display_section_2_2()
-    else:
-        st.warning("Sectoral and regional breakdown information is not available.")
-
-def display_section_2_2():
-    st.header("2. Insurance Activities - Exposure Information")
-
+    # 2.1. Asset Allocation
     st.subheader("2.1. Asset Allocation")
     # Define the asset allocation data as a list of dictionaries
     asset_data = [
@@ -95,8 +85,19 @@ def display_section_2_2():
     # Update the DataFrame with the selected asset exposure
     asset_df['Exposure'] = asset_exposure
 
+    # 2.2 Placeholder for Next Sub-section (conditionally displayed)
+    display_section_2_2()
+
+def display_section_2_2():
     st.subheader("2.2 Placeholder for Next Sub-section")
-    st.write("More information will be added here.")
+
+    # New question: Are the sectoral and regional breakdown of the investment activities available?
+    breakdown_available = st.radio("Are the sectoral and regional breakdown of the investment activities available?", ("Yes", "No"))
+
+    if breakdown_available == "Yes":
+        st.write("More information will be added here based on sectoral and regional breakdown.")
+    else:
+        st.warning("Sectoral and regional breakdown information is not available.")
 
 if __name__ == "__main__":
     main()
