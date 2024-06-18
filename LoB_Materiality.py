@@ -88,7 +88,7 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
         exp_cols = st.columns([0.1, 1, 1])  # Column layout for index, LoB names, and dropdowns
         exp_cols[0].write("**#**")
         exp_cols[1].write("**Line of Business (LoB)**")
-        exp_cols[2].write("**LoB Share in Total Net Premium**")
+        exp_cols[2].write("**LoB Exposure as Share of Total Net Premium**")
 
         exposure_materiality = []
 
@@ -153,7 +153,7 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
     asset_cols = st.columns([0.1, 1, 1])  # Column layout for index, asset classes, and dropdowns
     asset_cols[0].write("**#**")
     asset_cols[1].write("**Asset Class**")
-    asset_cols[2].write("**Asset Class Exposure**")
+    asset_cols[2].write("**Asset Class Exposure as Share of Total Asset**")
 
     for idx, row in asset_df.iterrows():
         asset_cols = st.columns([0.1, 1, 1])
