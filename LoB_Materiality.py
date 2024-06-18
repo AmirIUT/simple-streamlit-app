@@ -48,7 +48,7 @@ def display_intro_and_disclaimer():
     st.write(disclaimer_text)
 
 def materiality_assessment(session_state):
-    st.header("ESG Risk Materiality Assessment Narrative Tool")
+    st.header("X")
 
     # Define the CSV data as a multiline string
     csv_data = """Lines of Business,Short Name,Transition Risk Factor,Physical Risk Factor,Exposure,Explanation
