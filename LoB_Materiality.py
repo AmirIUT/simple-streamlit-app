@@ -86,7 +86,6 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
 
     # Column 1: Table layout for exposures
     with columns[0]:
-        st.write("### Exposure Assessment")
 
         # Create a table layout for exposures
         exp_cols = st.columns([0.1, 1, 1])  # Column layout for index, LoB names, and dropdowns
