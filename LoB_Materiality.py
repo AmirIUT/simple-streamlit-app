@@ -82,18 +82,39 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
     st.markdown("- **Medium:** Between 10% and 30%")
     st.markdown("- **High:** More than 30%")
    
-    # Create a table layout for exposures
-    exp_cols = st.columns([0.1, 1, 1])  # Column layout for index, LoB names, and dropdowns
-    exp_cols[0].write("**#**")
-    exp_cols[1].write("**Line of Business (LoB)**")
-    exp_cols[2].write("**LoB Share in Total Net Premium**")
+     # Define the width ratio for the legend and table sections
+    legend_width = 0.3  # Width ratio for legend
+    table_width = 0.7   # Width ratio for table
 
-    for idx, row in df.iterrows():
-        exp_cols = st.columns([0.1, 1, 1])
-        exp_cols[0].write(f"**{idx+1}**")
-        exp_cols[1].write(row['Lines of Business'])
-        materiality = exp_cols[2].selectbox("", options=["Low", "Medium", "High", "Not relevant/No exposure"], index=1, key=f"materiality_{idx}", help=f"Select exposure level for {row['Lines of Business']}", label_visibility="collapsed")
-        exposure_materiality.append(materiality)
+    # Create a layout using st.columns to divide the page
+    columns = st.columns([legend_width, table_width])
+
+    # Column 1: Legend for materiality definitions
+    with columns[0]:
+        st.subheader("Legend")
+        st.markdown("Materiality definition:")
+        st.markdown("- **Low:** Less than 10%")
+        st.markdown("- **Medium:** Between 10% and 30%")
+        st.markdown("- **High:** More than 30%")
+
+    # Column 2: Table layout for exposures
+    with columns[1]:
+        st.write("### Exposure Assessment")
+
+        # Create a table layout for exposures
+        exp_cols = st.columns([0.1, 1, 1])  # Column layout for index, LoB names, and dropdowns
+        exp_cols[0].write("**#**")
+        exp_cols[1].write("**Line of Business (LoB)**")
+        exp_cols[2].write("**LoB Share in Total Net Premium**")
+
+        exposure_materiality = []
+
+        for idx, row in df.iterrows():
+            exp_cols = st.columns([0.1, 1, 1])
+            exp_cols[0].write(f"**{idx+1}**")
+            exp_cols[1].write(row['Lines of Business'])
+            materiality = exp_cols[2].selectbox("", options=["Low", "Medium", "High", "Not relevant/No exposure"], index=1, key=f"materiality_{idx}", help=f"Select exposure level for {row['Lines of Business']}", label_visibility="collapsed")
+            exposure_materiality.append(materiality)
 
     # Update the DataFrame with the selected exposure materiality
     df['Exposure Materiality'] = exposure_materiality
