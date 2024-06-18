@@ -24,11 +24,11 @@ def main():
     # Initialize session state
     session_state = SessionState.get()
 
-    # Display Materiality Assessment
+    # Display ESG Risk Materiality Assessment Narrative Tool
     materiality_assessment(session_state)
 
 def materiality_assessment(session_state):
-    st.header("Materiality Assessment")
+    st.header("ESG Risk Materiality Assessment Narrative Tool")
 
     # Define the CSV data as a multiline string
     csv_data = """Lines of Business,Short Name,Transition Risk Factor,Physical Risk Factor,Exposure,Explanation
