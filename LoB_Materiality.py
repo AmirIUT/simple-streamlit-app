@@ -19,7 +19,7 @@ class SessionState:
         return SessionState._instance
 
 def main():
-    st.set_page_config(page_title="Insurance Materiality Assessment", layout="wide")
+    st.set_page_config(page_title="ESG Risk Materiality Assessment Narrative Tool", layout="wide")
 
     # Initialize session state
     session_state = SessionState.get()
