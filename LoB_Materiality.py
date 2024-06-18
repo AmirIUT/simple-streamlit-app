@@ -106,11 +106,11 @@ def display_section_2_2():
 
         # Create a table layout for sectoral materiality
         for asset_class in asset_classes:
-            cols = st.columns([0.1, 1, 1, 1, 1, 1, 1])  # Index, asset class, and materiality dropdowns for each CPRS
+            cols = st.columns([0.1, 1] + [1] * len(cprs_sectors))  # Index, asset class, and materiality dropdowns for each CPRS
             cols[0].write(f"**{asset_classes.index(asset_class) + 1}**")
             cols[1].write(f"**{asset_class}**")
             for sector in cprs_sectors:
-                materiality = cols[cprs_sectors.index(sector) + 2].selectbox("", options=["Low", "Medium", "High"], index=1, key=f"{asset_class}_{sector}", help=f"Select materiality level for {asset_class} and {sector}", label_visibility="collapsed")
+                materiality = cols[2 + cprs_sectors.index(sector)].selectbox("", options=["Low", "Medium", "High"], index=1, key=f"{asset_class}_{sector}", help=f"Select materiality level for {asset_class} and {sector}", label_visibility="collapsed")
                 sectoral_materiality.loc[asset_class, sector] = materiality
 
         # Optionally display the sectoral materiality table
