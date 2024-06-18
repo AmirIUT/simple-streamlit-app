@@ -23,10 +23,10 @@ def main():
 
     # Initialize session state
     session_state = SessionState.get()
-    
+
     # Display the introductory text and disclaimer
     display_intro_and_disclaimer()
-    
+
     # Display ESG Risk Materiality Assessment Narrative Tool
     materiality_assessment(session_state)
 
@@ -49,7 +49,6 @@ def display_intro_and_disclaimer():
     """
     st.write(disclaimer_text)
 
-
 def materiality_assessment(session_state):
     st.header("ESG Risk Materiality Assessment Narrative Tool")
 
@@ -63,7 +62,7 @@ Motor vehicle insurance,MTPL,2,3,High,"Transition Risk: Moderate due to the tran
 Other motor insurance,MOI,2,3,High,"Transition Risk: Similar to motor vehicle insurance with moderate impact. Physical Risk: High due to similar reasons, with higher risk of accidents and damage from extreme weather."
 General liability insurance,GTPL,3,2,Medium,"Transition Risk: High as liability for environmental damage and stricter regulations increase. Physical Risk: Moderate as businesses may face claims related to climate impacts."
 Assistance,ASS,1,2,Low,"Transition Risk: Low impact on underwriting as service models adapt. Physical Risk: Moderate due to increased demand for assistance during extreme events."
-\"Marine, aviation and transport insurance\",MAT,3,3,High,"Transition Risk: High due to significant regulatory changes in these sectors. Physical Risk: High due to susceptibility to severe weather events and long-term climate impacts on these modes of transport."
+"Marine, aviation and transport insurance",MAT,3,3,High,"Transition Risk: High due to significant regulatory changes in these sectors. Physical Risk: High due to susceptibility to severe weather events and long-term climate impacts on these modes of transport."
 Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High as underwriting is impacted by changing building regulations and property values. Physical Risk: High due to increased risk of fires, floods, and other climate-related damages"
 """
 
