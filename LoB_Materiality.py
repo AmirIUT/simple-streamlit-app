@@ -83,7 +83,7 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
     columns = st.columns([table_width, legend_width])
 
     # Custom CSS for the legend box
-    st.markdown(
+    sst.markdown(
         """
         <style>
         .legend-box {
@@ -91,6 +91,8 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
             padding: 10px;
             border-radius: 5px;
             background-color: #f9f9f9;
+            width: 100%;
+            margin: 0;
         }
         </style>
         """, unsafe_allow_html=True
