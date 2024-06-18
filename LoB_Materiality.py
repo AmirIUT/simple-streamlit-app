@@ -179,7 +179,52 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
     else:
         st.write("Sectoral and regional breakdown of investment activities are not available.")
 
-    # Additional sections can be added as per your requirement
+        if breakdown_available == "Yes":
+        # Section 2.2: Display sectoral and regional breakdown
+        st.header("2.2 Sectoral and Regional Breakdown of Investment Activities")
+        st.write("Placeholder for sectoral and regional breakdown.")
+
+        # Section 2.2.1: Sectoral breakdown table
+        st.header("2.2.1 Sectoral Breakdown")
+        st.write("Here we collect materiality levels for different asset classes across Climate Policy Relevant Sectors (CPRS).")
+
+        # Define CPRS categories
+        cprs_categories = ["Fossil Fuel", "Utility/Electricity", "Energy Intensive", "Buildings", "Transportation", "Agriculture"]
+
+        # Define asset classes
+        asset_classes = [
+            "Corporate bond",
+            "Equity",
+            "Loans",
+            "Holdings in related undertakings, including participations",
+            "Collective investment taking",
+            "Other assets"
+        ]
+
+        # Initialize an empty DataFrame for sectoral breakdown
+        sectoral_df = pd.DataFrame(index=asset_classes, columns=cprs_categories)
+
+        # Create a table layout for sectoral breakdown
+        sectoral_cols = st.columns([0.1] + [1] * len(cprs_categories))  # Column layout for index and CPRS categories
+
+        # Header row for CPRS categories
+        sectoral_cols[0].write("**#**")
+        for col_idx, category in enumerate(cprs_categories):
+            sectoral_cols[col_idx + 1].write(f"**{category}**")
+
+        # Iterate over each asset class
+        for idx, asset_class in enumerate(asset_classes):
+            sectoral_cols = st.columns([0.1] + [1] * len(cprs_categories))
+            sectoral_cols[0].write(f"**{idx + 1}**")
+            for col_idx, category in enumerate(cprs_categories):
+                materiality = sectoral_cols[col_idx + 1].selectbox("", options=["Low", "Medium", "High"], index=1, key=f"sectoral_{idx}_{col_idx}", help=f"Select materiality for {asset_class} in {category}", label_visibility="collapsed")
+                sectoral_df.loc[asset_class, category] = materiality
+
+        # Display the sectoral breakdown DataFrame
+        st.write(sectoral_df)
+
+        # Optional: Save sectoral_df to session_state or other storage if needed
+
 
 
 def create_gradient_heatmap(df):
