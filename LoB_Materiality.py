@@ -46,6 +46,8 @@ def display_intro_and_disclaimer():
     For those interested in more detailed information about the NGFS scenarios, please refer to the [NGFS scenario portal](https://www.ngfs.net/ngfs-scenarios-portal/).
     """
     st.write(disclaimer_text)
+    # Add a dropdown question
+    Sector = st.selectbox("Field of (re)insurance operation", ["Life/Health", "NonLife", "Pension", "Composite"])
 
 def materiality_assessment(session_state):
     st.header("Environmental")
