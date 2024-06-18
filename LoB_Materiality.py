@@ -48,9 +48,89 @@ def display_intro_and_disclaimer():
     st.write(disclaimer_text)
     
 def materiality_assessment(session_state):
-    st.header("Materiality Assessment Questionnaire")
+    st.header("Materliaty Assessment Questionnaire")
 
-    # 2.1. Asset Allocation
+    # Insurance Sector 
+    Sector = st.selectbox("Field of (re)insurance operation", ["Life/Health", "NonLife", "Pension", "Composite"])
+
+    # Define the CSV data as a multiline string
+    csv_data = """Lines of Business,Short Name,Transition Risk Factor,Physical Risk Factor,Exposure,Explanation
+Medical expenses,ME,1,2,Low,"Transition Risk: Low as medical underwriting is less impacted by climate policies. Physical Risk: Moderate due to increased health claims from heatwaves, diseases, etc. caused by climate change."
+Worker compensation,WC,2,2,Medium,"Transition Risk: Moderate due to changes in workplace safety regulations and standards. Physical Risk: Moderate due to increased workplace injuries from extreme weather."
+Income protection,IP,1,2,Low,"Transition Risk: Low as employment shifts are less affected by climate policies. Physical Risk: Moderate due to long-term health impacts from climate change affecting work capacity."
+Miscellaneous financial loss,MISC,1,1,Low,"Transition Risk: Low since miscellaneous financial loss policies are less affected by climate policies. Physical Risk: Low as financial loss underwriting has limited direct physical impact from climate change."
+Motor vehicle insurance,MTPL,2,3,High,"Transition Risk: Moderate due to the transition to electric vehicles and new regulations. Physical Risk: High due to increased claims from weather-related accidents and damages."
+Other motor insurance,MOI,2,3,High,"Transition Risk: Similar to motor vehicle insurance with moderate impact. Physical Risk: High due to similar reasons, with higher risk of accidents and damage from extreme weather."
+General liability insurance,GTPL,3,2,Medium,"Transition Risk: High as liability for environmental damage and stricter regulations increase. Physical Risk: Moderate as businesses may face claims related to climate impacts."
+Assistance,ASS,1,2,Low,"Transition Risk: Low impact on underwriting as service models adapt. Physical Risk: Moderate due to increased demand for assistance during extreme events."
+"Marine, aviation and transport insurance",MAT,3,3,High,"Transition Risk: High due to significant regulatory changes in these sectors. Physical Risk: High due to susceptibility to severe weather events and long-term climate impacts on these modes of transport."
+Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High as underwriting is impacted by changing building regulations and property values. Physical Risk: High due to increased risk of fires, floods, and other climate-related damages"
+"""
+
+    # Read the CSV from the multiline string
+    df = pd.read_csv(io.StringIO(csv_data.strip()))
+
+    # Initialize an empty list to store updated materiality values
+    exposure_materiality = []
+
+    st.write("### 1. Insurance Activities - Exposure Information")
+
+    # Define the width ratio for the legend and table sections
+    legend_width = 0.6  # Width ratio for legend
+    table_width = 0.2   # Width ratio for table
+
+    # Create a layout using st.columns to divide the page
+    columns = st.columns([legend_width, table_width])
+
+    # Column 1: Table layout for exposures
+    with columns[0]:
+        # Create a table layout for exposures
+        exp_cols = st.columns([0.1, 1, 1])  # Column layout for index, LoB names, and dropdowns
+        exp_cols[0].write("**#**")
+        exp_cols[1].write("**Line of Business (LoB)**")
+        exp_cols[2].write("**LoB Exposure as Share of Total Net Premium**")
+
+        exposure_materiality = []
+
+        for idx, row in df.iterrows():
+            exp_cols = st.columns([0.1, 1, 1])
+            exp_cols[0].write(f"**{idx+1}**")
+            exp_cols[1].write(row['Lines of Business'])
+            materiality = exp_cols[2].selectbox("", options=["Low", "Medium", "High", "Not relevant/No exposure"], index=1, key=f"materiality_{idx}", help=f"Select exposure level for {row['Lines of Business']}", label_visibility="collapsed")
+            exposure_materiality.append(materiality)
+
+    # Column 2: Legend for materiality definitions
+    with columns[1]:
+        with st.container():
+            st.markdown("Legend: Exposure Share Definition") 
+            st.markdown("- **Low:** Less than 10%")
+            st.markdown("- **Medium:** Between 10% and 30%")
+            st.markdown("- **High:** More than 30%")
+        
+    # Update the DataFrame with the selected exposure materiality
+    df['Exposure Materiality'] = exposure_materiality
+
+    # Filter out rows where exposure materiality is "Not relevant/No exposure"
+    df_filtered = df[df['Exposure Materiality'] != "Not relevant/No exposure"].copy()
+
+    # Calculate average risk factors based on exposure materiality
+    df_filtered['Physical Risk Result'] = df_filtered.apply(lambda row: (["Low", "Medium", "High"].index(row['Exposure Materiality']) + 1 + row['Physical Risk Factor']) / 2, axis=1)
+    df_filtered['Transitional Risk Result'] = df_filtered.apply(lambda row: (["Low", "Medium", "High"].index(row['Exposure Materiality']) + 1 + row['Transition Risk Factor']) / 2, axis=1)
+
+    # Display the heatmap and final table
+    st.write("### Heatmap and Results")
+
+    # Create a reactive plot using streamlit's st.pyplot
+    create_gradient_heatmap(df_filtered)
+
+    st.header("Risk Factor Table")
+    df_display = df_filtered.copy()
+    df_display['Explanation'] = df_filtered['Explanation']
+    st.write(df_display)
+
+    # New section: Insurance Activities - Exposure Information
+    st.header("2. Insurance Activities - Exposure Information")
+
     st.subheader("2.1. Asset Allocation")
     # Define the asset allocation data as a list of dictionaries
     asset_data = [
@@ -85,39 +165,54 @@ def materiality_assessment(session_state):
     # Update the DataFrame with the selected asset exposure
     asset_df['Exposure'] = asset_exposure
 
-    # 2.2 Placeholder for Next Sub-section (conditionally displayed)
-    display_section_2_2()
-
-def display_section_2_2():
     st.subheader("2.2 Placeholder for Next Sub-section")
+    st.write("More information will be added here.")
 
-    # New question: Are the sectoral and regional breakdown of the investment activities available?
-    breakdown_available = st.radio("Are the sectoral and regional breakdown of the investment activities available?", ("Yes", "No"))
+def create_gradient_heatmap(df):
+    # Plotting the gradient heatmap
+    fig, ax = plt.subplots(figsize=(8, 6))
 
-    if breakdown_available == "Yes":
-        st.subheader("2.2.1 Sector - Climate Policy Relevant Sector (CPRS) Materiality")
+    # Define a custom gradient colormap
+    colors = ['green', 'yellow', 'red']
+    cmap = LinearSegmentedColormap.from_list('custom', colors)
 
-        # Define the asset classes and climate policy relevant sectors
-        asset_classes = ["Corporate bond", "Equity", "Loans", "Holdings in related undertakings, including participations", "Collective investment taking", "Other assets"]
-        cprs_sectors = ["Fossil Fuel", "Utility/Electricity", "Energy Intensive", "Buildings", "Transportation", "Agriculture"]
+    # Create grid for heatmap
+    X, Y = np.meshgrid(np.linspace(0.5, 3.5, 100), np.linspace(0.5, 3.5, 100))
+    Z = X + Y  # Combine X and Y to form a grid
 
-        # Initialize an empty DataFrame for sectoral materiality
-        sectoral_materiality = pd.DataFrame(columns=cprs_sectors, index=asset_classes)
+    # Map exposure levels to circle sizes
+    size_map = {'Low': 50, 'Medium': 150, 'High': 450}
 
-        # Create a table layout for sectoral materiality
-        for asset_class in asset_classes:
-            cols = st.columns([0.1, 1] + [1] * len(cprs_sectors))  # Index, asset class, and materiality dropdowns for each CPRS
-            cols[0].write(f"**{asset_classes.index(asset_class) + 1}**")
-            cols[1].write(f"**{asset_class}**")
-            for sector in cprs_sectors:
-                materiality = cols[2 + cprs_sectors.index(sector)].selectbox("", options=["Low", "Medium", "High"], index=1, key=f"{asset_class}_{sector}", help=f"Select materiality level for {asset_class} and {sector}", label_visibility="collapsed")
-                sectoral_materiality.loc[asset_class, sector] = materiality
+    # Plot the gradient heatmap
+    im = ax.imshow(Z, cmap=cmap, origin='lower', extent=[0.5, 3.5, 0.5, 3.5], alpha=0.5)
 
-        # Optionally display the sectoral materiality table
-        st.write(sectoral_materiality)
+    # Scatter plot for LoBs with labels and varying circle sizes based on exposure
+    for _, row in df.iterrows():
+        if not np.isnan(row['Physical Risk Result']) and not np.isnan(row['Transitional Risk Result']):
+            circle_size = size_map[row['Exposure Materiality']]  # Dynamic circle size based on exposure materiality
+            ax.scatter(row['Physical Risk Result'], row['Transitional Risk Result'], color='black', zorder=2, s=circle_size)
+            # Shorten name if longer than 15 characters for heatmap only
+            short_name = row['Short Name'] if len(row['Lines of Business']) > 15 else row['Lines of Business']
+            ax.text(row['Physical Risk Result'] + 0.1, row['Transitional Risk Result'], short_name, color='black', fontsize=8, zorder=3, ha='left', va='center')
 
-    else:
-        st.warning("Sectoral and regional breakdown information is not available.")
+    # Set labels and title
+    ax.set_xlabel('Physical Risk')
+    ax.set_ylabel('Transitional Risk')
+    ax.set_xticks([1, 2, 3])
+    ax.set_xticklabels(['Low', 'Medium', 'High'])
+    ax.set_yticks([1, 2, 3])
+    ax.set_yticklabels(['Low', 'Medium', 'High'])
+    ax.set_title('Insurance Lines of Business Heatmap')
+
+    # Set axis limits
+    ax.set_xlim(0.5, 3.5)
+    ax.set_ylim(0.5, 3.5)
+
+    # Automatically adjust layout
+    fig.tight_layout()
+
+    # Show plot using st.pyplot to ensure it updates reactively
+    st.pyplot(fig)
 
 if __name__ == "__main__":
     main()
