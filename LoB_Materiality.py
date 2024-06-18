@@ -108,7 +108,7 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
 
 def create_gradient_heatmap(df):
     # Plotting the gradient heatmap
-    fig, ax = plt.subplots(figsize=(8, 6))
+    fig, ax = plt.subplots(figsize=(4, 3))
 
     # Define a custom gradient colormap
     colors = ['green', 'yellow', 'red']
