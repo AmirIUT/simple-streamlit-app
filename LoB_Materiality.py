@@ -176,13 +176,6 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
         # Section 2.2: Display sectoral and regional breakdown
         st.header("2.2 Sectoral and Regional Breakdown of Investment Activities")
         st.write("Placeholder for sectoral and regional breakdown.")
-    else:
-        st.write("Sectoral and regional breakdown of investment activities are not available.")
-
-        if breakdown_available == "Yes":
-        # Section 2.2: Display sectoral and regional breakdown
-        st.header("2.2 Sectoral and Regional Breakdown of Investment Activities")
-        st.write("Placeholder for sectoral and regional breakdown.")
 
         # Section 2.2.1: Sectoral breakdown table
         st.header("2.2.1 Sectoral Breakdown")
@@ -224,8 +217,6 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
         st.write(sectoral_df)
 
         # Optional: Save sectoral_df to session_state or other storage if needed
-
-
 
 def create_gradient_heatmap(df):
     # Plotting the gradient heatmap
