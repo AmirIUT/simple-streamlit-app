@@ -78,14 +78,6 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
     # Create a layout using st.columns to divide the page
     columns = st.columns([legend_width, table_width])
 
-    # Column 1: Legend for materiality definitions
-    with columns[0]:
-        st.subheader("Legend")
-        st.markdown("Materiality definition:")
-        st.markdown("- **Low:** Less than 10%")
-        st.markdown("- **Medium:** Between 10% and 30%")
-        st.markdown("- **High:** More than 30%")
-
     # Column 2: Table layout for exposures
     with columns[1]:
         st.write("### Exposure Assessment")
