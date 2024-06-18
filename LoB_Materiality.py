@@ -31,7 +31,7 @@ def main():
     materiality_assessment(session_state)
 
 def display_intro_and_disclaimer():
-    st.title("ESG Risk Materiality Assessment Narrative Tool ")
+    st.title("ESG Risk Materiality Assessment Narrative Tool")
     
     intro_text = """
     This tool, ESG Risk Materiality Assessment Narrative Tool, provides functionality for (re)insurers to perform ESG risk materiality assessments reflecting requirements and guidelines by EIOPA. The tool supports identifying the activities that are related to ESG risk factors with a focus on climate and social aspects. The governance aspect is under development. The aim is to gauge the materiality of activities prone to ESG risks and pick up on the material risks for the quantitative analysis as required by the regulatory basis for the ORSA process. After materiality assessment, the tool suggests performing quantification using scenario narratives based on either NGFS, RCP, or even tailor-made scenarios. This tool helps CROs and risk experts perform bottom-up materiality assessments.
@@ -82,11 +82,8 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
     # Create a layout using st.columns to divide the page
     columns = st.columns([legend_width, table_width])
 
-   
-
     # Column 1: Table layout for exposures
     with columns[0]:
-
         # Create a table layout for exposures
         exp_cols = st.columns([0.1, 1, 1])  # Column layout for index, LoB names, and dropdowns
         exp_cols[0].write("**#**")
@@ -101,14 +98,14 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
             exp_cols[1].write(row['Lines of Business'])
             materiality = exp_cols[2].selectbox("", options=["Low", "Medium", "High", "Not relevant/No exposure"], index=1, key=f"materiality_{idx}", help=f"Select exposure level for {row['Lines of Business']}", label_visibility="collapsed")
             exposure_materiality.append(materiality)
+
     # Column 2: Legend for materiality definitions
     with columns[1]:
-        """
-        """
-        st.markdown("Legend: Exposure Share Definition") 
-        st.markdown("- **Low:** Less than 10%")
-        st.markdown("- **Medium:** Between 10% and 30%")
-        st.markdown("- **High:** More than 30%")
+        with st.container():
+            st.markdown("Legend: Exposure Share Definition") 
+            st.markdown("- **Low:** Less than 10%")
+            st.markdown("- **Medium:** Between 10% and 30%")
+            st.markdown("- **High:** More than 30%")
         
     # Update the DataFrame with the selected exposure materiality
     df['Exposure Materiality'] = exposure_materiality
@@ -130,6 +127,46 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
     df_display = df_filtered.copy()
     df_display['Explanation'] = df_filtered['Explanation']
     st.write(df_display)
+
+    # New section: Insurance Activities - Exposure Information
+    st.header("Insurance Activities - Exposure Information")
+
+    st.subheader("1. Asset Allocation")
+    # Define the asset allocation data as a list of dictionaries
+    asset_data = [
+        {"Asset class": "Bonds", "Exposure": ""},
+        {"Asset class": "Equity", "Exposure": ""},
+        {"Asset class": "Property", "Exposure": ""},
+        {"Asset class": "Loans", "Exposure": ""},
+        {"Asset class": "Holdings in related undertakings, including participations", "Exposure": ""},
+        {"Asset class": "Collective investment taking", "Exposure": ""},
+        {"Asset class": "Other assets", "Exposure": ""}
+    ]
+
+    # Convert the asset data to a DataFrame
+    asset_df = pd.DataFrame(asset_data)
+
+    # Initialize an empty list to store updated asset exposure values
+    asset_exposure = []
+
+    # Create a table layout for asset allocation
+    asset_cols = st.columns([0.1, 1, 1])  # Column layout for index, asset classes, and dropdowns
+    asset_cols[0].write("**#**")
+    asset_cols[1].write("**Asset Class**")
+    asset_cols[2].write("**Asset Class Exposure**")
+
+    for idx, row in asset_df.iterrows():
+        asset_cols = st.columns([0.1, 1, 1])
+        asset_cols[0].write(f"**{idx+1}**")
+        asset_cols[1].write(row['Asset class'])
+        exposure = asset_cols[2].selectbox("", options=["Low", "Medium", "High", "Not relevant/No exposure"], index=1, key=f"asset_exposure_{idx}", help=f"Select exposure level for {row['Asset class']}", label_visibility="collapsed")
+        asset_exposure.append(exposure)
+
+    # Update the DataFrame with the selected asset exposure
+    asset_df['Exposure'] = asset_exposure
+
+    st.subheader("2. Placeholder for Next Sub-section")
+    st.write("More information will be added here.")
 
 def create_gradient_heatmap(df):
     # Plotting the gradient heatmap
