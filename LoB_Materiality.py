@@ -89,14 +89,33 @@ def materiality_assessment(session_state):
     display_section_2_2()
 
 def display_section_2_2():
-    # New question: Are the sectoral and regional breakdown of the investment activities available?
-    st.subheader("2.2 Asset Sectoral and Regional Granularity")
+    st.subheader("2.2 Placeholder for Next Sub-section")
 
-    
+    # New question: Are the sectoral and regional breakdown of the investment activities available?
     breakdown_available = st.radio("Are the sectoral and regional breakdown of the investment activities available?", ("Yes", "No"))
 
     if breakdown_available == "Yes":
-        st.write("More information will be added here based on sectoral and regional breakdown.")
+        st.subheader("2.2.1 Sector - Climate Policy Relevant Sector (CPRS) Materiality")
+
+        # Define the asset classes and climate policy relevant sectors
+        asset_classes = ["Corporate bond", "Equity", "Loans", "Holdings in related undertakings, including participations", "Collective investment taking", "Other assets"]
+        cprs_sectors = ["Fossil Fuel", "Utility/Electricity", "Energy Intensive", "Buildings", "Transportation", "Agriculture"]
+
+        # Initialize an empty DataFrame for sectoral materiality
+        sectoral_materiality = pd.DataFrame(columns=cprs_sectors, index=asset_classes)
+
+        # Create a table layout for sectoral materiality
+        for asset_class in asset_classes:
+            cols = st.columns([0.1, 1, 1, 1, 1, 1, 1])  # Index, asset class, and materiality dropdowns for each CPRS
+            cols[0].write(f"**{asset_classes.index(asset_class) + 1}**")
+            cols[1].write(f"**{asset_class}**")
+            for sector in cprs_sectors:
+                materiality = cols[cprs_sectors.index(sector) + 2].selectbox("", options=["Low", "Medium", "High"], index=1, key=f"{asset_class}_{sector}", help=f"Select materiality level for {asset_class} and {sector}", label_visibility="collapsed")
+                sectoral_materiality.loc[asset_class, sector] = materiality
+
+        # Optionally display the sectoral materiality table
+        st.write(sectoral_materiality)
+
     else:
         st.warning("Sectoral and regional breakdown information is not available.")
 
