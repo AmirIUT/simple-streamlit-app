@@ -76,14 +76,14 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
     st.write("### Insurance Activities - Exposure Information")
 
      # Define the width ratio for the legend and table sections
-    legend_width = 0.2  # Width ratio for legend
-    table_width = 0.6   # Width ratio for table
+    table_width = 0.2  # Width ratio for table
+    legend_width = 0.8  # Width ratio for legend
 
     # Create a layout using st.columns to divide the page
     columns = st.columns([table_width, legend_width])
 
     # Custom CSS for the legend box
-    sst.markdown(
+    st.markdown(
         """
         <style>
         .legend-box {
@@ -116,6 +116,28 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
             exp_cols[1].write(row['Lines of Business'])
             materiality = exp_cols[2].selectbox("", options=["Low", "Medium", "High", "Not relevant/No exposure"], index=1, key=f"materiality_{idx}", help=f"Select exposure level for {row['Lines of Business']}", label_visibility="collapsed")
             exposure_materiality.append(materiality)
+
+        # Update the DataFrame with the selected exposure materiality
+        df['Exposure Materiality'] = exposure_materiality
+
+        # Filter out rows where exposure materiality is "Not relevant/No exposure"
+        df_filtered = df[df['Exposure Materiality'] != "Not relevant/No exposure"].copy()
+
+        # Calculate average risk factors based on exposure materiality
+        df_filtered['Physical Risk Result'] = df_filtered.apply(lambda row: (["Low", "Medium", "High"].index(row['Exposure Materiality']) + 1 + row['Physical Risk Factor']) / 2, axis=1)
+        df_filtered['Transitional Risk Result'] = df_filtered.apply(lambda row: (["Low", "Medium", "High"].index(row['Exposure Materiality']) + 1 + row['Transition Risk Factor']) / 2, axis=1)
+
+        # Display the heatmap and final table
+        st.write("### Heatmap and Results")
+
+        # Create a reactive plot using streamlit's st.pyplot
+        create_gradient_heatmap(df_filtered)
+
+        st.header("Risk Factor Table")
+        df_display = df_filtered.copy()
+        df_display['Explanation'] = df_filtered['Explanation']
+        st.write(df_display)
+
     # Column 2: Legend for materiality definitions
     with columns[1]:
         st.markdown('<div class="legend-box">', unsafe_allow_html=True)
@@ -125,27 +147,6 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
         st.markdown("- **Medium:** Between 10% and 30%")
         st.markdown("- **High:** More than 30%")
         st.markdown('</div>', unsafe_allow_html=True)
-        
-    # Update the DataFrame with the selected exposure materiality
-    df['Exposure Materiality'] = exposure_materiality
-
-    # Filter out rows where exposure materiality is "Not relevant/No exposure"
-    df_filtered = df[df['Exposure Materiality'] != "Not relevant/No exposure"].copy()
-
-    # Calculate average risk factors based on exposure materiality
-    df_filtered['Physical Risk Result'] = df_filtered.apply(lambda row: (["Low", "Medium", "High"].index(row['Exposure Materiality']) + 1 + row['Physical Risk Factor']) / 2, axis=1)
-    df_filtered['Transitional Risk Result'] = df_filtered.apply(lambda row: (["Low", "Medium", "High"].index(row['Exposure Materiality']) + 1 + row['Transition Risk Factor']) / 2, axis=1)
-
-    # Display the heatmap and final table
-    st.write("### Heatmap and Results")
-
-    # Create a reactive plot using streamlit's st.pyplot
-    create_gradient_heatmap(df_filtered)
-
-    st.header("Risk Factor Table")
-    df_display = df_filtered.copy()
-    df_display['Explanation'] = df_filtered['Explanation']
-    st.write(df_display)
 
 def create_gradient_heatmap(df):
     # Plotting the gradient heatmap
