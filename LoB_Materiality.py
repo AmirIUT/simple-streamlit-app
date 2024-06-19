@@ -136,7 +136,7 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
 
     # Define the asset allocation data as a list of dictionaries
     asset_data = [
-        {"Asset class": "Bonds", "Exposure": ""},
+        {"Asset class": "Bond", "Exposure": ""},
         {"Asset class": "Equity", "Exposure": ""},
         {"Asset class": "Property", "Exposure": ""},
         {"Asset class": "Loans", "Exposure": ""},
