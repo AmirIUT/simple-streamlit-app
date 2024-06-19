@@ -172,7 +172,7 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
     st.write("### Are the sectoral and regional breakdown of the investment activities available?")
     breakdown_available = st.radio("Choose option:", ("Yes", "No"))
 
-    if breakdown_available == "Yes":
+if breakdown_available == "Yes":
     # Section 2.2: Display sectoral and regional breakdown
     st.header("2.2 Sectoral and Regional Breakdown of Investment Activities")
     st.write("Here we collect materiality levels for different asset classes across Climate Policy Relevant Sectors (CPRS).")
@@ -214,10 +214,13 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
 
     # Optional: Save sectoral_df to session_state or other storage if needed
 
-    else:
+else:
     st.write("Sectoral and regional breakdown of investment activities are not available.")
 
 # Additional sections can be added as per your requirement
+
+
+    # Additional sections can be added as per your requirement
 
 
 
