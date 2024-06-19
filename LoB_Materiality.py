@@ -172,9 +172,11 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
     st.write("### Are the sectoral and regional breakdown of the investment activities available?")
     breakdown_available = st.radio("Choose option:", ("Yes", "No"))
 
-    if breakdown_available == "Yes":
+    if breakdown_available == "No":
+        st.write("Sectoral and regional breakdown of investment activities are not available.")
+    else:
         # Section 2.2: Display sectoral and regional breakdown
-            st.write("Here we collect materiality levels for different asset classes across Climate Policy Relevant Sectors (CPRS).")
+        st.write("Here we collect materiality levels for different asset classes across Climate Policy Relevant Sectors (CPRS).")
 
     # Define CPRS categories
     cprs_categories = ["Fossil Fuel", "Utility/Electricity", "Energy Intensive", "Buildings", "Transportation", "Agriculture"]
@@ -211,8 +213,6 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
     # Display the sectoral breakdown DataFrame
     st.write(sectoral_df)
     
-    else:
-        st.write("Sectoral and regional breakdown of investment activities are not available.")
 
     # Additional sections can be added as per your requirement
 
