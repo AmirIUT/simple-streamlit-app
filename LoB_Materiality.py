@@ -136,7 +136,7 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
 
     # Define the asset allocation data as a list of dictionaries
     asset_data = [
-        {"Asset class": "Bond", "Exposure": ""},
+        {"Asset class": "Bonds", "Exposure": ""},
         {"Asset class": "Equity", "Exposure": ""},
         {"Asset class": "Property", "Exposure": ""},
         {"Asset class": "Loans", "Exposure": ""},
@@ -161,7 +161,7 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
         asset_cols = st.columns([0.1, 1, 1])
         asset_cols[0].write(f"**{idx+1}**")
         asset_cols[1].write(row['Asset class'])
-        exposure = asset_cols[2].selectbox("", options=["Low", "Medium", "High"], index=1, key=f"exposure_{idx}", help=f"Select exposure level for {row['Asset class']}", label_visibility="collapsed")
+        exposure = asset_cols[2].selectbox("", options=["Low", "Medium", "High", "Not relevant/No Exposure"], index=1, key=f"exposure_{idx}", help=f"Select exposure level for {row['Asset class']}", label_visibility="collapsed")
         asset_exposure.append(exposure)
 
     # Add the updated exposure values to the DataFrame
@@ -171,7 +171,7 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
     st.write(asset_df)
 
     # Check for materiality levels in Section 2.1
-    low_materiality_classes = asset_df[asset_df['Exposure'] == 'Low']['Asset class'].tolist()
+    skip_asset_classes = asset_df[(asset_df['Exposure'] == 'Low') | (asset_df['Exposure'] == 'Not relevant/No Exposure')]['Asset class'].tolist()
 
     # New question before section 2.2
     st.write("### Are the sectoral and regional breakdown of the investment activities available?")
@@ -181,15 +181,16 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
         st.write("Sectoral and regional breakdown of investment activities are not available.")
     else:
         st.header("2.2 Sectoral and Regional Breakdown of Investment Activities")
-        st.write("Here we collect materiality levels for different asset classes across Climate Policy Relevant Sectors (CPRS) unless the asset class has low exposure materiality compared to total assets.")
+        st.write("Here we collect materiality levels for different asset classes across Climate Policy Relevant Sectors (CPRS).")
         
         # Define CPRS categories
         cprs_categories = ["Fossil Fuel", "Utility/Electricity", "Energy Intensive", "Buildings", "Transportation", "Agriculture"]
 
         # Asset classes to iterate over
         asset_classes = [
-            "Bond",
+            "Bonds",
             "Equity",
+            "Property",
             "Loans",
             "Holdings in related undertakings, including participations",
             "Collective investment taking",
@@ -198,7 +199,7 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
 
         # Iterate over each asset class
         for asset_class in asset_classes:
-            if asset_class not in low_materiality_classes:
+            if asset_class not in skip_asset_classes:
                 st.markdown(f"#### Exposure breakdown within {asset_class}")
 
                 # Create a table layout for sectoral breakdown for current asset class
