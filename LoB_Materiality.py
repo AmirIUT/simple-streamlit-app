@@ -157,6 +157,9 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
     asset_cols[1].write("**Asset Class**")
     asset_cols[2].write("**Asset Class Exposure as Share of Total Asset**")
 
+    # List to store relevant asset classes based on Section 2.1 criteria
+    relevant_asset_classes = []
+
     for idx, row in asset_df.iterrows():
         asset_cols = st.columns([0.1, 1, 1])
         asset_cols[0].write(f"**{idx+1}**")
@@ -164,14 +167,15 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
         exposure = asset_cols[2].selectbox("", options=["Low", "Medium", "High", "Not relevant/No Exposure"], index=1, key=f"exposure_{idx}", help=f"Select exposure level for {row['Asset class']}", label_visibility="collapsed")
         asset_exposure.append(exposure)
 
+        # Check if exposure level is Low or Not relevant/No Exposure
+        if exposure not in ["Low", "Not relevant/No Exposure"]:
+            relevant_asset_classes.append(row['Asset class'])
+
     # Add the updated exposure values to the DataFrame
     asset_df['Exposure'] = asset_exposure
 
     # Display the asset allocation table
     st.write(asset_df)
-
-    # Check for materiality levels in Section 2.1 and skip irrelevant asset classes for Section 2.2
-    skip_asset_classes = ["Loans", "Property", "Other assets"]
 
     # New question before section 2.2
     st.write("### Are the sectoral and regional breakdown of the investment activities available?")
@@ -186,18 +190,10 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
         # Define CPRS categories
         cprs_categories = ["Fossil Fuel", "Utility/Electricity", "Energy Intensive", "Buildings", "Transportation", "Agriculture"]
 
-        # Asset classes to iterate over (excluding irrelevant ones)
-        asset_classes = [
-            "Bonds",
-            "Equity",
-            "Holdings in related undertakings, including participations",
-            "Collective investment taking"
-        ]
-
         # Iterate over each relevant asset class
-        for asset_class in asset_classes:
-            if asset_class not in skip_asset_classes:
-                st.markdown(f"##### Exposure breakdown within {asset_class}")
+        for asset_class in relevant_asset_classes:
+            if asset_class not in ["Loans", "Property", "Other assets"]:  # Exclude specific asset classes
+                st.markdown(f"#### Exposure breakdown within {asset_class}")
 
                 # Create a table layout for sectoral breakdown for current asset class
                 sectoral_cols = st.columns([0.1] + [1] * len(cprs_categories))  # Column layout for index and CPRS categories
@@ -214,6 +210,7 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
                     materiality = sectoral_cols[idx + 1].selectbox("", options=["Low", "Medium", "High", "Not relevant/No Exposure"], index=1, key=f"{asset_class}_{idx}", help=f"Select materiality for {asset_class} in {cprs_categories[idx]}", label_visibility="collapsed")
 
         # Additional sections can be added as per your requirement
+
 
 
 def create_gradient_heatmap(df):
