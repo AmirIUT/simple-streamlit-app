@@ -170,8 +170,8 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
     # Display the asset allocation table
     st.write(asset_df)
 
-    # Check for materiality levels in Section 2.1
-    skip_asset_classes = asset_df[(asset_df['Exposure'] == 'Low') | (asset_df['Exposure'] == 'Not relevant/No Exposure')]['Asset class'].tolist()
+    # Check for materiality levels in Section 2.1 and skip irrelevant asset classes for Section 2.2
+    skip_asset_classes = ["Loans", "Property", "Other assets"]
 
     # New question before section 2.2
     st.write("### Are the sectoral and regional breakdown of the investment activities available?")
@@ -186,18 +186,15 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
         # Define CPRS categories
         cprs_categories = ["Fossil Fuel", "Utility/Electricity", "Energy Intensive", "Buildings", "Transportation", "Agriculture"]
 
-        # Asset classes to iterate over
+        # Asset classes to iterate over (excluding irrelevant ones)
         asset_classes = [
             "Bonds",
             "Equity",
-            "Property",
-            "Loans",
             "Holdings in related undertakings, including participations",
-            "Collective investment taking",
-            "Other assets"
+            "Collective investment taking"
         ]
 
-        # Iterate over each asset class
+        # Iterate over each relevant asset class
         for asset_class in asset_classes:
             if asset_class not in skip_asset_classes:
                 st.markdown(f"#### Exposure breakdown within {asset_class}")
