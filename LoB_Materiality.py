@@ -173,10 +173,9 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
     breakdown_available = st.radio("Choose option:", ("Yes", "No"))
 
     if breakdown_available == "Yes":
-       # Section 2.2.1: Sectoral breakdown table
-st.header("2.2.1 Sectoral Breakdown")
-
-st.write("Here the materiality levels for different asset classes across six climate-related areas as per Climate Policy Relevant Sectors (CPRS) are collected.")
+    # Section 2.2.1: Sectoral breakdown table
+    st.header("2.2.1 Sectoral Breakdown")
+    st.write("Here the materiality levels for different asset classes across six climate-related areas as per Climate Policy Relevant Sectors (CPRS) are collected.")
 
 # Define CPRS categories and asset classes
 cprs_categories = ["Fossil Fuel", "Utility/Electricity", "Energy Intensive", "Buildings", "Transportation", "Agriculture"]
