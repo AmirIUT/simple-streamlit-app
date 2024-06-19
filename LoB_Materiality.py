@@ -193,7 +193,7 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
 
         # Iterate over each asset class
         for asset_class in asset_classes:
-            st.markdown(f"## Exposure breakdown within {asset_class}")
+            st.markdown(f"###### Exposure breakdown within {asset_class}")
 
             # Create a table layout for sectoral breakdown for current asset class
             sectoral_cols = st.columns([0.1] + [1] * len(cprs_categories))  # Column layout for index and CPRS categories
