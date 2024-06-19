@@ -177,7 +177,7 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
     else:
         st.header("2.2 Sectoral and Regional Breakdown of Investment Activities")
         st.write("Here we collect materiality levels for different asset classes across Climate Policy Relevant Sectors (CPRS).")
-
+        
         # Define CPRS categories
         cprs_categories = ["Fossil Fuel", "Utility/Electricity", "Energy Intensive", "Buildings", "Transportation", "Agriculture"]
 
@@ -193,7 +193,7 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
 
         # Iterate over each asset class
         for asset_class in asset_classes:
-            st.header(f"Exposure breakdown within {asset_class}")
+            st.markdown(f"## Exposure breakdown within {asset_class}")
 
             # Create a table layout for sectoral breakdown for current asset class
             sectoral_cols = st.columns([0.1] + [1] * len(cprs_categories))  # Column layout for index and CPRS categories
