@@ -131,7 +131,9 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
     # New section: Insurance Activities - Exposure Information
     st.header("2. Insurance Activities - Exposure Information")
 
-    st.subheader("2.1. Asset Allocation")
+    # Section 2.1: Asset Allocation
+    st.subheader("2.1 Asset Allocation")
+
     # Define the asset allocation data as a list of dictionaries
     asset_data = [
         {"Asset class": "Bonds", "Exposure": ""},
@@ -168,6 +170,9 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
     # Display the asset allocation table
     st.write(asset_df)
 
+    # Check for materiality levels in Section 2.1
+    low_materiality_classes = asset_df[asset_df['Exposure'] == 'Low']['Asset class'].tolist()
+
     # New question before section 2.2
     st.write("### Are the sectoral and regional breakdown of the investment activities available?")
     breakdown_available = st.radio("Choose option:", ("Yes", "No"))
@@ -193,23 +198,25 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
 
         # Iterate over each asset class
         for asset_class in asset_classes:
-            st.markdown(f"#### Exposure breakdown within {asset_class}")
+            if asset_class not in low_materiality_classes:
+                st.markdown(f"#### Exposure breakdown within {asset_class}")
 
-            # Create a table layout for sectoral breakdown for current asset class
-            sectoral_cols = st.columns([0.1] + [1] * len(cprs_categories))  # Column layout for index and CPRS categories
+                # Create a table layout for sectoral breakdown for current asset class
+                sectoral_cols = st.columns([0.1] + [1] * len(cprs_categories))  # Column layout for index and CPRS categories
 
-            # Header row for CPRS categories
-            sectoral_cols[0].write("")  # Empty cell for the first column (no numbering)
+                # Header row for CPRS categories
+                sectoral_cols[0].write("")  # Empty cell for the first column (no numbering)
 
-            for col_idx, category in enumerate(cprs_categories):
-                sectoral_cols[col_idx + 1].write(f"**{category}**")
+                for col_idx, category in enumerate(cprs_categories):
+                    sectoral_cols[col_idx + 1].write(f"**{category}**")
 
-            # Ask materiality questions for each CPRS category
-            materiality_row = sectoral_cols[0].write("")  # Empty row (no numbering)
-            for idx in range(len(cprs_categories)):
-                materiality = sectoral_cols[idx + 1].selectbox("", options=["Low", "Medium", "High", "Not relevant/No Exposure"], index=1, key=f"{asset_class}_{idx}", help=f"Select materiality for {asset_class} in {cprs_categories[idx]}", label_visibility="collapsed")
+                # Ask materiality questions for each CPRS category
+                materiality_row = sectoral_cols[0].write("")  # Empty row (no numbering)
+                for idx in range(len(cprs_categories)):
+                    materiality = sectoral_cols[idx + 1].selectbox("", options=["Low", "Medium", "High", "Not relevant/No Exposure"], index=1, key=f"{asset_class}_{idx}", help=f"Select materiality for {asset_class} in {cprs_categories[idx]}", label_visibility="collapsed")
 
         # Additional sections can be added as per your requirement
+
 
 def create_gradient_heatmap(df):
     # Plotting the gradient heatmap
