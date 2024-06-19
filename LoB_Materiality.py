@@ -214,7 +214,7 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
 
     # Optional: Save sectoral_df to session_state or other storage if needed
 
-else:
+    else:
     st.write("Sectoral and regional breakdown of investment activities are not available.")
 
 # Additional sections can be added as per your requirement
