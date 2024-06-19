@@ -188,7 +188,7 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
 
         # Asset classes to iterate over
         asset_classes = [
-            "Corporate bond",
+            "Bond",
             "Equity",
             "Loans",
             "Holdings in related undertakings, including participations",
