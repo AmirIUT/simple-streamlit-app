@@ -181,7 +181,7 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
         st.write("Sectoral and regional breakdown of investment activities are not available.")
     else:
         st.header("2.2 Sectoral and Regional Breakdown of Investment Activities")
-        st.write("Here we collect materiality levels for different asset classes across Climate Policy Relevant Sectors (CPRS).")
+        st.write("Here we collect materiality levels for different asset classes across Climate Policy Relevant Sectors (CPRS) unless the asset class has low exposure materiality compared to total assets.")
         
         # Define CPRS categories
         cprs_categories = ["Fossil Fuel", "Utility/Electricity", "Energy Intensive", "Buildings", "Transportation", "Agriculture"]
