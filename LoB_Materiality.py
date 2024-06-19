@@ -182,42 +182,6 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
     # Additional sections can be added as per your requirement
 
 
-# Define CPRS categories and asset classes
-cprs_categories = ["Fossil Fuel", "Utility/Electricity", "Energy Intensive", "Buildings", "Transportation", "Agriculture"]
-asset_classes = ["Corporate bond", "Equity", "Loans", "Holdings in related undertakings, including participations", "Collective investment taking", "Other assets"]
-
-# Initialize an empty DataFrame for sectoral breakdown
-sectoral_df = pd.DataFrame(index=asset_classes, columns=cprs_categories)
-
-# Create a table layout for sectoral breakdown
-st.write("### Sectoral Breakdown Matrix")
-table_cols = st.columns([0.2] + [1] * len(cprs_categories))
-
-# Header row for CPRS categories
-table_cols[0].write("**Asset Class**")
-for col_idx, category in enumerate(cprs_categories):
-    table_cols[col_idx + 1].write(f"**{category}**")
-
-# Iterate over each asset class to create rows
-for row_idx, asset_class in enumerate(asset_classes):
-    table_cols = st.columns([0.2] + [1] * len(cprs_categories))
-    table_cols[0].write(f"**{asset_class}**")
-    for col_idx, category in enumerate(cprs_categories):
-        materiality = table_cols[col_idx + 1].selectbox(
-            "",
-            options=["Low", "Medium", "High"],
-            index=1,
-            key=f"sectoral_{row_idx}_{col_idx}",
-            help=f"Select materiality for {asset_class} in {category}",
-            label_visibility="collapsed"
-        )
-        sectoral_df.loc[asset_class, category] = materiality
-
-# Display the sectoral breakdown DataFrame
-st.write(sectoral_df)
-
-        # Optional: Save sectoral_df to session_state or other storage if needed
-
 def create_gradient_heatmap(df):
     # Plotting the gradient heatmap
     fig, ax = plt.subplots(figsize=(8, 6))
