@@ -212,11 +212,11 @@ def section_2_investment_activities(session_state):
                 for idx in range(len(cprs_categories)):
                     materiality = sectoral_cols[idx + 1].selectbox("", options=["Low", "Medium", "High", "Not relevant/No Exposure"], index=1, key=f"{asset_class}_{idx}", help=f"Select materiality for {asset_class} in {cprs_categories[idx]}", label_visibility="collapsed")
 
-                # Add the "Government Bond" section
-                st.markdown("#### Government Bond")
+     # Add the "Government Bond" section
+          st.markdown("#### Government Bond")
 
-                # List of countries for the dropdown
-                countries = ["USA", "UK", "Germany", "France", "Japan", "China", "Canada", "Australia", "India", "Brazil"]
+    # List of countries for the dropdown
+        countries = ["USA", "UK", "Germany", "France", "Japan", "China", "Canada", "Australia", "India", "Brazil"]
 
                 # Create columns for the top 5 countries and their corresponding exposures
                 gb_cols = st.columns([0.1, 1, 1])  # Column layout for index, country dropdown, and exposure dropdown
