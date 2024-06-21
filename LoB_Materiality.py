@@ -188,52 +188,52 @@ def section_2_investment_activities(session_state):
         st.write("Sectoral and regional breakdown of investment activities are not available.")
     else:
         st.header("2.2 Sectoral and Regional Breakdown of Investment Activities")
-st.write("Here we collect materiality levels for different asset classes across Climate Policy Relevant Sectors (CPRS) for those asset classes with a minimum medium materiality.")
+        st.write("Here we collect materiality levels for different asset classes across Climate Policy Relevant Sectors (CPRS) for those asset classes with a minimum medium materiality.")
 
-# Define CPRS categories
-cprs_categories = ["Fossil Fuel", "Utility/Electricity", "Energy Intensive", "Buildings", "Transportation", "Agriculture"]
+        # Define CPRS categories
+        cprs_categories = ["Fossil Fuel", "Utility/Electricity", "Energy Intensive", "Buildings", "Transportation", "Agriculture"]
 
-# Dummy relevant asset classes for demonstration
-relevant_asset_classes = ["Equities", "Corporate Bonds", "Loans", "Property", "Other assets"]
+        # Dummy relevant asset classes for demonstration
+        relevant_asset_classes = ["Equities", "Corporate Bonds", "Loans", "Property", "Other assets"]
 
-# Iterate over each relevant asset class
-for asset_class in relevant_asset_classes:
-    if asset_class not in ["Loans", "Property", "Other assets"]:  # Exclude specific asset classes
-        st.markdown(f"#### {asset_class} - climate sector breakdown")
-
-        # Create a table layout for sectoral breakdown for current asset class
-        sectoral_cols = st.columns([0.1] + [1] * len(cprs_categories))  # Column layout for index and CPRS categories
-
-        # Header row for CPRS categories
-        sectoral_cols[0].write("")  # Empty cell for the first column (no numbering)
-        for col_idx, category in enumerate(cprs_categories):
-            sectoral_cols[col_idx + 1].write(f"**{category}**")
-
-        # Ask materiality questions for each CPRS category
-        materiality_row = sectoral_cols[0].write("")  # Empty row (no numbering)
-        for idx in range(len(cprs_categories)):
-            materiality = sectoral_cols[idx + 1].selectbox("", options=["Low", "Medium", "High", "Not relevant/No Exposure"], index=1, key=f"{asset_class}_{idx}", help=f"Select materiality for {asset_class} in {cprs_categories[idx]}", label_visibility="collapsed")
-
-# Add the "Government Bond" section
-st.markdown("#### Government Bond")
-
-# List of countries for the dropdown
-countries = ["USA", "UK", "Germany", "France", "Japan", "China", "Canada", "Australia", "India", "Brazil"]
-
-# Create columns for the top 5 countries and their corresponding exposures
-gb_cols = st.columns([0.1, 1, 1])  # Column layout for index, country dropdown, and exposure dropdown
-
-# Header row
-gb_cols[0].write("**#**")
-gb_cols[1].write("**Country**")
-gb_cols[2].write("**Exposure Materiality**")
-
-# Rows for the top 5 countries
-for i in range(5):
-    gb_cols = st.columns([0.1, 1, 1])
-    gb_cols[0].write(f"**{i + 1}**")
-    country = gb_cols[1].selectbox("", options=countries, key=f"country_{i}", help=f"Select the country for government bond {i + 1}", label_visibility="collapsed")
-    exposure = gb_cols[2].selectbox("", options=["Low", "Medium", "High", "Not relevant/No Exposure"], key=f"exposure_{i}", help=f"Select the exposure level for government bond {i + 1}", label_visibility="collapsed")
+        # Iterate over each relevant asset class
+        for asset_class in relevant_asset_classes:
+            if asset_class not in ["Loans", "Property", "Other assets"]:  # Exclude specific asset classes
+                st.markdown(f"#### {asset_class} - climate sector breakdown")
+        
+                # Create a table layout for sectoral breakdown for current asset class
+                sectoral_cols = st.columns([0.1] + [1] * len(cprs_categories))  # Column layout for index and CPRS categories
+        
+                # Header row for CPRS categories
+                sectoral_cols[0].write("")  # Empty cell for the first column (no numbering)
+                for col_idx, category in enumerate(cprs_categories):
+                    sectoral_cols[col_idx + 1].write(f"**{category}**")
+        
+                # Ask materiality questions for each CPRS category
+                materiality_row = sectoral_cols[0].write("")  # Empty row (no numbering)
+                for idx in range(len(cprs_categories)):
+                    materiality = sectoral_cols[idx + 1].selectbox("", options=["Low", "Medium", "High", "Not relevant/No Exposure"], index=1, key=f"{asset_class}_{idx}", help=f"Select materiality for {asset_class} in {cprs_categories[idx]}", label_visibility="collapsed")
+        
+        # Add the "Government Bond" section
+        st.markdown("#### Government Bond")
+        
+        # List of countries for the dropdown
+        countries = ["USA", "UK", "Germany", "France", "Japan", "China", "Canada", "Australia", "India", "Brazil"]
+        
+        # Create columns for the top 5 countries and their corresponding exposures
+        gb_cols = st.columns([0.1, 1, 1])  # Column layout for index, country dropdown, and exposure dropdown
+        
+        # Header row
+        gb_cols[0].write("**#**")
+        gb_cols[1].write("**Country**")
+        gb_cols[2].write("**Exposure Materiality**")
+        
+        # Rows for the top 5 countries
+        for i in range(5):
+            gb_cols = st.columns([0.1, 1, 1])
+            gb_cols[0].write(f"**{i + 1}**")
+            country = gb_cols[1].selectbox("", options=countries, key=f"country_{i}", help=f"Select the country for government bond {i + 1}", label_visibility="collapsed")
+            exposure = gb_cols[2].selectbox("", options=["Low", "Medium", "High", "Not relevant/No Exposure"], key=f"exposure_{i}", help=f"Select the exposure level for government bond {i + 1}", label_visibility="collapsed")
 
 
 
