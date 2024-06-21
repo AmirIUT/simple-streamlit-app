@@ -56,7 +56,7 @@ def section_1_insurance_activities(session_state):
 
     # Define the CSV data as a multiline string (assuming it's unchanged)
     csv_data = """Lines of Business,Short Name,Transition Risk Factor,Physical Risk Factor,Exposure,Explanation
-Medical expenses,ME,1,2,Low,"Transition Risk: Low as medical underwriting is less impacted by climate policies. Physical Risk: Moderate due to increased health claims from heatwaves, diseases, etc. caused by climate change."
+Medical expenses,MED,1,2,Low,"Transition Risk: Low as medical underwriting is less impacted by climate policies. Physical Risk: Moderate due to increased health claims from heatwaves, diseases, etc. caused by climate change."
 Worker compensation,WC,2,2,Medium,"Transition Risk: Moderate due to changes in workplace safety regulations and standards. Physical Risk: Moderate due to increased workplace injuries from extreme weather."
 Income protection,IP,1,2,Low,"Transition Risk: Low as employment shifts are less affected by climate policies. Physical Risk: Moderate due to long-term health impacts from climate change affecting work capacity."
 Miscellaneous financial loss,MISC,1,1,Low,"Transition Risk: Low since miscellaneous financial loss policies are less affected by climate policies. Physical Risk: Low as financial loss underwriting has limited direct physical impact from climate change."
@@ -131,8 +131,8 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
 
 
 def section_2_investment_activities(session_state):
-    # New section: Insurance Activities - Exposure Information
-    st.header("2. Insurance Activities - Exposure Information")
+    # New section: Investment Activities - Exposure Information
+    st.header("2. Investment Activities")
 
     # Section 2.1: Asset Allocation
     st.subheader("2.1 Asset Allocation")
