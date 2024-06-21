@@ -223,15 +223,19 @@ def section_2_investment_activities(session_state):
         # Create columns for the top 5 countries and their corresponding exposures
         gb_cols = st.columns([0.1, 1, 1])  # Column layout for index, country dropdown, and exposure dropdown
         
-        # Header row
+       # Header row
         st.write("**Top five countries**", "**Exposure materiality as share of total government bond**")
         
         # Rows for the top 5 countries
         for i in range(5):
-            gb_cols = st.columns([1, 1])
-            gb_cols[0].write(f"**{i+1}**")
-            country = gb_cols[0].selectbox("", options=countries, key=f"country_{i}")
-            exposure = gb_cols[1].selectbox("", options=["Low", "Medium", "High", "Not relevant/No Exposure"], key=f"exposure_gb_{i}")
+            row = st.columns([1, 1])  # Create a single row with two columns
+        
+            # First column: Country selectbox
+            country = row[0].selectbox("", options=countries, key=f"country_{i}", help=f"Select the country for government bond {i + 1}")
+        
+            # Second column: Exposure selectbox
+            exposure = row[1].selectbox("", options=["Low", "Medium", "High", "Not relevant/No Exposure"], key=f"exposure_gb_{i}", help=f"Select the exposure level for government bond {i + 1}")
+
 
 def create_gradient_heatmap(df):
     # Plotting the gradient heatmap
