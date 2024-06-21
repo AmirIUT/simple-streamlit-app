@@ -139,7 +139,8 @@ def section_2_investment_activities(session_state):
 
     # Define the asset allocation data as a list of dictionaries
     asset_data = [
-        {"Asset class": "Bonds", "Exposure": ""},
+        {"Asset class": "Corporate Bonds", "Exposure": ""},
+        {"Asset class": "Government Bonds", "Exposure": ""},
         {"Asset class": "Equity", "Exposure": ""},
         {"Asset class": "Property", "Exposure": ""},
         {"Asset class": "Loans", "Exposure": ""},
