@@ -218,7 +218,7 @@ def section_2_investment_activities(session_state):
         st.markdown("#### Government Bond")
         
         # List of countries for the dropdown
-        countries = ["USA", "UK", "Germany", "France", "Japan", "China", "Canada", "Australia", "India", "Brazil"]
+        countries = ["Please select", "USA", "UK", "Germany", "France", "Japan", "China", "Canada", "Australia", "India", "Brazil"]
         
         
         # Header row
