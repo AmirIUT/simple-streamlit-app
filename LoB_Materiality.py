@@ -28,7 +28,6 @@ def main():
     display_intro_and_disclaimer()
 
     # Display ESG Risk Materiality Assessment Narrative Tool
-    materiality_assessment(session_state)
     section_1_insurance_activities(session_state)
     section_2_investment_activities(session_state)
 
