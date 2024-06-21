@@ -223,24 +223,22 @@ def section_2_investment_activities(session_state):
         # Create columns for the top 5 countries and their corresponding exposures
         gb_cols = st.columns([0.1, 1, 1])  # Column layout for index, country dropdown, and exposure dropdown
         
-       # Create a list to store rows of data
-        data_rows = []
+        # Header row
+        st.write("**ID**", "**Top five countries**", "**Exposure materiality as share of total government bond**")
         
-        # Generate data for each row
+        # Rows for the top 5 countries
         for i in range(5):
-            country = st.selectbox(f"Country {i + 1}", options=countries, key=f"country_{i}", help=f"Select the country for government bond {i + 1}")
-            exposure = st.selectbox(f"Exposure Materiality {i + 1}", options=["Low", "Medium", "High", "Not relevant/No Exposure"], key=f"exposure_gb_{i}", help=f"Select the exposure level for government bond {i + 1}")
+            row = st.columns([0.1, 1, 1])  # Create a single row with three columns
         
-            # Append row data as a dictionary
-            data_rows.append({
-                "ID": i + 1,
-                "Top five countries": country,
-                "Exposure materiality as share of total government bond": exposure
-            })
+            # First column: ID (sequential numbers)
+            row[0].write(f"**{i+1}**")
         
-        # Display the table using st.table
-        st.table(data_rows)
-
+            # Second column: Country selectbox
+            country = row[1].selectbox("", options=countries, key=f"country_{i}", help=f"Select the country for government bond {i + 1}")
+        
+            # Third column: Exposure selectbox
+            exposure = row[2].selectbox("", options=["Low", "Medium", "High", "Not relevant/No Exposure"], key=f"exposure_gb_{i}", help=f"Select the exposure level for government bond {i + 1}")
+        
 
 def create_gradient_heatmap(df):
     # Plotting the gradient heatmap
