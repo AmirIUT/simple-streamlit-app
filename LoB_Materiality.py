@@ -223,7 +223,7 @@ def section_2_investment_activities(session_state):
         
         
         # Header row
-        st.write("Here we collect top five countries for government bonds")
+        st.write("Here we collect top five countries for government bonds and property portfolio")
         
         # Rows for the top 5 countries
         for i in range(5):
