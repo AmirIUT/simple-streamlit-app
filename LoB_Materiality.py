@@ -178,7 +178,7 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
     st.write(asset_df)
 
     # New question before section 2.2
-    st.write("### Are the sectoral and regional breakdown of the investment activities available?")
+    st.write("### Are the sectoral and country breakdown of the investment activities available?")
     breakdown_available = st.radio("Choose option:", ("Yes", "No"))
 
     if breakdown_available == "No":
