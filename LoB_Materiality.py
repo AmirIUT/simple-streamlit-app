@@ -216,7 +216,7 @@ def section_2_investment_activities(session_state):
                     materiality = sectoral_cols[idx + 1].selectbox("", options=["Low", "Medium", "High", "Not relevant/No Exposure"], index=1, key=f"{asset_class}_{idx}", help=f"Select materiality for {asset_class} in {cprs_categories[idx]}", label_visibility="collapsed")
         
         # Add the "Government Bond" section
-        st.markdown("#### Government Bond - Country breakdown")
+        st.markdown("#### Government Bonds - Country breakdown")
         
         # List of countries for the dropdown
         countries = ["Please select", "USA", "UK", "Germany", "France", "Japan", "China", "Canada", "Australia", "India", "Brazil"]
