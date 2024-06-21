@@ -227,35 +227,28 @@ def section_2_investment_activities(session_state):
         
         # Rows for the top 5 countries
         for i in range(5):
-            row = st.columns([1, 1])  # Create a single row with 2 columns
+            gb_row = st.columns([1, 1])  # Create a single row with 2 columns
         
-            # Second column: Country selectbox
-            country = row[0].selectbox("", options=countries, key=f"country_{i}")
+            # Second column: Country selectbox for government bond
+            country_gb = gb_row[0].selectbox("", options=countries, key=f"country_gb_{i}")
         
-            # Third column: Exposure selectbox
-            exposure = row[1].selectbox("", options=["Low", "Medium", "High", "Not relevant/No Exposure"], key=f"exposure_gb_{i}", help=f"Select the exposure level of selection as share of total government bond")
-         
+            # Third column: Exposure selectbox for government bond
+            exposure_gb = gb_row[1].selectbox("", options=["Low", "Medium", "High", "Not relevant/No Exposure"], key=f"exposure_gb_{i}", help=f"Select the exposure level for government bond portfolio")
         
-        # Add the "Property - Real Estate" section
+        # Second loop for property
         st.markdown("#### Property - Country breakdown")
-        
-        # List of countries for the dropdown
-        countries = ["Please select", "USA", "UK", "Germany", "France", "Japan", "China", "Canada", "Australia", "India", "Brazil", "Investment Fund/No single country"]
-        
-        
-        # Header row
         st.write("Here we collect top five countries for property portfolio")
         
-        # Rows for the top 5 countries
         for i in range(5):
-            row_P = st.columns([1, 1])  # Create a single row with 2 columns
+            property_row = st.columns([1, 1])  # Create a single row with 2 columns
         
-            # Second column: Country selectbox
-            country_P = row[0].selectbox("", options=countries, key=f"country_{i}")
+            # Second column: Country selectbox for property
+            country_property = property_row[0].selectbox("", options=countries, key=f"country_property_{i}")
         
-            # Third column: Exposure selectbox
-            exposure_P = row[1].selectbox("", options=["Low", "Medium", "High", "Not relevant/No Exposure"], key=f"exposure_gb_{i}", help=f"Select the exposure level of selection as share of total property portfolio")
+            # Third column: Exposure selectbox for property
+            exposure_property = property_row[1].selectbox("", options=["Low", "Medium", "High", "Not relevant/No Exposure"], key=f"exposure_property_{i}", help=f"Select the exposure level for property portfolio")
         
+
 
 def create_gradient_heatmap(df):
     # Plotting the gradient heatmap
