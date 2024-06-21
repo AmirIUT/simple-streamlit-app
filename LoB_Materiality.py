@@ -200,7 +200,7 @@ def section_2_investment_activities(session_state):
         # Iterate over each relevant asset class
         for asset_class in relevant_asset_classes:
             if asset_class not in ["Loans", "Property", "Other assets"]:  # Exclude specific asset classes
-                st.markdown(f"#### {asset_class} - climate sector breakdown")
+                st.markdown(f"#### {asset_class} - Sectoral breakdown")
         
                 # Create a table layout for sectoral breakdown for current asset class
                 sectoral_cols = st.columns([0.1] + [1] * len(cprs_categories))  # Column layout for index and CPRS categories
@@ -216,7 +216,7 @@ def section_2_investment_activities(session_state):
                     materiality = sectoral_cols[idx + 1].selectbox("", options=["Low", "Medium", "High", "Not relevant/No Exposure"], index=1, key=f"{asset_class}_{idx}", help=f"Select materiality for {asset_class} in {cprs_categories[idx]}", label_visibility="collapsed")
         
         # Add the "Government Bond" section
-        st.markdown("#### Government Bond")
+        st.markdown("#### Government Bond - Country breakdown")
         
         # List of countries for the dropdown
         countries = ["Please select", "USA", "UK", "Germany", "France", "Japan", "China", "Canada", "Australia", "India", "Brazil"]
@@ -224,6 +224,27 @@ def section_2_investment_activities(session_state):
         
         # Header row
         st.write("Here we collect top five countries for government bonds")
+        
+        # Rows for the top 5 countries
+        for i in range(5):
+            row = st.columns([1, 1])  # Create a single row with 2 columns
+        
+            # Second column: Country selectbox
+            country = row[0].selectbox("", options=countries, key=f"country_{i}")
+        
+            # Third column: Exposure selectbox
+            exposure = row[1].selectbox("", options=["Low", "Medium", "High", "Not relevant/No Exposure"], key=f"exposure_gb_{i}", help=f"Select the exposure level of selection as share of total government bond")
+         
+        
+        # Add the "Property - Real Estate" section
+        st.markdown("#### Property - Country breakdown")
+        
+        # List of countries for the dropdown
+        countries = ["Please select", "USA", "UK", "Germany", "France", "Japan", "China", "Canada", "Australia", "India", "Brazil", "Investment Fund/No single country"]
+        
+        
+        # Header row
+        st.write("Here we collect top five countries for property portfolio")
         
         # Rows for the top 5 countries
         for i in range(5):
