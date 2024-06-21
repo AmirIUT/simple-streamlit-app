@@ -229,10 +229,10 @@ def section_2_investment_activities(session_state):
             row = st.columns([1, 1])  # Create a single row with 2 columns
         
             # Second column: Country selectbox
-            country = row[0].selectbox("", options=countries, key=f"country_{i}", help=f"Select the country for government bond {i + 1}")
+            country = row[0].selectbox("", options=countries, key=f"country_{i}")
         
             # Third column: Exposure selectbox
-            exposure = row[1].selectbox("", options=["Low", "Medium", "High", "Not relevant/No Exposure"], key=f"exposure_gb_{i}", help=f"Select the exposure level for government bond {i + 1}")
+            exposure = row[1].selectbox("", options=["Low", "Medium", "High", "Not relevant/No Exposure"], key=f"exposure_gb_{i}", help=f"Select the exposure level of selection as share of total government bond")
         
 
 def create_gradient_heatmap(df):
