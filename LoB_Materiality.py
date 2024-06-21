@@ -130,7 +130,7 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
     st.write(df_display)
 
 
-def section_1_investment_activities(session_state):
+def section_2_investment_activities(session_state):
     # New section: Insurance Activities - Exposure Information
     st.header("2. Insurance Activities - Exposure Information")
 
