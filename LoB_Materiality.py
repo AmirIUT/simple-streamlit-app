@@ -29,6 +29,8 @@ def main():
 
     # Display ESG Risk Materiality Assessment Narrative Tool
     materiality_assessment(session_state)
+    section_1_insurance_activities(session_state)
+    section_2_investment_activities(session_state)
 
 def display_intro_and_disclaimer():
     st.title("ESG Risk Materiality Assessment Narrative Tool")
@@ -47,7 +49,7 @@ def display_intro_and_disclaimer():
     """
     st.write(disclaimer_text)
     
-def materiality_assessment(session_state):
+def section_1_insurance_activities(session_state):
     st.header("Materiality Assessment Questionnaire")
 
     # Insurance Sector 
@@ -128,6 +130,8 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
     df_display['Explanation'] = df_filtered['Explanation']
     st.write(df_display)
 
+
+def section_1_investment_activities(session_state)
     # New section: Insurance Activities - Exposure Information
     st.header("2. Insurance Activities - Exposure Information")
 
