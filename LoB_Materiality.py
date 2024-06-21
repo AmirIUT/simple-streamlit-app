@@ -230,7 +230,7 @@ def section_2_investment_activities(session_state):
         # Rows for the top 5 countries
         for i in range(5):
             gb_cols = st.columns([1, 1])
-            gb_cols[1].write(f"**{i}**")
+            gb_cols[1].write(f"**{i+1}**")
             country = gb_cols[1].selectbox("", options=countries, key=f"country_{i}", help=f"Select the country for government bond {i + 1}")
             exposure = gb_cols[2].selectbox("", options=["Low", "Medium", "High", "Not relevant/No Exposure"], key=f"exposure_gb_{i}", help=f"Select the exposure level for government bond {i + 1}")
 
