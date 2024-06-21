@@ -193,7 +193,7 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
         # Iterate over each relevant asset class
         for asset_class in relevant_asset_classes:
             if asset_class not in ["Loans", "Property", "Other assets"]:  # Exclude specific asset classes
-                st.markdown(f"#### {asset_class} - Climate exposure breakdown")
+                st.markdown(f"#### {asset_class} - climate sector breakdown")
 
                 # Create a table layout for sectoral breakdown for current asset class
                 sectoral_cols = st.columns([0.1] + [1] * len(cprs_categories))  # Column layout for index and CPRS categories
