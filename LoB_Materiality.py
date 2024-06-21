@@ -46,17 +46,13 @@ def display_intro_and_disclaimer():
     For those interested in more detailed information about the NGFS scenarios, please refer to the [NGFS scenario portal](https://www.ngfs.net/ngfs-scenarios-portal/).
     """
     st.write(disclaimer_text)
-
+    
 def materiality_assessment(session_state):
     st.header("Materiality Assessment Questionnaire")
 
-    # Call Section 1 function
-    section_1_insurance_activities(session_state)
+    # Insurance Sector 
+    Sector = st.selectbox("Field of (re)insurance operation", ["Life/Health", "NonLife", "Pension", "Composite"])
 
-    # Call Section 2 function
-    section_2_exposure_information(session_state)
-
-def section_1_insurance_activities(session_state):
     # Define the CSV data as a multiline string (assuming it's unchanged)
     csv_data = """Lines of Business,Short Name,Transition Risk Factor,Physical Risk Factor,Exposure,Explanation
 Medical expenses,ME,1,2,Low,"Transition Risk: Low as medical underwriting is less impacted by climate policies. Physical Risk: Moderate due to increased health claims from heatwaves, diseases, etc. caused by climate change."
@@ -132,9 +128,10 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
     df_display['Explanation'] = df_filtered['Explanation']
     st.write(df_display)
 
-def section_2_exposure_information(session_state):
-    # Section 2.1: Asset Allocation
+    # New section: Insurance Activities - Exposure Information
     st.header("2. Insurance Activities - Exposure Information")
+
+    # Section 2.1: Asset Allocation
     st.subheader("2.1 Asset Allocation")
 
     # Define the asset allocation data as a list of dictionaries
@@ -152,137 +149,114 @@ def section_2_exposure_information(session_state):
     asset_df = pd.DataFrame(asset_data)
 
     # Initialize an empty list to store updated asset exposure values
-    asset_exposure_values = []
+    asset_exposure = []
 
-    st.write("### Asset Allocation Exposure Information")
+    # Create a table layout for asset allocation
+    asset_cols = st.columns([0.1, 1, 1])  # Column layout for index, asset classes, and dropdowns
+    asset_cols[0].write("**#**")
+    asset_cols[1].write("**Asset Class**")
+    asset_cols[2].write("**Asset Class Exposure as Share of Total Asset**")
 
-    # Define the width ratio for the legend and table sections
-    legend_width = 0.6  # Width ratio for legend
-    table_width = 0.2   # Width ratio for table
+    # List to store relevant asset classes based on Section 2.1 criteria
+    relevant_asset_classes = []
 
-    # Create a layout using st.columns to divide the page
-    columns = st.columns([legend_width, table_width])
+    for idx, row in asset_df.iterrows():
+        asset_cols = st.columns([0.1, 1, 1])
+        asset_cols[0].write(f"**{idx+1}**")
+        asset_cols[1].write(row['Asset class'])
+        exposure = asset_cols[2].selectbox("", options=["Low", "Medium", "High", "Not relevant/No Exposure"], index=1, key=f"exposure_{idx}", help=f"Select exposure level for {row['Asset class']}", label_visibility="collapsed")
+        asset_exposure.append(exposure)
 
-    # Column 1: Table layout for exposures
-    with columns[0]:
-        # Create a table layout for exposures
-        exp_cols = st.columns([0.1, 1, 1])  # Column layout for index, asset class, and dropdowns
-        exp_cols[0].write("**#**")
-        exp_cols[1].write("**Asset Class**")
-        exp_cols[2].write("**Asset Exposure as Share of Total Net Assets**")
+        # Check if exposure level is Low or Not relevant/No Exposure
+        if exposure not in ["Low", "Not relevant/No Exposure"]:
+            relevant_asset_classes.append(row['Asset class'])
 
-        for idx, row in asset_df.iterrows():
-            exp_cols = st.columns([0.1, 1, 1])
-            exp_cols[0].write(f"**{idx+1}**")
-            exp_cols[1].write(row['Asset class'])
-            exposure = exp_cols[2].selectbox("", options=["Low", "Medium", "High", "Not relevant/No exposure"], index=1, key=f"asset_exposure_{idx}", help=f"Select exposure level for {row['Asset class']}", label_visibility="collapsed")
-            asset_exposure_values.append(exposure)
+    # Add the updated exposure values to the DataFrame
+    asset_df['Exposure'] = asset_exposure
 
-    # Column 2: Legend for asset exposure definitions
-    with columns[1]:
-        with st.container():
-            st.markdown("Legend: Asset Exposure Share Definition") 
-            st.markdown("- **Low:** Less than 10%")
-            st.markdown("- **Medium:** Between 10% and 30%")
-            st.markdown("- **High:** More than 30%")
+    # Display the asset allocation table
+    st.write(asset_df)
+
+    # New question before section 2.2
+    st.write("### Are the sectoral and country breakdown of the investment activities available?")
+    breakdown_available = st.radio("Choose option:", ("Yes", "No"))
+
+    if breakdown_available == "No":
+        st.write("Sectoral and regional breakdown of investment activities are not available.")
+    else:
+        st.header("2.2 Sectoral and Regional Breakdown of Investment Activities")
+        st.write("Here we collect materiality levels for different asset classes across Climate Policy Relevant Sectors (CPRS) for thoes asset classes with a minimum medium materiality.")
         
-    # Update the DataFrame with the selected asset exposure values
-    asset_df['Exposure'] = asset_exposure_values
+        # Define CPRS categories
+        cprs_categories = ["Fossil Fuel", "Utility/Electricity", "Energy Intensive", "Buildings", "Transportation", "Agriculture"]
 
-    # Filter out rows where exposure is "Not relevant/No exposure"
-    asset_df_filtered = asset_df[asset_df['Exposure'] != "Not relevant/No exposure"].copy()
+        # Iterate over each relevant asset class
+        for asset_class in relevant_asset_classes:
+            if asset_class not in ["Loans", "Property", "Other assets"]:  # Exclude specific asset classes
+                st.markdown(f"#### {asset_class} - climate sector breakdown")
 
-    st.write("### Asset Exposure Results")
+                # Create a table layout for sectoral breakdown for current asset class
+                sectoral_cols = st.columns([0.1] + [1] * len(cprs_categories))  # Column layout for index and CPRS categories
 
-    # Display the final asset exposure table
-    st.write(asset_df_filtered)
+                # Header row for CPRS categories
+                sectoral_cols[0].write("")  # Empty cell for the first column (no numbering)
 
-    # Section 2.2: Sectoral and Regional Breakdown
-    st.subheader("2.2 Sectoral and Regional Breakdown")
-    
-    # Define the sectoral and regional breakdown data as a list of dictionaries
-    sectoral_data = [
-        {"Sector": "Energy", "Regional Exposure": ""},
-        {"Sector": "Utilities", "Regional Exposure": ""},
-        {"Sector": "Materials", "Regional Exposure": ""},
-        {"Sector": "Industrials", "Regional Exposure": ""},
-        {"Sector": "Consumer Discretionary", "Regional Exposure": ""},
-        {"Sector": "Consumer Staples", "Regional Exposure": ""},
-        {"Sector": "Healthcare", "Regional Exposure": ""},
-        {"Sector": "Financials", "Regional Exposure": ""},
-        {"Sector": "Information Technology", "Regional Exposure": ""},
-        {"Sector": "Telecommunication Services", "Regional Exposure": ""},
-        {"Sector": "Real Estate", "Regional Exposure": ""}
-    ]
+                for col_idx, category in enumerate(cprs_categories):
+                    sectoral_cols[col_idx + 1].write(f"**{category}**")
 
-    # Convert the sectoral data to a DataFrame
-    sectoral_df = pd.DataFrame(sectoral_data)
+                # Ask materiality questions for each CPRS category
+                materiality_row = sectoral_cols[0].write("")  # Empty row (no numbering)
+                for idx in range(len(cprs_categories)):
+                    materiality = sectoral_cols[idx + 1].selectbox("", options=["Low", "Medium", "High", "Not relevant/No Exposure"], index=1, key=f"{asset_class}_{idx}", help=f"Select materiality for {asset_class} in {cprs_categories[idx]}", label_visibility="collapsed")
 
-    # Initialize an empty list to store updated sectoral exposure values
-    sectoral_exposure_values = []
+        # Additional sections can be added as per your requirement
 
-    st.write("### Sectoral and Regional Exposure Information")
 
-    # Define the width ratio for the legend and table sections
-    legend_width = 0.6  # Width ratio for legend
-    table_width = 0.2   # Width ratio for table
-
-    # Create a layout using st.columns to divide the page
-    columns = st.columns([legend_width, table_width])
-
-    # Column 1: Table layout for exposures
-    with columns[0]:
-        # Create a table layout for exposures
-        exp_cols = st.columns([0.1, 1, 1])  # Column layout for index, sector, and dropdowns
-        exp_cols[0].write("**#**")
-        exp_cols[1].write("**Sector**")
-        exp_cols[2].write("**Regional Exposure as Share of Total Sectoral Exposure**")
-
-        for idx, row in sectoral_df.iterrows():
-            exp_cols = st.columns([0.1, 1, 1])
-            exp_cols[0].write(f"**{idx+1}**")
-            exp_cols[1].write(row['Sector'])
-            exposure = exp_cols[2].selectbox("", options=["Low", "Medium", "High", "Not relevant/No exposure"], index=1, key=f"sectoral_exposure_{idx}", help=f"Select exposure level for {row['Sector']}", label_visibility="collapsed")
-            sectoral_exposure_values.append(exposure)
-
-    # Column 2: Legend for sectoral exposure definitions
-    with columns[1]:
-        with st.container():
-            st.markdown("Legend: Regional Exposure Share Definition") 
-            st.markdown("- **Low:** Less than 10%")
-            st.markdown("- **Medium:** Between 10% and 30%")
-            st.markdown("- **High:** More than 30%")
-        
-    # Update the DataFrame with the selected sectoral exposure values
-    sectoral_df['Regional Exposure'] = sectoral_exposure_values
-
-    # Filter out rows where exposure is "Not relevant/No exposure"
-    sectoral_df_filtered = sectoral_df[sectoral_df['Regional Exposure'] != "Not relevant/No exposure"].copy()
-
-    st.write("### Sectoral Exposure Results")
-
-    # Display the final sectoral exposure table
-    st.write(sectoral_df_filtered)
 
 def create_gradient_heatmap(df):
-    fig, ax = plt.subplots(figsize=(10, 8))
+    # Plotting the gradient heatmap
+    fig, ax = plt.subplots(figsize=(8, 6))
 
-    # Define the color gradient
-    colors = ["#00FF00", "#FFFF00", "#FF0000"]  # Green, Yellow, Red
-    cmap = LinearSegmentedColormap.from_list("green_yellow_red", colors, N=256)
+    # Define a custom gradient colormap
+    colors = ['green', 'yellow', 'red']
+    cmap = LinearSegmentedColormap.from_list('custom', colors)
 
-    heatmap_data = df[["Physical Risk Result", "Transitional Risk Result"]].values
+    # Create grid for heatmap
+    X, Y = np.meshgrid(np.linspace(0.5, 3.5, 100), np.linspace(0.5, 3.5, 100))
+    Z = X + Y  # Combine X and Y to form a grid
 
-    cax = ax.matshow(heatmap_data, cmap=cmap, vmin=1, vmax=3)
+    # Map exposure levels to circle sizes
+    size_map = {'Low': 50, 'Medium': 150, 'High': 450}
 
-    for i in range(len(df)):
-        for j in range(2):
-            ax.text(x=j, y=i, s=f"{heatmap_data[i, j]:.2f}", va='center', ha='center', color='black')
+    # Plot the gradient heatmap
+    im = ax.imshow(Z, cmap=cmap, origin='lower', extent=[0.5, 3.5, 0.5, 3.5], alpha=0.5)
 
-    plt.xticks(range(2), ["Physical Risk Result", "Transitional Risk Result"], rotation=45)
-    plt.yticks(range(len(df)), df['Short Name'])
-    plt.colorbar(cax)
+    # Scatter plot for LoBs with labels and varying circle sizes based on exposure
+    for _, row in df.iterrows():
+        if not np.isnan(row['Physical Risk Result']) and not np.isnan(row['Transitional Risk Result']):
+            circle_size = size_map[row['Exposure Materiality']]  # Dynamic circle size based on exposure materiality
+            ax.scatter(row['Physical Risk Result'], row['Transitional Risk Result'], color='black', zorder=2, s=circle_size)
+            # Shorten name if longer than 15 characters for heatmap only
+            short_name = row['Short Name'] if len(row['Lines of Business']) > 15 else row['Lines of Business']
+            ax.text(row['Physical Risk Result'] + 0.1, row['Transitional Risk Result'], short_name, color='black', fontsize=8, zorder=3, ha='left', va='center')
 
+    # Set labels and title
+    ax.set_xlabel('Physical Risk')
+    ax.set_ylabel('Transitional Risk')
+    ax.set_xticks([1, 2, 3])
+    ax.set_xticklabels(['Low', 'Medium', 'High'])
+    ax.set_yticks([1, 2, 3])
+    ax.set_yticklabels(['Low', 'Medium', 'High'])
+    ax.set_title('Insurance Lines of Business Heatmap')
+
+    # Set axis limits
+    ax.set_xlim(0.5, 3.5)
+    ax.set_ylim(0.5, 3.5)
+
+    # Automatically adjust layout
+    fig.tight_layout()
+
+    # Show plot using st.pyplot to ensure it updates reactively
     st.pyplot(fig)
 
 if __name__ == "__main__":
