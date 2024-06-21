@@ -74,7 +74,7 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
     # Initialize an empty list to store updated materiality values
     exposure_materiality = []
 
-    st.write("### 1. Insurance Activities - Exposure Information")
+    st.write("### 1. Insurance Activities")
 
     # Define the width ratio for the legend and table sections
     legend_width = 0.6  # Width ratio for legend
