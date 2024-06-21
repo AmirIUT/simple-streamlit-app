@@ -195,7 +195,7 @@ def section_2_investment_activities(session_state):
         cprs_categories = ["Fossil Fuel", "Utility/Electricity", "Energy Intensive", "Buildings", "Transportation", "Agriculture"]
 
         # Dummy relevant asset classes for demonstration
-        relevant_asset_classes = ["Equities", "Corporate Bonds", "Loans", "Property", "Other assets"]
+        relevant_asset_classes = ["Equity", "Corporate Bonds", "Loans", "Property", "Other assets"]
 
         # Iterate over each relevant asset class
         for asset_class in relevant_asset_classes:
