@@ -224,14 +224,14 @@ def section_2_investment_activities(session_state):
         gb_cols = st.columns([0.1, 1, 1])  # Column layout for index, country dropdown, and exposure dropdown
         
         # Header row
-        st.write("**ID**", "**Top five countries**", "**Exposure materiality as share of total government bond**")
+        st.write("Here we collect top five countries for government bonds")
         
         # Rows for the top 5 countries
         for i in range(5):
             row = st.columns([0.1, 1, 1])  # Create a single row with three columns
         
             # First column: ID (sequential numbers)
-            row[0].write(f"**{i+1}**")
+            row[0].write(f"**{i}**")
         
             # Second column: Country selectbox
             country = row[1].selectbox("", options=countries, key=f"country_{i}", help=f"Select the country for government bond {i + 1}")
