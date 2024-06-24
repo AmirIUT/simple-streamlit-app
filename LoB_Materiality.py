@@ -199,7 +199,7 @@ def section_2_investment_activities(session_state):
 
     # Display the relevant asset allocation table
     st.write("### Relevant Asset Allocation")
-    st.write(relevant_asset
+    st.write(relevant_asset)
 
              
     
