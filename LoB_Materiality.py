@@ -179,7 +179,7 @@ def section_2_investment_activities(session_state):
     asset_df['Exposure'] = asset_exposure
 
     # Display the asset allocation table
-    st.write(asset_df)
+    # st.write(asset_df)
 
     # New question before section 2.2
     st.write("### Are the sectoral and country breakdown of the investment activities available?")
