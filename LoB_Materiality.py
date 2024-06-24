@@ -31,10 +31,13 @@ def main():
     section_1_insurance_activities(session_state)
     section_2_investment_activities(session_state)
 
-    #Source
-    if st.button("Open Modal"):
-        show_modal()
+     # Add a button to navigate to the new section/page
+    if st.button("View Detailed Analysis"):
+        session_state.page = "detailed_analysis"
 
+    # Display different sections based on navigation
+    if getattr(session_state, "page", "") == "detailed_analysis":
+        display_detailed_analysis()
 
 def display_intro_and_disclaimer():
     st.title("ESG Risk Materiality Assessment Narrative Tool")
