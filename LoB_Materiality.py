@@ -32,12 +32,12 @@ def main():
     section_2_investment_activities(session_state)
 
     # Add a button to open the detailed analysis in a new expander
-    if st.button("View Detailed Analysis"):
-        session_state.show_detailed_analysis = True
+    if st.button("Methodology"):
+        session_state.Methodology_Text = True
 
     # Display Detailed Analysis in an expander if toggled on
-    if session_state.show_detailed_analysis:
-        with st.beta_expander("Detailed Analysis"):
+    if session_state.Methodology_Text:
+        with st.beta_expander("Methodology"):
             display_detailed_analysis()
 
 
@@ -309,7 +309,7 @@ def create_gradient_heatmap(df):
 
 
     
-def display_detailed_analysis():
+def Methodology_Text():
     st.title("Methodology")
     
     # Add your Methology Content here
