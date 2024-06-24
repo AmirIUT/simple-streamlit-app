@@ -298,7 +298,7 @@ def create_gradient_heatmap(df):
 
 
 if st.button("Open Modal"):
-        show_modal()
+    show_modal()
 
 def show_modal():
     with st.container():
