@@ -31,6 +31,13 @@ def main():
     section_1_insurance_activities(session_state)
     section_2_investment_activities(session_state)
 
+    #Source
+    st.title("Streamlit Pop-up Example")
+    # Main button to trigger the modal
+    if st.button("Open Modal"):
+    show_modal()
+
+
 def display_intro_and_disclaimer():
     st.title("ESG Risk Materiality Assessment Narrative Tool")
     
@@ -297,12 +304,7 @@ def create_gradient_heatmap(df):
     st.pyplot(fig)
 
 
-    st.title("Streamlit Pop-up Example")
-
-    # Main button to trigger the modal
-    if st.button("Open Modal"):
-    show_modal()
-
+    
 def show_modal():
     with st.container():
         st.write("""
