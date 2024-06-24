@@ -38,7 +38,7 @@ def main():
     # Display Detailed Analysis in an expander if toggled on
     if session_state.Methodology_Text:
         with st.beta_expander("Methodology"):
-            display_detailed_analysis()
+            Methodology_Text()
 
 
 
@@ -310,17 +310,19 @@ def create_gradient_heatmap(df):
 
     
 def Methodology_Text():
-    st.title("Methodology")
+    
+    st.write("This is the detailed analysis page where you can show additional insights or information.")
+    # st.title("Methodology")
     
     # Add your Methology Content here
     
-    Methodology_text = """
-    **Environmental Risk Factors - Investments:** 
+    #Methodology_text = """
+    #**Environmental Risk Factors - Investments:** 
     
-    This section provides an overview of the how the investments risk factors for the environmental risks are selected. 
+    #This section provides an overview of the how the investments risk factors for the environmental risks are selected. 
     
-    """
-    st.write(Methodology_text)
+    #"""
+    #st.write(Methodology_text)
     
 
 if __name__ == "__main__":
