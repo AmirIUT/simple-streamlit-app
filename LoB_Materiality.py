@@ -26,13 +26,13 @@ def main():
     page = st.sidebar.radio("Go to", ["Introduction", "Insurance Activities", "Investment Activities", "Methodology"])
 
     if page == "Introduction":
-            display_intro_and_disclaimer()
-        elif page == "Insurance Activities":
-            section_1_insurance_activities(session_state)
-        elif page == "Investment Activities":
-            section_2_investment_activities(session_state)
-        elif page == "Methodology":
-            Methodology_Text()
+        display_intro_and_disclaimer()
+    elif page == "Insurance Activities":
+        section_1_insurance_activities(session_state)
+    elif page == "Investment Activities":
+        section_2_investment_activities(session_state)
+    elif page == "Methodology":
+        Methodology_Text()
         
     # Initialize session state
     session_state = SessionState.get()
