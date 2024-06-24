@@ -21,7 +21,11 @@ class SessionState:
         return SessionState._instance
 
 def main():
+
+    
     st.set_page_config(page_title="ESG Risk Materiality Assessment Narrative Tool", layout="wide")
+    session_state = SessionState.get()
+
     st.sidebar.title("Navigation")
     page = st.sidebar.radio("Go to", ["Introduction", "Insurance Activities", "Investment Activities", "Methodology"])
 
@@ -33,9 +37,7 @@ def main():
         section_2_investment_activities(session_state)
     elif page == "Methodology":
         Methodology_Text()
-        
-    # Initialize session state
-    session_state = SessionState.get()
+
 
 
 def display_intro_and_disclaimer():
