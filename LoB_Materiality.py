@@ -199,7 +199,24 @@ def section_2_investment_activities(session_state):
 
     # Display the relevant asset allocation table
     st.write("### Relevant Asset Allocation")
-    st.write(relevant_asset)
+    st.write(relevant_asset_df)
+
+    # Calculate average exposure level for each risk factor
+    transition_risk_avg = relevant_asset_df.groupby('Asset Class')['Transition Risk Factor'].mean()
+    physical_risk_avg = relevant_asset_df.groupby('Asset Class')['Physical Risk Factor'].mean()
+
+    # Create a DataFrame for the heatmap
+    heatmap_df = pd.DataFrame({
+        'Asset Class': transition_risk_avg.index,
+        'Transition Risk Factor': transition_risk_avg.values,
+        'Physical Risk Factor': physical_risk_avg.values
+    })
+
+    # Display the heatmap and results
+    st.write("### Heatmap and Results")
+
+    # Create a reactive plot using streamlit's st.pyplot
+    create_gradient_heatmap(heatmap_df)
 
              
     
