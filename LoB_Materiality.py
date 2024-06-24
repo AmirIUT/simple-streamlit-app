@@ -146,7 +146,7 @@ def section_2_investment_activities(session_state):
     st.subheader("2.1 Asset Allocation")
 
     # Define the asset allocation data as a multiline string (placeholder for CSV or text input)
-    asset_csv_data = """Asset Class,Transition Risk Factor,Physical Risk Factor,Exposure,Explanation
+    asset_csv_data = """Asset class,Transition Risk Factor,Physical Risk Factor,Exposure,Explanation
     Corporate Bonds,1,2,Low,"Transition Risk: Low as medical underwriting is less impacted by climate policies. Physical Risk: Moderate due to increased health claims from heatwaves, diseases, etc. caused by climate change."
     Government Bonds,1,2,Low,"Transition Risk: Low as medical underwriting is less impacted by climate policies. Physical Risk: Moderate due to increased health claims from heatwaves, diseases, etc. caused by climate change."
     Equity,1,2,Low,"Transition Risk: Low as medical underwriting is less impacted by climate policies. Physical Risk: Moderate due to increased health claims from heatwaves, diseases, etc. caused by climate change."
