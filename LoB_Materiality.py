@@ -296,5 +296,23 @@ def create_gradient_heatmap(df):
     # Show plot using st.pyplot to ensure it updates reactively
     st.pyplot(fig)
 
+
+if st.button("Open Modal"):
+        show_modal()
+
+def show_modal():
+    with st.container():
+        st.write("""
+            <div style='background-color: rgba(0,0,0,0.5); position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center;'>
+                <div style='background-color: white; padding: 20px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.3);'>
+                    <h2>Modal Title</h2>
+                    <p>This is a modal content.</p>
+                    <button onclick="window.location.reload();">Close</button>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+
+
+
 if __name__ == "__main__":
     main()
