@@ -146,16 +146,15 @@ def section_2_investment_activities(session_state):
     st.subheader("2.1 Asset Allocation")
 
     # Define the asset allocation data as a multiline string (placeholder for CSV or text input)
-    asset_csv_data = """Asset class, Transition Risk Factor,Physical Risk Factor,Exposure,Explanation
+    asset_csv_data = """Asset Class,Transition Risk Factor,Physical Risk Factor,Exposure,Explanation
     Corporate Bonds,1,2,Low,"Transition Risk: Low as medical underwriting is less impacted by climate policies. Physical Risk: Moderate due to increased health claims from heatwaves, diseases, etc. caused by climate change."
     Government Bonds,1,2,Low,"Transition Risk: Low as medical underwriting is less impacted by climate policies. Physical Risk: Moderate due to increased health claims from heatwaves, diseases, etc. caused by climate change."
     Equity,1,2,Low,"Transition Risk: Low as medical underwriting is less impacted by climate policies. Physical Risk: Moderate due to increased health claims from heatwaves, diseases, etc. caused by climate change."
     Property,1,2,Low,"Transition Risk: Low as medical underwriting is less impacted by climate policies. Physical Risk: Moderate due to increased health claims from heatwaves, diseases, etc. caused by climate change."
     Loans,1,2,Low,"Transition Risk: Low as medical underwriting is less impacted by climate policies. Physical Risk: Moderate due to increased health claims from heatwaves, diseases, etc. caused by climate change."
-    Holdings in related undertakings including participations,1,2,Low,"Transition Risk: Low as medical underwriting is less impacted by climate policies. Physical Risk: Moderate due to increased health claims from heatwaves, diseases, etc. caused by climate change."
+    Holdings in related undertakings, including participations,1,2,Low,"Transition Risk: Low as medical underwriting is less impacted by climate policies. Physical Risk: Moderate due to increased health claims from heatwaves, diseases, etc. caused by climate change."
     Collective investment taking,1,2,Low,"Transition Risk: Low as medical underwriting is less impacted by climate policies. Physical Risk: Moderate due to increased health claims from heatwaves, diseases, etc. caused by climate change."
     Other assets,1,2,Low,"Transition Risk: Low as medical underwriting is less impacted by climate policies. Physical Risk: Moderate due to increased health claims from heatwaves, diseases, etc. caused by climate change."
-
     """
 
     # Read the CSV from the multiline string (you can replace this with reading from a file)
@@ -177,16 +176,16 @@ def section_2_investment_activities(session_state):
     for idx, row in asset_df.iterrows():
         col = st.columns([0.1, 1, 1])
         col[0].write(f"**{idx + 1}**")
-        col[1].write(row['Asset class'])
+        col[1].write(row['Asset Class'])
         exposure = col[2].selectbox("", options=["Low", "Medium", "High", "Not relevant/No Exposure"], index=1,
                                     key=f"asset_exposure_{idx}",
-                                    help=f"Select exposure level for {row['Asset class']}",
+                                    help=f"Select exposure level for {row['Asset Class']}",
                                     label_visibility="collapsed")
         asset_exposure.append(exposure)
 
         # Check if exposure level is Low or Not relevant/No Exposure
         if exposure not in ["Low", "Not relevant/No Exposure"]:
-            relevant_asset_classes.append(row['Asset class'])
+            relevant_asset_classes.append(row['Asset Class'])
 
     # Update the DataFrame with the selected asset exposure
     asset_df['Exposure'] = asset_exposure
@@ -198,9 +197,22 @@ def section_2_investment_activities(session_state):
     st.write("### Relevant Asset Allocation")
     st.write(relevant_asset_df)
 
-    # Optionally, you can perform further computations or visualizations here based on `relevant_asset_df`
+    # Calculate average exposure level for each risk factor
+    transition_risk_avg = relevant_asset_df.groupby('Asset Class')['Transition Risk Factor'].mean()
+    physical_risk_avg = relevant_asset_df.groupby('Asset Class')['Physical Risk Factor'].mean()
 
+    # Create a DataFrame for the heatmap
+    heatmap_df = pd.DataFrame({
+        'Asset Class': transition_risk_avg.index,
+        'Transition Risk Factor': transition_risk_avg.values,
+        'Physical Risk Factor': physical_risk_avg.values
+    })
 
+    # Display the heatmap and results
+    st.write("### Heatmap and Results")
+
+    # Create a reactive plot using streamlit's st.pyplot
+    create_gradient_heatmap(heatmap_df)
 
     
     #----------------------------------------------------------------------------------------------
