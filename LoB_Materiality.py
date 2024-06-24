@@ -31,13 +31,16 @@ def main():
     section_1_insurance_activities(session_state)
     section_2_investment_activities(session_state)
 
-     # Add a button to navigate to the new section/page
+    # Add a button to open the detailed analysis in a new expander
     if st.button("View Detailed Analysis"):
-        session_state.page = "detailed_analysis"
+        session_state.show_detailed_analysis = True
 
-    # Display different sections based on navigation
-    if getattr(session_state, "page", "") == "detailed_analysis":
-        display_detailed_analysis()
+    # Display Detailed Analysis in an expander if toggled on
+    if session_state.show_detailed_analysis:
+        with st.beta_expander("Detailed Analysis"):
+            display_detailed_analysis()
+
+
 
 def display_intro_and_disclaimer():
     st.title("ESG Risk Materiality Assessment Narrative Tool")
