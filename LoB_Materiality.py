@@ -297,7 +297,10 @@ def create_gradient_heatmap(df):
     st.pyplot(fig)
 
 
-if st.button("Open Modal"):
+    st.title("Streamlit Pop-up Example")
+
+    # Main button to trigger the modal
+    if st.button("Open Modal"):
     show_modal()
 
 def show_modal():
@@ -311,7 +314,6 @@ def show_modal():
                 </div>
             </div>
             """, unsafe_allow_html=True)
-
 
 
 if __name__ == "__main__":
