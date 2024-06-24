@@ -8,7 +8,9 @@ import io
 class SessionState:
     def __init__(self, **kwargs):
         self.__dict__.update(kwargs)
-
+        # Initialize Methodology_Text attribute
+        self.Methodology_Text = False  # Set to False initially
+    
     def get_state(self):
         return self.__dict__
 
@@ -30,7 +32,8 @@ def main():
     # Display ESG Risk Materiality Assessment Narrative Tool
     section_1_insurance_activities(session_state)
     section_2_investment_activities(session_state)
-
+   
+    
     # Add a button to open the detailed analysis in a new expander
     if st.button("Methodology"):
         session_state.Methodology_Text = True
@@ -39,7 +42,6 @@ def main():
     if session_state.Methodology_Text:
         with st.beta_expander("Methodology"):
             Methodology_Text()
-
 
 
 def display_intro_and_disclaimer():
