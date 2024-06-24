@@ -138,6 +138,54 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
     df_display['Explanation'] = df_filtered['Explanation']
     st.write(df_display)
 
+def create_gradient_heatmap(df):
+    # Plotting the gradient heatmap
+    fig, ax = plt.subplots(figsize=(8, 6))
+
+    # Define a custom gradient colormap
+    colors = ['green', 'yellow', 'red']
+    cmap = LinearSegmentedColormap.from_list('custom', colors)
+
+    # Create grid for heatmap
+    X, Y = np.meshgrid(np.linspace(0.5, 3.5, 100), np.linspace(0.5, 3.5, 100))
+    Z = X + Y  # Combine X and Y to form a grid
+
+    # Map exposure levels to circle sizes
+    size_map = {'Low': 50, 'Medium': 150, 'High': 450}
+
+    # Plot the gradient heatmap
+    im = ax.imshow(Z, cmap=cmap, origin='lower', extent=[0.5, 3.5, 0.5, 3.5], alpha=0.5)
+
+    # Scatter plot for LoBs with labels and varying circle sizes based on exposure
+    for _, row in df.iterrows():
+        if not np.isnan(row['Physical Risk Result']) and not np.isnan(row['Transitional Risk Result']):
+            circle_size = size_map[row['Exposure Materiality']]  # Dynamic circle size based on exposure materiality
+            ax.scatter(row['Physical Risk Result'], row['Transitional Risk Result'], color='black', zorder=2, s=circle_size)
+            # Shorten name if longer than 15 characters for heatmap only
+            short_name = row['Short Name'] if len(row['Lines of Business']) > 15 else row['Lines of Business']
+            ax.text(row['Physical Risk Result'] + 0.1, row['Transitional Risk Result'], short_name, color='black', fontsize=8, zorder=3, ha='left', va='center')
+
+    # Set labels and title
+    ax.set_xlabel('Physical Risk')
+    ax.set_ylabel('Transitional Risk')
+    ax.set_xticks([1, 2, 3])
+    ax.set_xticklabels(['Low', 'Medium', 'High'])
+    ax.set_yticks([1, 2, 3])
+    ax.set_yticklabels(['Low', 'Medium', 'High'])
+    ax.set_title('Insurance Lines of Business Heatmap')
+
+    # Set axis limits
+    ax.set_xlim(0.5, 3.5)
+    ax.set_ylim(0.5, 3.5)
+
+    # Automatically adjust layout
+    fig.tight_layout()
+
+    # Show plot using st.pyplot to ensure it updates reactively
+    st.pyplot(fig)
+
+
+
 def section_2_investment_activities(session_state):
     # New section: Investment Activities - Exposure Information
     st.header("2. Investment Activities")
@@ -216,7 +264,7 @@ def section_2_investment_activities(session_state):
     st.write("### Heatmap and Results")
 
     # Create a reactive plot using streamlit's st.pyplot
-    create_gradient_heatmap(heatmap_df)
+    create_gradient_heatmap_assets (heatmap_df)
 
              
     
@@ -288,7 +336,7 @@ def section_2_investment_activities(session_state):
             # Third column: Exposure selectbox for property
             exposure_property = property_row[1].selectbox("", options=["Low", "Medium", "High", "Not relevant/No Exposure"], key=f"exposure_property_{i}", help=f"Select the exposure level for property portfolio")
         
-def create_gradient_heatmap(heatmap_df):
+def create_gradient_heatmap_assets(heatmap_df):
     # Ensure the dataframe is sorted to maintain consistency in the heatmap
     heatmap_df = heatmap_df.sort_values(by=['Transition Risk Factor', 'Physical Risk Factor'])
 
@@ -303,51 +351,6 @@ def create_gradient_heatmap(heatmap_df):
     st.pyplot(plt)
 
 
-def create_gradient_heatmap(df):
-    # Plotting the gradient heatmap
-    fig, ax = plt.subplots(figsize=(8, 6))
-
-    # Define a custom gradient colormap
-    colors = ['green', 'yellow', 'red']
-    cmap = LinearSegmentedColormap.from_list('custom', colors)
-
-    # Create grid for heatmap
-    X, Y = np.meshgrid(np.linspace(0.5, 3.5, 100), np.linspace(0.5, 3.5, 100))
-    Z = X + Y  # Combine X and Y to form a grid
-
-    # Map exposure levels to circle sizes
-    size_map = {'Low': 50, 'Medium': 150, 'High': 450}
-
-    # Plot the gradient heatmap
-    im = ax.imshow(Z, cmap=cmap, origin='lower', extent=[0.5, 3.5, 0.5, 3.5], alpha=0.5)
-
-    # Scatter plot for LoBs with labels and varying circle sizes based on exposure
-    for _, row in df.iterrows():
-        if not np.isnan(row['Physical Risk Result']) and not np.isnan(row['Transitional Risk Result']):
-            circle_size = size_map[row['Exposure Materiality']]  # Dynamic circle size based on exposure materiality
-            ax.scatter(row['Physical Risk Result'], row['Transitional Risk Result'], color='black', zorder=2, s=circle_size)
-            # Shorten name if longer than 15 characters for heatmap only
-            short_name = row['Short Name'] if len(row['Lines of Business']) > 15 else row['Lines of Business']
-            ax.text(row['Physical Risk Result'] + 0.1, row['Transitional Risk Result'], short_name, color='black', fontsize=8, zorder=3, ha='left', va='center')
-
-    # Set labels and title
-    ax.set_xlabel('Physical Risk')
-    ax.set_ylabel('Transitional Risk')
-    ax.set_xticks([1, 2, 3])
-    ax.set_xticklabels(['Low', 'Medium', 'High'])
-    ax.set_yticks([1, 2, 3])
-    ax.set_yticklabels(['Low', 'Medium', 'High'])
-    ax.set_title('Insurance Lines of Business Heatmap')
-
-    # Set axis limits
-    ax.set_xlim(0.5, 3.5)
-    ax.set_ylim(0.5, 3.5)
-
-    # Automatically adjust layout
-    fig.tight_layout()
-
-    # Show plot using st.pyplot to ensure it updates reactively
-    st.pyplot(fig)
 
 
         
