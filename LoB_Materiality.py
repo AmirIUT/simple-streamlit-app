@@ -195,14 +195,15 @@ def section_2_investment_activities(session_state):
 
     # Define the asset allocation data as a multiline string (placeholder for CSV or text input)
     asset_csv_data = """Asset Class,Transition Risk Factor,Physical Risk Factor,Exposure,Explanation
-    Corporate Bonds,1,2,Low,"Transition Risk: Low as medical underwriting is less impacted by climate policies. Physical Risk: Moderate due to increased health claims from heatwaves, diseases, etc. caused by climate change."
-    Government Bonds,1,2,Low,"Transition Risk: Low as medical underwriting is less impacted by climate policies. Physical Risk: Moderate due to increased health claims from heatwaves, diseases, etc. caused by climate change."
+    Corporate Bonds,1,2,High,"Transition Risk: Low as medical underwriting is less impacted by climate policies. Physical Risk: Moderate due to increased health claims from heatwaves, diseases, etc. caused by climate change."
+    Government Bonds,1,2,High,"Transition Risk: Low as medical underwriting is less impacted by climate policies. Physical Risk: Moderate due to increased health claims from heatwaves, diseases, etc. caused by climate change."
     Equity,1,2,Low,"Transition Risk: Low as medical underwriting is less impacted by climate policies. Physical Risk: Moderate due to increased health claims from heatwaves, diseases, etc. caused by climate change."
     Property,1,2,Low,"Transition Risk: Low as medical underwriting is less impacted by climate policies. Physical Risk: Moderate due to increased health claims from heatwaves, diseases, etc. caused by climate change."
     Loans,1,2,Low,"Transition Risk: Low as medical underwriting is less impacted by climate policies. Physical Risk: Moderate due to increased health claims from heatwaves, diseases, etc. caused by climate change."
     Holdings in related undertakings including participations,1,2,Low,"Transition Risk: Low as medical underwriting is less impacted by climate policies. Physical Risk: Moderate due to increased health claims from heatwaves, diseases, etc. caused by climate change."
     Collective investment taking,1,2,Low,"Transition Risk: Low as medical underwriting is less impacted by climate policies. Physical Risk: Moderate due to increased health claims from heatwaves, diseases, etc. caused by climate change."
     Other assets,1,2,Low,"Transition Risk: Low as medical underwriting is less impacted by climate policies. Physical Risk: Moderate due to increased health claims from heatwaves, diseases, etc. caused by climate change."
+   
     """
 
     # Read the CSV from the multiline string (you can replace this with reading from a file)
@@ -343,7 +344,7 @@ def create_gradient_heatmap_assets(heatmap_df):
     # Check if 'Asset Class', 'Transition Risk Factor', and 'Physical Risk Factor' columns exist
     required_columns = ['Asset Class', 'Transition Risk Factor', 'Physical Risk Factor']
     if not all(col in heatmap_df.columns for col in required_columns):
-        st.write("Error: Required columns missing in dataframe.")
+        st.error("Error: Required columns missing in dataframe.")
         return
     
     # Check data types and convert if necessary
@@ -359,7 +360,9 @@ def create_gradient_heatmap_assets(heatmap_df):
     plt.ylabel('Asset Class')
     plt.xticks(rotation=45)
     plt.yticks(rotation=0)
+    plt.tight_layout()  # Ensure layout is tight to avoid overlapping labels
     st.pyplot(plt)
+
 
         
 def Methodology_Text():
