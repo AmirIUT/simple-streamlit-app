@@ -138,7 +138,6 @@ Fire and other damage to property insurance,FIRE,3,3,High,"Transition Risk: High
     df_display['Explanation'] = df_filtered['Explanation']
     st.write(df_display)
 
-
 def section_2_investment_activities(session_state):
     # New section: Investment Activities - Exposure Information
     st.header("2. Investment Activities")
@@ -146,50 +145,65 @@ def section_2_investment_activities(session_state):
     # Section 2.1: Asset Allocation
     st.subheader("2.1 Asset Allocation")
 
-    # Define the asset allocation data as a list of dictionaries
-    asset_data = [
-        {"Asset class": "Corporate Bonds", "Exposure": ""},
-        {"Asset class": "Government Bonds", "Exposure": ""},
-        {"Asset class": "Equity", "Exposure": ""},
-        {"Asset class": "Property", "Exposure": ""},
-        {"Asset class": "Loans", "Exposure": ""},
-        {"Asset class": "Holdings in related undertakings, including participations", "Exposure": ""},
-        {"Asset class": "Collective investment taking", "Exposure": ""},
-        {"Asset class": "Other assets", "Exposure": ""}
-    ]
+    # Define the asset allocation data as a multiline string (placeholder for CSV or text input)
+    asset_csv_data = """Asset Class, Transition Risk Factor,Physical Risk Factor,Exposure,Explanation
+    Corporate Bonds,1,2,Low,"Transition Risk: Low as medical underwriting is less impacted by climate policies. Physical Risk: Moderate due to increased health claims from heatwaves, diseases, etc. caused by climate change."
+    Government Bonds,1,2,Low,"Transition Risk: Low as medical underwriting is less impacted by climate policies. Physical Risk: Moderate due to increased health claims from heatwaves, diseases, etc. caused by climate change."
+    Equity,1,2,Low,"Transition Risk: Low as medical underwriting is less impacted by climate policies. Physical Risk: Moderate due to increased health claims from heatwaves, diseases, etc. caused by climate change."
+    Property,1,2,Low,"Transition Risk: Low as medical underwriting is less impacted by climate policies. Physical Risk: Moderate due to increased health claims from heatwaves, diseases, etc. caused by climate change."
+    Loans,1,2,Low,"Transition Risk: Low as medical underwriting is less impacted by climate policies. Physical Risk: Moderate due to increased health claims from heatwaves, diseases, etc. caused by climate change."
+    Holdings in related undertakings including participations,1,2,Low,"Transition Risk: Low as medical underwriting is less impacted by climate policies. Physical Risk: Moderate due to increased health claims from heatwaves, diseases, etc. caused by climate change."
+    Collective investment taking,1,2,Low,"Transition Risk: Low as medical underwriting is less impacted by climate policies. Physical Risk: Moderate due to increased health claims from heatwaves, diseases, etc. caused by climate change."
+    Other assets,1,2,Low,"Transition Risk: Low as medical underwriting is less impacted by climate policies. Physical Risk: Moderate due to increased health claims from heatwaves, diseases, etc. caused by climate change."
 
-    # Convert the asset data to a DataFrame
-    asset_df = pd.DataFrame(asset_data)
+    """
+
+    # Read the CSV from the multiline string (you can replace this with reading from a file)
+    asset_df = pd.read_csv(io.StringIO(asset_csv_data.strip()))
 
     # Initialize an empty list to store updated asset exposure values
     asset_exposure = []
 
-    # Create a table layout for asset allocation
-    asset_cols = st.columns([0.1, 1, 1])  # Column layout for index, asset classes, and dropdowns
-    asset_cols[0].write("**#**")
-    asset_cols[1].write("**Asset Class**")
-    asset_cols[2].write("**Asset Class Exposure as Share of Total Asset**")
+    # Create a layout using st.columns to divide the page
+    columns = st.columns([0.1, 1, 1])  # Column layout for index, asset classes, and dropdowns
+    columns[0].write("**#**")
+    columns[1].write("**Asset Class**")
+    columns[2].write("**Asset Class Exposure as Share of Total Asset**")
 
-    # List to store relevant asset classes based on Section 2.1 criteria
+    # List to store relevant asset classes based on criteria
     relevant_asset_classes = []
 
+    # Display asset allocation table and selectboxes
     for idx, row in asset_df.iterrows():
-        asset_cols = st.columns([0.1, 1, 1])
-        asset_cols[0].write(f"**{idx+1}**")
-        asset_cols[1].write(row['Asset class'])
-        exposure = asset_cols[2].selectbox("", options=["Low", "Medium", "High", "Not relevant/No Exposure"], index=1, key=f"exposure_{idx}", help=f"Select exposure level for {row['Asset class']}", label_visibility="collapsed")
+        col = st.columns([0.1, 1, 1])
+        col[0].write(f"**{idx + 1}**")
+        col[1].write(row['Asset class'])
+        exposure = col[2].selectbox("", options=["Low", "Medium", "High", "Not relevant/No Exposure"], index=1,
+                                    key=f"asset_exposure_{idx}",
+                                    help=f"Select exposure level for {row['Asset class']}",
+                                    label_visibility="collapsed")
         asset_exposure.append(exposure)
 
         # Check if exposure level is Low or Not relevant/No Exposure
         if exposure not in ["Low", "Not relevant/No Exposure"]:
             relevant_asset_classes.append(row['Asset class'])
 
-    # Add the updated exposure values to the DataFrame
+    # Update the DataFrame with the selected asset exposure
     asset_df['Exposure'] = asset_exposure
 
-    # Display the asset allocation table
-    # st.write(asset_df)
+    # Filter out rows where exposure is "Not relevant/No Exposure"
+    relevant_asset_df = asset_df[asset_df['Exposure'] != "Not relevant/No Exposure"].copy()
 
+    # Display the relevant asset allocation table
+    st.write("### Relevant Asset Allocation")
+    st.write(relevant_asset_df)
+
+    # Optionally, you can perform further computations or visualizations here based on `relevant_asset_df`
+
+
+
+    
+    #----------------------------------------------------------------------------------------------
     # New question before section 2.2
     st.write("### Are the sectoral and country breakdown of the investment activities available?")
     breakdown_available = st.radio("Choose option:", ("Yes", "No"))
