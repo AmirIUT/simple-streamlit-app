@@ -288,6 +288,19 @@ def section_2_investment_activities(session_state):
             # Third column: Exposure selectbox for property
             exposure_property = property_row[1].selectbox("", options=["Low", "Medium", "High", "Not relevant/No Exposure"], key=f"exposure_property_{i}", help=f"Select the exposure level for property portfolio")
         
+def create_gradient_heatmap(heatmap_df):
+    # Ensure the dataframe is sorted to maintain consistency in the heatmap
+    heatmap_df = heatmap_df.sort_values(by=['Transition Risk Factor', 'Physical Risk Factor'])
+
+    # Create the heatmap using seaborn
+    plt.figure(figsize=(10, 6))
+    sns.set(font_scale=1)  # Adjust font scale for better readability
+    sns.heatmap(heatmap_df.pivot('Asset Class', 'Transition Risk Factor', 'Physical Risk Factor'),
+                annot=True, cmap="coolwarm", fmt=".2f", cbar_kws={'label': 'Physical Risk Factor'})
+    plt.title('Gradient Heatmap of Transition and Physical Risk Factors')
+    plt.xlabel('Transition Risk Factor')
+    plt.ylabel('Asset Class')
+    st.pyplot(plt)
 
 
 def create_gradient_heatmap(df):
