@@ -22,31 +22,21 @@ class SessionState:
 
 def main():
     st.set_page_config(page_title="ESG Risk Materiality Assessment Narrative Tool", layout="wide")
-
-    # Initialize session state
-    session_state = SessionState.get()
-
-    # Display the introductory text and disclaimer
-    display_intro_and_disclaimer()
-
-    # Display ESG Risk Materiality Assessment Narrative Tool
-    section_1_insurance_activities(session_state)
-    section_2_investment_activities(session_state)
-   
-    
-    # Display the sidebar navigation
     st.sidebar.title("Navigation")
     page = st.sidebar.radio("Go to", ["Introduction", "Insurance Activities", "Investment Activities", "Methodology"])
 
     if page == "Introduction":
-        display_intro_and_disclaimer()
-    elif page == "Insurance Activities":
-        section_1_insurance_activities(session_state)
-    elif page == "Investment Activities":
-        section_2_investment_activities(session_state)
-    elif page == "Methodology":
-        Methodology_Text()
+            display_intro_and_disclaimer()
+        elif page == "Insurance Activities":
+            section_1_insurance_activities(session_state)
+        elif page == "Investment Activities":
+            section_2_investment_activities(session_state)
+        elif page == "Methodology":
+            Methodology_Text()
         
+    # Initialize session state
+    session_state = SessionState.get()
+
 
 def display_intro_and_disclaimer():
     st.title("ESG Risk Materiality Assessment Narrative Tool")
