@@ -34,15 +34,19 @@ def main():
     section_2_investment_activities(session_state)
    
     
-    # Add a button to open the detailed analysis in a new expander
-    if st.button("Methodology"):
-        session_state.Methodology_Text = True
+    # Display the sidebar navigation
+    st.sidebar.title("Navigation")
+    page = st.sidebar.radio("Go to", ["Introduction", "Insurance Activities", "Investment Activities", "Methodology"])
 
-    # Display Detailed Analysis in an expander if toggled on
-    if session_state.Methodology_Text:
-        with st.beta_expander("Methodology"):
-            Methodology_Text()
-
+    if page == "Introduction":
+        display_intro_and_disclaimer()
+    elif page == "Insurance Activities":
+        section_1_insurance_activities(session_state)
+    elif page == "Investment Activities":
+        section_2_investment_activities(session_state)
+    elif page == "Methodology":
+        Methodology_Text()
+        
 
 def display_intro_and_disclaimer():
     st.title("ESG Risk Materiality Assessment Narrative Tool")
@@ -310,10 +314,12 @@ def create_gradient_heatmap(df):
     st.pyplot(fig)
 
 
-    
+        
 def Methodology_Text():
-    
-    st.write("This is the detailed analysis page where you can show additional insights or information.")
+    st.header("Methodology")
+    st.write("This is the detailed methodology page where you can explain your methodology in depth.")
+    # Add more content as needed.
+
     # st.title("Methodology")
     
     # Add your Methology Content here
