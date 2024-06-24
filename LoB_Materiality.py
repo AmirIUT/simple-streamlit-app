@@ -340,6 +340,16 @@ def create_gradient_heatmap_assets(heatmap_df):
     # Ensure the dataframe is sorted to maintain consistency in the heatmap
     heatmap_df = heatmap_df.sort_values(by=['Transition Risk Factor', 'Physical Risk Factor'])
 
+    # Check if 'Asset Class', 'Transition Risk Factor', and 'Physical Risk Factor' columns exist
+    required_columns = ['Asset Class', 'Transition Risk Factor', 'Physical Risk Factor']
+    if not all(col in heatmap_df.columns for col in required_columns):
+        st.write("Error: Required columns missing in dataframe.")
+        return
+    
+    # Check data types and convert if necessary
+    heatmap_df['Transition Risk Factor'] = pd.to_numeric(heatmap_df['Transition Risk Factor'], errors='coerce')
+    heatmap_df['Physical Risk Factor'] = pd.to_numeric(heatmap_df['Physical Risk Factor'], errors='coerce')
+
     # Create the heatmap using matplotlib.pyplot directly
     plt.figure(figsize=(10, 6))
     plt.imshow(heatmap_df.pivot('Asset Class', 'Transition Risk Factor', 'Physical Risk Factor'), cmap='coolwarm', interpolation='nearest', aspect='auto')
@@ -350,8 +360,6 @@ def create_gradient_heatmap_assets(heatmap_df):
     plt.xticks(rotation=45)
     plt.yticks(rotation=0)
     st.pyplot(plt)
-
-
 
         
 def Methodology_Text():
