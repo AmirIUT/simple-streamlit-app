@@ -264,8 +264,10 @@ def section_2_investment_activities(session_state):
 
     # Create a reactive plot using streamlit's st.pyplot
     create_gradient_heatmap_assets(heatmap_df)
-# Create a reactive plot using streamlit's st.pyplot
-    create_gradient_heatmap_assets(relevant_asset_df)
+#-----------------------------
+    
+    # Create a reactive plot using streamlit's st.pyplot
+    #create_gradient_heatmap_assets(relevant_asset_df)
 
     # New question before section 2.2
     st.write("### Are the sectoral and country breakdown of the investment activities available?")
