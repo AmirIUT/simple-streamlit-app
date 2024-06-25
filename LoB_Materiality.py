@@ -267,7 +267,6 @@ def section_2_investment_activities(session_state):
 
 
 def create_gradient_heatmap_assets(df):
-    # Plotting the gradient heatmap
     fig, ax = plt.subplots(figsize=(8, 6))
     colors = ['green', 'yellow', 'red']
     cmap = LinearSegmentedColormap.from_list('custom', colors)
@@ -275,43 +274,20 @@ def create_gradient_heatmap_assets(df):
     X, Y = np.meshgrid(np.linspace(0.5, 3.5, 100), np.linspace(0.5, 3.5, 100))
     Z = (X + Y) / 2  # Combine x and y coordinates to create gradient effect
 
-    # Map exposure levels to circle sizes
-    size_map = {'Low': 50, 'Medium': 150, 'High': 450}
-
-    # Plot the gradient heatmap
-    im = ax.imshow(Z, cmap=cmap, origin='lower', extent=[0.5, 3.5, 0.5, 3.5], alpha=0.5)
-
-    # Scatter plot for Assets with labels and varying circle sizes based on exposure
-
     heatmap = ax.pcolormesh(X, Y, Z, shading='auto', cmap=cmap)
     fig.colorbar(heatmap, ax=ax, label='Risk Score')
 
     # Add text labels for each asset
     for _, row in df.iterrows():
-        if not np.isnan(row['Physical Risk Result']) and not np.isnan(row['Transitional Risk Result']):
-            circle_size = size_map[row['Exposure Materiality']]  # Dynamic circle size based on exposure materiality
-            ax.scatter(row['Physical Risk Result'], row['Transitional Risk Result'], color='black', zorder=2, s=circle_size)
-            # Shorten name if longer than 15 characters for heatmap only
-            short_name = row['Short Name'] if len(row['Asset Class']) > 15 else row['Asset Class']
-            ax.text(row['Physical Risk Result'] + 0.1, row['Transitional Risk Result'], short_name, color='black', fontsize=8, zorder=3, ha='left', va='center')
-    
-    # Set labels and title
-    ax.set_xlabel('Physical Risk')
-    ax.set_ylabel('Transitional Risk')
+        ax.text(row['Transition Risk Factor'], row['Physical Risk Factor'], row['Short Name'],
+                ha='center', va='center', color='black', fontsize=10,
+                bbox=dict(facecolor='white', edgecolor='none', alpha=0.8))
+
+    ax.set_xlabel('Transition Risk Factor')
+    ax.set_ylabel('Physical Risk Factor')
     ax.set_xticks([1, 2, 3])
-    ax.set_xticklabels(['Low', 'Medium', 'High'])
     ax.set_yticks([1, 2, 3])
-    ax.set_yticklabels(['Low', 'Medium', 'High'])
-    ax.set_title('Investment Classes Heatmap')
-    
-    # Set axis limits
-    ax.set_xlim(0.5, 3.5)
-    ax.set_ylim(0.5, 3.5)
-
-    # Automatically adjust layout
-    fig.tight_layout()
-
-    # Show plot using st.pyplot to ensure it updates reactively
+    ax.set_title('Asset Class Heatmap')
     st.pyplot(fig)
 
 # ----------------------------------------------------------------------------------------
