@@ -194,14 +194,14 @@ def section_2_investment_activities(session_state):
 
     # Define the asset allocation data as a multiline string
     asset_csv_data = """Asset Class,Short Name,Transition Risk Factor,Physical Risk Factor,Explanation
-    Corporate Bonds,C-BOND,1,2,"Transition Risk: Low as medical underwriting is less impacted by climate policies. Physical Risk: Moderate due to increased health claims from heatwaves, diseases, etc. caused by climate change."
-    Government Bonds,G-BOND,1,2,"Transition Risk: Low as medical underwriting is less impacted by climate policies. Physical Risk: Moderate due to increased health claims from heatwaves, diseases, etc. caused by climate change."
-    Equity,EQ,1,2,"Transition Risk: Low as medical underwriting is less impacted by climate policies. Physical Risk: Moderate due to increased health claims from heatwaves, diseases, etc. caused by climate change."
-    Property,PROP,1,2,"Transition Risk: Low as medical underwriting is less impacted by climate policies. Physical Risk: Moderate due to increased health claims from heatwaves, diseases, etc. caused by climate change."
-    Loans,LOAN,1,2,"Transition Risk: Low as medical underwriting is less impacted by climate policies. Physical Risk: Moderate due to increased health claims from heatwaves, diseases, etc. caused by climate change."
-    Holdings in related undertakings including participations,PART,1,2,"Transition Risk: Low as medical underwriting is less impacted by climate policies. Physical Risk: Moderate due to increased health claims from heatwaves, diseases, etc. caused by climate change."
-    Collective investment taking,CIU,1,2,"Transition Risk: Low as medical underwriting is less impacted by climate policies. Physical Risk: Moderate due to increased health claims from heatwaves, diseases, etc. caused by climate change."
-    Other assets,OTHER,1,2,"Transition Risk: Low as medical underwriting is less impacted by climate policies. Physical Risk: Moderate due to increased health claims from heatwaves, diseases, etc. caused by climate change."
+    Corporate Bonds,C-BOND,2,2,"Transition Risk: Corporate bonds can be exposed to industries that may face regulatory changes and shifts towards sustainability. Physical Risk: Companies may also be affected by physical risks, but it varies by industry."
+    Government Bonds,G-BOND,1,1,"Transition Risk: Governments are generally more stable and can adapt policies over time. Physical Risk: The impact on government bonds is relatively low as governments can spread risk across many sectors."
+    Equity,EQUTY,3,3,"Transition Risk: Equities are highly exposed to market sentiment and regulatory changes. Physical Risk: Physical risks can directly impact company operations and revenues."
+    Property,PROP,3,3,"Transition Risk: Property investments are directly impacted by regulatory changes related to sustainability. Physical Risk: Properties are highly susceptible to physical risks like extreme weather events."
+    Loans,LOAN,2,2,"Transition Risk: The risk depends on the sectors to which loans are extended. Physical Risk: Physical risks can impact the ability of borrowers to repay loans, particularly in vulnerable sectors."
+    Holdings in related undertakings including participations,PART,2,2,"Transition Risk: Holdings in related companies can face transition risks if those companies are in vulnerable sectors. Physical Risk: Physical risks depend on the geographic and sectoral exposure of the undertakings."
+    Collective investment taking,CIU,3,3,"Transition Risk: Public funds, especially equity, are sensitive to market changes and regulatory shifts. Physical Risk: Funds are exposed to diverse industries and geographies, increasing their vulnerability to physical risks."
+    Other assets,OTHER,2,2,"Transition Risk: This category includes a variety of assets, generally leading to mid-level transition risk. Physical Risk: The physical risk is also mid-level due to the mixed nature of these assets."
     """
 
     # Read the CSV from the multiline string
