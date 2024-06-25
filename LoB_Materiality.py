@@ -379,8 +379,8 @@ def create_gradient_heatmap_assets(df):
             else:
                 text_positions[pos] = 0  # Initialize position
 
-            # Shorten name if longer than 15 characters for heatmap only
-            short_name = row['Short Name'] if len(row['Short Name']) <= 15 else row['Short Name'][:15]
+            # Use short name and add a comma if there's an overlap
+            short_name = row['Short Name'] if text_positions[pos] == 0 else row['Short Name'] + ','
             ax.text(row['Physical Risk Result'] + 0.1, row['Transitional Risk Result'] + text_positions[pos], short_name, color='black', fontsize=8, zorder=3, ha='left', va='center')
 
     # Set labels and title
