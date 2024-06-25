@@ -363,14 +363,25 @@ def create_gradient_heatmap_assets(df):
     # Plot the gradient heatmap
     im = ax.imshow(Z, cmap=cmap, origin='lower', extent=[0.5, 3.5, 0.5, 3.5], alpha=0.5)
 
+    # To avoid overlapping text, we will keep track of positions
+    text_positions = {}
+
     # Scatter plot for assets with labels and varying circle sizes based on exposure
     for _, row in df.iterrows():
         if not np.isnan(row['Physical Risk Result']) and not np.isnan(row['Transitional Risk Result']):
             circle_size = size_map[row['asset_exposure']]  # Dynamic circle size based on exposure materiality
             ax.scatter(row['Physical Risk Result'], row['Transitional Risk Result'], color='black', zorder=2, s=circle_size)
+            
+            # Adjust position to avoid overlap
+            pos = (row['Physical Risk Result'], row['Transitional Risk Result'])
+            if pos in text_positions:
+                text_positions[pos] += 0.1  # Increment y position slightly to avoid overlap
+            else:
+                text_positions[pos] = 0  # Initialize position
+
             # Shorten name if longer than 15 characters for heatmap only
             short_name = row['Short Name'] if len(row['Short Name']) <= 15 else row['Short Name'][:15]
-            ax.text(row['Physical Risk Result'] + 0.1, row['Transitional Risk Result'], short_name, color='black', fontsize=8, zorder=3, ha='left', va='center')
+            ax.text(row['Physical Risk Result'] + 0.1, row['Transitional Risk Result'] + text_positions[pos], short_name, color='black', fontsize=8, zorder=3, ha='left', va='center')
 
     # Set labels and title
     ax.set_xlabel('Physical Risk')
