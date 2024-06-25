@@ -185,7 +185,6 @@ def create_gradient_heatmap(df):
     st.pyplot(fig)
 
 
-# ----------------------------------------------------------------------------------------
 def section_2_investment_activities(session_state):
     # New section: Investment Activities - Exposure Information
     st.header("2. Investment Activities")
@@ -265,7 +264,7 @@ def section_2_investment_activities(session_state):
 
     # Create a reactive plot using streamlit's st.pyplot
     create_gradient_heatmap_assets(heatmap_df)
-# ----------------------------------------------------------------------------------------
+
 
 def create_gradient_heatmap_assets(df):
     fig, ax = plt.subplots(figsize=(8, 6))
