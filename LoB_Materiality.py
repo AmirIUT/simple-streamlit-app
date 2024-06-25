@@ -219,7 +219,7 @@ def section_2_investment_activities(session_state):
     columns[0].write("**#**")
     columns[1].write("**Asset Class**")
     columns[2].write("**Asset Class Exposure as Share of Total Asset**")
-    asset_exposure = []
+
     # List to store relevant asset classes based on criteria
     relevant_asset_classes = []
 
@@ -248,19 +248,24 @@ def section_2_investment_activities(session_state):
     st.write("### Relevant Asset Allocation")
     st.write(relevant_asset_df)
 
-    # Update the DataFrame with the selected exposure materiality
-    df['Exposure Materiality Asset'] = asset_exposure
-    
-    
+    # Assume df is some DataFrame that needs to be updated with exposure materiality
+    df = pd.DataFrame({
+        'Asset Class': asset_df['Asset Class'],
+        'Transition Risk Factor': asset_df['Transition Risk Factor'],
+        'Physical Risk Factor': asset_df['Physical Risk Factor'],
+        'Exposure Materiality Asset': asset_exposure
+    })
+
     # Calculate average exposure level for each risk factor
-    df_filtered['Physical Risk Result'] = df_filtered.apply(lambda row: (["Low", "Medium", "High"].index(row['Exposure Materiality Asset']) + 1 + row['Physical Risk Factor']) / 2, axis=1)
-    df_filtered['Transitional Risk Result'] = df_filtered.apply(lambda row: (["Low", "Medium", "High"].index(row['Exposure Materiality Asset']) + 1 + row['Transition Risk Factor']) / 2, axis=1)
+    df['Physical Risk Result'] = df.apply(lambda row: (["Low", "Medium", "High"].index(row['Exposure Materiality Asset']) + 1 + row['Physical Risk Factor']) / 2, axis=1)
+    df['Transitional Risk Result'] = df.apply(lambda row: (["Low", "Medium", "High"].index(row['Exposure Materiality Asset']) + 1 + row['Transition Risk Factor']) / 2, axis=1)
 
     # Create a DataFrame for the heatmap
     heatmap_df = pd.DataFrame({
-        'Short Name': transition_risk_avg.index,
-        'Transition Risk Factor': df_filtered['Physical Risk Result'],
-        'Physical Risk Factor': df_filtered['Physical Risk Result']
+        'Short Name': df['Asset Class'],
+        'Physical Risk Result': df['Physical Risk Result'],
+        'Transitional Risk Result': df['Transitional Risk Result'],
+        'asset_exposure': df['Exposure Materiality Asset']
     })
 
     # Display the heatmap and results
@@ -364,7 +369,7 @@ def create_gradient_heatmap_assets(df):
             circle_size = size_map[row['asset_exposure']]  # Dynamic circle size based on exposure materiality
             ax.scatter(row['Physical Risk Result'], row['Transitional Risk Result'], color='black', zorder=2, s=circle_size)
             # Shorten name if longer than 15 characters for heatmap only
-            short_name = row['Short Name'] if len(row['Asset Class']) > 15 else row['Asset Class']
+            short_name = row['Short Name'] if len(row['Short Name']) <= 15 else row['Short Name'][:15]
             ax.text(row['Physical Risk Result'] + 0.1, row['Transitional Risk Result'], short_name, color='black', fontsize=8, zorder=3, ha='left', va='center')
 
     # Set labels and title
