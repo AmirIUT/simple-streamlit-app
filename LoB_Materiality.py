@@ -402,6 +402,17 @@ def create_gradient_heatmap_assets(df):
     # Show plot using st.pyplot to ensure it updates reactively
     st.pyplot(fig)
 
+# Example DataFrame structure for calling the function
+data = {
+    'Short Name': ['C-BOND', 'G-BOND', 'EQ', 'PROP', 'LOAN', 'PART', 'CIU', 'OTHER'],
+    'Physical Risk Result': [2, 1, 3, 3, 2, 2, 3, 2],
+    'Transitional Risk Result': [2, 1, 3, 3, 2, 2, 3, 2],
+    'asset_exposure': ['Medium', 'Low', 'High', 'High', 'Medium', 'Medium', 'High', 'Medium']
+}
+df = pd.DataFrame(data)
+
+# Call the function with example data
+create_gradient_heatmap_assets(df)
 
 # ----------------------------------------------------------------------------------------
         
