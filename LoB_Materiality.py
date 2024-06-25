@@ -193,20 +193,19 @@ def section_2_investment_activities(session_state):
     # Section 2.1: Asset Allocation
     st.subheader("2.1 Asset Allocation")
 
-    # Define the asset allocation data as a multiline string (placeholder for CSV or text input)
+    # Define the asset allocation data as a multiline string
     asset_csv_data = """Asset Class,Transition Risk Factor,Physical Risk Factor,Exposure,Explanation
-    Corporate Bonds,1,2,High,"Transition Risk: Low as medical underwriting is less impacted by climate policies. Physical Risk: Moderate due to increased health claims from heatwaves, diseases, etc. caused by climate change."
-    Government Bonds,1,2,High,"Transition Risk: Low as medical underwriting is less impacted by climate policies. Physical Risk: Moderate due to increased health claims from heatwaves, diseases, etc. caused by climate change."
-    Equity,1,2,Low,"Transition Risk: Low as medical underwriting is less impacted by climate policies. Physical Risk: Moderate due to increased health claims from heatwaves, diseases, etc. caused by climate change."
-    Property,1,2,Low,"Transition Risk: Low as medical underwriting is less impacted by climate policies. Physical Risk: Moderate due to increased health claims from heatwaves, diseases, etc. caused by climate change."
-    Loans,1,2,Low,"Transition Risk: Low as medical underwriting is less impacted by climate policies. Physical Risk: Moderate due to increased health claims from heatwaves, diseases, etc. caused by climate change."
-    Holdings in related undertakings including participations,1,2,Low,"Transition Risk: Low as medical underwriting is less impacted by climate policies. Physical Risk: Moderate due to increased health claims from heatwaves, diseases, etc. caused by climate change."
-    Collective investment taking,1,2,Low,"Transition Risk: Low as medical underwriting is less impacted by climate policies. Physical Risk: Moderate due to increased health claims from heatwaves, diseases, etc. caused by climate change."
-    Other assets,1,2,Low,"Transition Risk: Low as medical underwriting is less impacted by climate policies. Physical Risk: Moderate due to increased health claims from heatwaves, diseases, etc. caused by climate change."
-   
-    """
-
-    # Read the CSV from the multiline string (you can replace this with reading from a file)
+Corporate Bonds,1,2,High,"Transition Risk: Moderate impact due to changes in regulation. Physical Risk: Moderate impact from climate change effects."
+Government Bonds,1,2,High,"Transition Risk: Low impact due to stable regulations. Physical Risk: Moderate impact from climate-related disasters."
+Equity,1,2,Low,"Transition Risk: Low impact on equity markets. Physical Risk: Moderate impact due to company-specific risks."
+Property,1,2,Low,"Transition Risk: Low impact on property values. Physical Risk: Moderate impact due to increased weather events."
+Loans,1,2,Low,"Transition Risk: Low impact on loan portfolios. Physical Risk: Moderate impact from borrower-related risks."
+Holdings in related undertakings including participations,1,2,Low,"Transition Risk: Low impact on participations. Physical Risk: Moderate impact due to shared risks."
+Collective investment taking,1,2,Low,"Transition Risk: Low impact on collective investments. Physical Risk: Moderate impact from diversified holdings."
+Other assets,1,2,Low,"Transition Risk: Low impact on other assets. Physical Risk: Moderate impact from miscellaneous factors."
+"""
+    
+    # Read the CSV from the multiline string
     asset_df = pd.read_csv(io.StringIO(asset_csv_data.strip()))
 
     # Display the raw data to debug
@@ -250,25 +249,19 @@ def section_2_investment_activities(session_state):
     st.write("### Relevant Asset Allocation")
     st.write(relevant_asset_df)
 
-    # Calculate average exposure level for each risk factor
-    transition_risk_avg = relevant_asset_df.groupby('Asset Class')['Transition Risk Factor'].mean()
-    physical_risk_avg = relevant_asset_df.groupby('Asset Class')['Physical Risk Factor'].mean()
+    # Calculate average risk factors based on exposure materiality
+    exposure_map = {"Low": 1, "Medium": 2, "High": 3}
 
-    # Create a DataFrame for the heatmap
-    heatmap_df = pd.DataFrame({
-        'Asset Class': transition_risk_avg.index,
-        'Transition Risk Factor': transition_risk_avg.values,
-        'Physical Risk Factor': physical_risk_avg.values
-    })
+    relevant_asset_df['Exposure Value'] = relevant_asset_df['Exposure'].map(exposure_map)
+    relevant_asset_df['Physical Risk Result'] = relevant_asset_df.apply(lambda row: (row['Exposure Value'] + row['Physical Risk Factor']) / 2, axis=1)
+    relevant_asset_df['Transition Risk Result'] = relevant_asset_df.apply(lambda row: (row['Exposure Value'] + row['Transition Risk Factor']) / 2, axis=1)
 
     # Display the heatmap and results
     st.write("### Heatmap and Results")
 
     # Create a reactive plot using streamlit's st.pyplot
-    create_gradient_heatmap_assets(heatmap_df)
-             
-    
-    #----------------------------------------------------------------------------------------------
+    create_gradient_heatmap_assets(relevant_asset_df)
+
     # New question before section 2.2
     st.write("### Are the sectoral and country breakdown of the investment activities available?")
     breakdown_available = st.radio("Choose option:", ("Yes", "No"))
@@ -309,7 +302,6 @@ def section_2_investment_activities(session_state):
         # List of countries for the dropdown
         countries = ["Please select", "USA", "UK", "Germany", "France", "Japan", "China", "Canada", "Australia", "India", "Brazil"]
         
-        
         # Header row
         st.write("Here we collect top five countries for government bonds")
         
@@ -335,34 +327,34 @@ def section_2_investment_activities(session_state):
         
             # Third column: Exposure selectbox for property
             exposure_property = property_row[1].selectbox("", options=["Low", "Medium", "High", "Not relevant/No Exposure"], key=f"exposure_property_{i}", help=f"Select the exposure level for property portfolio")
-        
+
 # Function to create gradient heatmap
-def create_gradient_heatmap_assets(heatmap_df):
-    # Ensure the dataframe is sorted to maintain consistency in the heatmap
-    heatmap_df = heatmap_df.sort_values(by=['Transition Risk Factor', 'Physical Risk Factor'])
+def create_gradient_heatmap_assets(df):
+    fig, ax = plt.subplots(figsize=(8, 6))
 
-    # Check if 'Asset Class', 'Transition Risk Factor', and 'Physical Risk Factor' columns exist
-    required_columns = ['Asset Class', 'Transition Risk Factor', 'Physical Risk Factor']
-    if not all(col in heatmap_df.columns for col in required_columns):
-        st.error("Error: Required columns missing in dataframe.")
-        return
-    
-    # Check data types and convert if necessary
-    heatmap_df['Transition Risk Factor'] = pd.to_numeric(heatmap_df['Transition Risk Factor'], errors='coerce')
-    heatmap_df['Physical Risk Factor'] = pd.to_numeric(heatmap_df['Physical Risk Factor'], errors='coerce')
+    # Define a custom gradient colormap
+    colors = ['green', 'yellow', 'red']
+    cmap = LinearSegmentedColormap.from_list('custom', colors)
 
-    # Create the heatmap using matplotlib.pyplot directly
-    plt.figure(figsize=(10, 6))
-    plt.imshow(heatmap_df.pivot('Asset Class', 'Transition Risk Factor', 'Physical Risk Factor'), cmap='coolwarm', interpolation='nearest', aspect='auto')
-    plt.colorbar(label='Physical Risk Factor')
-    plt.title('Gradient Heatmap of Transition and Physical Risk Factors')
-    plt.xlabel('Transition Risk Factor')
-    plt.ylabel('Asset Class')
-    plt.xticks(rotation=45)
-    plt.yticks(rotation=0)
-    plt.tight_layout()  # Ensure layout is tight to avoid overlapping labels
-    st.pyplot(plt)
+    # Create grid for heatmap
+    X, Y = np.meshgrid(np.linspace(0.5, 3.5, 100), np.linspace(0.5, 3.5, 100))
+    Z = (X + Y) / 2  # Combine x and y coordinates to create gradient effect
 
+    heatmap = ax.pcolormesh(X, Y, Z, shading='auto', cmap=cmap)
+    fig.colorbar(heatmap, ax=ax, label='Risk Score')
+
+    # Add text labels for each asset
+    for _, row in df.iterrows():
+        ax.text(row['Transition Risk Factor'], row['Physical Risk Factor'], row['Asset Class'],
+                ha='center', va='center', color='black', fontsize=10,
+                bbox=dict(facecolor='white', edgecolor='none', alpha=0.8))
+
+    ax.set_xlabel('Transition Risk Factor')
+    ax.set_ylabel('Physical Risk Factor')
+    ax.set_xticks([1, 2, 3])
+    ax.set_yticks([1, 2, 3])
+    ax.set_title('Asset Class Heatmap')
+    st.pyplot(fig)
 
         
 def Methodology_Text():
