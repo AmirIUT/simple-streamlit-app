@@ -193,7 +193,7 @@ def section_2_investment_activities(session_state):
     st.subheader("2.1 Asset Allocation")
 
     # Define the asset allocation data as a multiline string
-    asset_csv_data = """Asset Class,Short Name,Transition Risk Factor,Physical Risk Factor,Exposure,Explanation
+    asset_csv_data = """Asset Class,Short Name Assets,Transition Risk Factor,Physical Risk Factor,Exposure,Explanation
     Corporate Bonds,C-BOND,1,2,High,"Transition Risk: Low as medical underwriting is less impacted by climate policies. Physical Risk: Moderate due to increased health claims from heatwaves, diseases, etc. caused by climate change."
     Government Bonds,G-BOND,1,2,High,"Transition Risk: Low as medical underwriting is less impacted by climate policies. Physical Risk: Moderate due to increased health claims from heatwaves, diseases, etc. caused by climate change."
     Equity,EQ,1,2,Low,"Transition Risk: Low as medical underwriting is less impacted by climate policies. Physical Risk: Moderate due to increased health claims from heatwaves, diseases, etc. caused by climate change."
@@ -279,7 +279,7 @@ def create_gradient_heatmap_assets(df):
 
     # Add text labels for each asset
     for _, row in df.iterrows():
-        ax.text(row['Transition Risk Factor'], row['Physical Risk Factor'], row['Short Name'],
+        ax.text(row['Transition Risk Factor'], row['Physical Risk Factor'], row['Short Name Assets'],
                 ha='center', va='center', color='black', fontsize=10,
                 bbox=dict(facecolor='white', edgecolor='none', alpha=0.8))
 
