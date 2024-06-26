@@ -370,6 +370,8 @@ def section_2_2_sectoral_breakdown(df):
                     'exposure_numeric': exposure_numeric,
                     'CPRS Factor': cprs_factor
                 })
+            else:
+                st.write(f"No exposure data found for {asset_class}.")  # Debug message
 
     # Display the results as a DataFrame
     if results:
@@ -380,7 +382,6 @@ def section_2_2_sectoral_breakdown(df):
     else:
         st.write("No data found.")  # Display a message if no results are found
         return pd.DataFrame()  # Return an empty DataFrame if no results are found
-
 
 def create_gradient_heatmap_assets(df):
     # Plotting the gradient heatmap
