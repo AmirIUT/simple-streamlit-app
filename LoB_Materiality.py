@@ -370,7 +370,27 @@ def section_2_investment_activities(session_state):
         
                 # Print debug information to check values
                 st.write(f"Asset Class: {asset_class}, Exposure Level: {exposure_level}, CPRS Factor: {cprs_factor}")
-        
+
+                # Retrieve the exposure materiality for the current asset class from section 2.1
+                exposure_values = df[df['Asset Class'] == asset_class]['Exposure Materiality Asset']
+                
+                # Debug: Print asset_class and check if it matches any values in df['Asset Class']
+                print(f"DEBUG - asset_class: {asset_class}")
+                print(f"DEBUG - df['Asset Class'] values: {df['Asset Class'].unique()}")
+                
+                # Check if exposure_values DataFrame is not empty and retrieve the first value
+                if not exposure_values.empty:
+                    exposure = exposure_values.iloc[0]  # Get the first value
+                    print(f"DEBUG - Found exposure value: {exposure}")
+                else:
+                    exposure = "Not relevant/No Exposure"
+                    print("DEBUG - No exposure value found.")
+                
+                # Print the final exposure value
+                print(f"DEBUG - Final exposure value for {asset_class}: {exposure}")
+
+
+                
                 # Calculate average and print recommendation message
                 if exposure_level > 0 and cprs_factor > 0:
                     average = (exposure_level + cprs_factor) / 2
