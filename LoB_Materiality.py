@@ -381,7 +381,7 @@ def create_gradient_heatmap_assets(df):
                 text_positions[pos] = 0  # Initialize position
 
              # Use short name and add a comma if there's an overlap
-            short_name = row['Short Name Aseet'] if text_positions[pos] == 0 else row['Short Name Aseet'] + ','
+            short_name = row['Short Name Asset'] if text_positions[pos] == 0 else row['Short Name Asset'] + ','
             ax.text(row['Physical Risk Result'] + 0.1, row['Transitional Risk Result'] + text_positions[pos], short_name, color='black', fontsize=8, zorder=3, ha='left', va='center')
 
     # Set labels and title
