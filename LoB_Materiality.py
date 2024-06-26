@@ -351,7 +351,12 @@ def section_2_investment_activities(session_state):
                 cprs_factor = max(materiality_values)
         
                 # Retrieve the exposure level directly from the selectbox
-                exposure = df[df['Asset Class'] == asset_class]['Exposure Materiality Asset'].iloc[0]
+                exposure_values = df[df['Asset Class'] == asset_class]['Exposure Materiality Asset']
+                
+                if not exposure_values.empty:  # Check if the DataFrame is not empty
+                    exposure = exposure_values.iloc[0]  # Get the first value if there are any
+                else:
+                    exposure = "Not relevant/No Exposure"
         
                 # Assign numeric values based on exposure level
                 if exposure == "Low":
@@ -368,6 +373,8 @@ def section_2_investment_activities(session_state):
                     average = (exposure_level + cprs_factor) / 2
                     if average >= 2:
                         st.write(f"Sectoral benchmarking is highly recommended for {asset_class}.")
+                else:
+                    st.write(f"No valid exposure or materiality data found for {asset_class}.")
 
         # Add the "Government Bond" section
         st.markdown("#### Government Bonds - Country breakdown")
