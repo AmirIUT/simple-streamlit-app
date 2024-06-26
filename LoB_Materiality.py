@@ -369,29 +369,6 @@ def section_2_investment_activities(session_state):
                 else:
                     st.write(f"No valid exposure or materiality data found for {asset_class}.")
 
-                # Debug: Print asset_class and check if it matches any values in df['Asset Class']
-                print(f"DEBUG - asset_class: {asset_class}")
-                print(f"DEBUG - df['Short Name Asset'] values: {df['Short Name Asset'].unique()}")
-                
-                # Check if exposure_values DataFrame is not empty and retrieve the first value
-                if not exposure_values.empty:
-                    exposure = exposure_values.iloc[0]  # Get the first value
-                    print(f"DEBUG - Found exposure value: {exposure}")
-                else:
-                    exposure = "Not relevant/No Exposure"
-                    print("DEBUG - No exposure value found.")
-                
-                # Print the final exposure value
-                print(f"DEBUG - Final exposure value for {asset_class}: {exposure}")
-                
-                # Calculate average and print recommendation message
-                if exposure_level > 0 and cprs_factor > 0:
-                    average = (exposure_level + cprs_factor) / 2
-                    if average >= 2:
-                        st.write(f"Sectoral benchmarking is highly recommended for {asset_class}.")
-                else:
-                    st.write(f"No valid exposure or materiality data found for {asset_class}.")
-
                 
 #------------------------------------------------------------------------------------------------------
         # Add the "Government Bond" section
