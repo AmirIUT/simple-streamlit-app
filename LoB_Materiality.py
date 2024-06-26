@@ -262,7 +262,7 @@ def section_2_investment_activities(session_state):
 
     # Create a DataFrame for the heatmap
     heatmap_df = pd.DataFrame({
-        'Short Name': df['Short Name'],
+        'Short Name': df['Asset Class'],
         'Physical Risk Result': df['Physical Risk Result'],
         'Transitional Risk Result': df['Transitional Risk Result'],
         'asset_exposure': df['Exposure Materiality Asset']
