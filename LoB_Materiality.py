@@ -408,6 +408,7 @@ def section_2_investment_activities(session_state):
                         st.write(f"Sectoral benchmarking is highly recommended for {asset_class}.")
                 else:
                     st.write(f"No valid exposure or materiality data found for {asset_class}.")
+
 #------------------------------------------------------------------------------------------------------
         # Add the "Government Bond" section
         st.markdown("#### Government Bonds - Country breakdown")
