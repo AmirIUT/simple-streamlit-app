@@ -300,16 +300,13 @@ def section_2_1_asset_allocation():
     # Return relevant data for Section 2.2
     return df
 
-def section_2_2_sectoral_breakdown(df):
+def section_2_2_sectoral_breakdown(materiality_selections):
     st.header("2.2 Sectoral and Regional Breakdown of Investment Activities")
     st.write("Here we collect materiality levels for different asset classes across Climate Policy Relevant Sectors (CPRS) for those asset classes with a minimum medium materiality.")
 
-    # Dummy relevant asset classes for demonstration
-    relevant_asset_classes = ["Equity", "Corporate Bonds"]
-
     results = []
 
-    for asset_class in relevant_asset_classes:
+    for asset_class, materiality in materiality_selections.items():
         st.markdown(f"#### {asset_class} - Sectoral breakdown")
 
         # Dummy CPRS categories for demonstration
