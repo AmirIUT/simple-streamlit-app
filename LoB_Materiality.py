@@ -319,39 +319,59 @@ def section_2_investment_activities(session_state):
 
         # Iterate over each relevant asset class
         for asset_class in relevant_asset_classes:
-            st.markdown(f"#### {asset_class} - Sectoral breakdown")
-
-            # Create a table layout for sectoral breakdown for current asset class
-            sectoral_cols = st.columns([0.1] + [1] * len(cprs_categories))  # Column layout for index and CPRS categories
-
-            # Header row for CPRS categories
-            sectoral_cols[0].write("")  # Empty cell for the first column (no numbering)
-            for col_idx, category in enumerate(cprs_categories):
-                sectoral_cols[col_idx + 1].write(f"**{category}**")
-
-            # Ask materiality questions for each CPRS category and calculate averages
-            materiality_values = []
-            for idx in range(len(cprs_categories)):
-                materiality = sectoral_cols[idx + 1].selectbox("", options=["Low", "Medium", "High", "Not relevant/No Exposure"], index=1, key=f"{asset_class}_{idx}", help=f"Select materiality for {asset_class} in {cprs_categories[idx]}", label_visibility="collapsed")
-                materiality_values.append(materiality)
-
-            # Calculate CPRS factor (maximum of materiality values for different asset classes)
-            cprs_factor = max([1 if materiality == "Low" else 2 if materiality == "Medium" else 3 if materiality == "High" else -10 for materiality in materiality_values])
-
-            # Retrieve the exposure for the current asset class from section 2.1
-            exposure_values = df[df['Asset Class'] == asset_class]['Exposure Materiality Asset'].values
-            if len(exposure_values) > 0:
-                exposure = exposure_values[0]
-            else:
-                exposure = "Not relevant/No Exposure"
-
-            exposure_level = ["Low", "Medium", "High"].index(exposure) + 1 if exposure in ["Low", "Medium", "High"] else 0
-
-            # Calculate average and print recommendation message
-            if exposure_level > 0 and cprs_factor > 0:
-                average = (exposure_level + cprs_factor) / 2
-                if average >= 0:
-                    st.write(f"Sectoral benchmarking is highly recommended for {asset_class}.")
+            if asset_class in ["Equity", "Corporate Bonds"]:  # Only include Equity and Corporate Bonds for this section
+                st.markdown(f"#### {asset_class} - Sectoral breakdown")
+        
+                # Create a table layout for sectoral breakdown for current asset class
+                sectoral_cols = st.columns([0.1] + [1] * len(cprs_categories))  # Column layout for index and CPRS categories
+        
+                # Header row for CPRS categories
+                sectoral_cols[0].write("")  # Empty cell for the first column (no numbering)
+                for col_idx, category in enumerate(cprs_categories):
+                    sectoral_cols[col_idx + 1].write(f"**{category}**")
+        
+                # Ask materiality questions for each CPRS category and calculate averages
+                materiality_values = []
+                for idx in range(len(cprs_categories)):
+                    materiality = sectoral_cols[idx + 1].selectbox("", options=["Low", "Medium", "High", "Not relevant/No Exposure"], index=1, key=f"{asset_class}_{idx}", help=f"Select materiality for {asset_class} in {cprs_categories[idx]}", label_visibility="collapsed")
+        
+                    # Assign numeric values based on selection
+                    if materiality == "Low":
+                        materiality_value = 1
+                    elif materiality == "Medium":
+                        materiality_value = 2
+                    elif materiality == "High":
+                        materiality_value = 3
+                    else:
+                        materiality_value = -10  # Assign a default value for "Not relevant/No Exposure"
+        
+                    materiality_values.append(materiality_value)
+        
+                # Calculate CPRS factor (maximum of materiality values for different asset classes)
+                cprs_factor = max(materiality_values)
+        
+                # Retrieve the exposure for the current asset class from section 2.1
+                exposure_values = df[df['Asset Class'] == asset_class]['Exposure Materiality Asset'].values
+                if len(exposure_values) > 0:
+                    exposure = exposure_values[0]
+                else:
+                    exposure = "Not relevant/No Exposure"
+        
+                # Assign numeric values based on exposure level
+                if exposure == "Low":
+                    exposure_level = 1
+                elif exposure == "Medium":
+                    exposure_level = 2
+                elif exposure == "High":
+                    exposure_level = 3
+                else:
+                    exposure_level = 0  # Assign a default value for "Not relevant/No Exposure"
+        
+                # Calculate average and print recommendation message
+                if exposure_level > 0 and cprs_factor > 0:
+                    average = (exposure_level + cprs_factor) / 2
+                    if average >= 2:
+                        st.write(f"Sectoral benchmarking is highly recommended for {asset_class}.")
 
         # Add the "Government Bond" section
         st.markdown("#### Government Bonds - Country breakdown")
