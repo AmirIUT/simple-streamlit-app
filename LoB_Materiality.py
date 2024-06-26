@@ -273,8 +273,9 @@ def section_2_investment_activities(session_state):
     })
 
     # Handle "Not relevant/No Exposure" in risk calculation
-    df.loc[df['Exposure Materiality Asset'] == "Not relevant/No Exposure", 'Physical Risk Result'] = pd.NA
-    df.loc[df['Exposure Materiality Asset'] == "Not relevant/No Exposure", 'Transitional Risk Result'] = pd.NA
+    df.loc[df['Exposure Materiality Asset'] == "Not relevant/No Exposure", 'Physical Risk Result'] = np.nan
+    df.loc[df['Exposure Materiality Asset'] == "Not relevant/No Exposure", 'Transitional Risk Result'] = np.nan
+
 
     # Calculate average exposure level for each risk factor
     df.loc[df['Exposure Materiality Asset'] != "Not relevant/No Exposure", 'Physical Risk Result'] = \
@@ -284,6 +285,7 @@ def section_2_investment_activities(session_state):
     df.loc[df['Exposure Materiality Asset'] != "Not relevant/No Exposure", 'Transitional Risk Result'] = \
         df[df['Exposure Materiality Asset'] != "Not relevant/No Exposure"].apply(lambda row: \
             (["Low", "Medium", "High"].index(row['Exposure Materiality Asset']) + 1 + row['Transition Risk Factor']) / 2, axis=1)
+
 
     # Create a DataFrame for the heatmap
     heatmap_df = pd.DataFrame({
@@ -297,8 +299,8 @@ def section_2_investment_activities(session_state):
     st.write("### Heatmap and Results")
 
     # Create a reactive plot using streamlit's st.pyplot
-    # create_gradient_heatmap_assets(heatmap_df)  # Replace with your heatmap function
-
+    create_gradient_heatmap_assets(heatmap_df)
+    
     # New question before section 2.2
     st.write("### Are the sectoral and country breakdown of the investment activities available?")
     breakdown_available = st.radio("Choose option:", ("Yes", "No"))
@@ -311,6 +313,9 @@ def section_2_investment_activities(session_state):
 
         # Define CPRS categories
         cprs_categories = ["Fossil Fuel", "Utility/Electricity", "Energy Intensive", "Buildings", "Transportation", "Agriculture"]
+
+        # Dummy relevant asset classes for demonstration
+        relevant_asset_classes = ["Equity", "Corporate Bonds"]
 
         # Iterate over each relevant asset class
         for asset_class in relevant_asset_classes:
@@ -350,31 +355,50 @@ def section_2_investment_activities(session_state):
         
                 if not exposure_values.empty:  # Check if the DataFrame is not empty
                     exposure = exposure_values.iloc[0]  # Get the first value if there are any
-        
-                    # Determine the exposure level based on the materiality
-                    if exposure == "Low":
-                        exposure_level = 1
-                    elif exposure == "Medium":
-                        exposure_level = 2
-                    elif exposure == "High":
-                        exposure_level = 3
-                    else:
-                        exposure_level = -10  # Assign a default value for "Not relevant/No Exposure"
-
-                    # Print debug information to check values
-                    st.write(f"Asset Class: {asset_class}, Exposure Level: {exposure_level}, CPRS Factor: {cprs_factor}")
-
-                    # Calculate average and print recommendation message
-                    if exposure_level > 0 and cprs_factor > 0:
-                        average = (exposure_level + cprs_factor) / 2
-                        if average >= 2:
-                            st.write(f"Sectoral benchmarking is highly recommended for {asset_class}.")
-                    else:
-                        st.write(f"No valid exposure or materiality data found for {asset_class}.")
                 else:
-                    st.write(f"No exposure data found for {asset_class}.")
+                    exposure = "Not relevant/No Exposure"
+        
+                # Assign numeric values based on exposure level
+                if exposure == "Low":
+                    exposure_level = 1
+                elif exposure == "Medium":
+                    exposure_level = 2
+                elif exposure == "High":
+                    exposure_level = 3
+                else:
+                    exposure_level = -10  # Assign a default value for "Not relevant/No Exposure"
+        
+                # Print debug information to check values
+                st.write(f"Asset Class: {asset_class}, Exposure Level: {exposure_level}, CPRS Factor: {cprs_factor}")
+
+                # Retrieve the exposure materiality for the current asset class from section 2.1
+                exposure_values = df[df['Asset Class'] == asset_class]['Exposure Materiality Asset']
+                
+                # Debug: Print asset_class and check if it matches any values in df['Asset Class']
+                print(f"DEBUG - asset_class: {asset_class}")
+                print(f"DEBUG - df['Asset Class'] values: {df['Asset Class'].unique()}")
+                
+                # Check if exposure_values DataFrame is not empty and retrieve the first value
+                if not exposure_values.empty:
+                    exposure = exposure_values.iloc[0]  # Get the first value
+                    print(f"DEBUG - Found exposure value: {exposure}")
+                else:
+                    exposure = "Not relevant/No Exposure"
+                    print("DEBUG - No exposure value found.")
+                
+                # Print the final exposure value
+                print(f"DEBUG - Final exposure value for {asset_class}: {exposure}")
 
 
+                
+                # Calculate average and print recommendation message
+                if exposure_level > 0 and cprs_factor > 0:
+                    average = (exposure_level + cprs_factor) / 2
+                    if average >= 2:
+                        st.write(f"Sectoral benchmarking is highly recommended for {asset_class}.")
+                else:
+                    st.write(f"No valid exposure or materiality data found for {asset_class}.")
+                
 #------------------------------------------------------------------------------------------------------
         # Add the "Government Bond" section
         st.markdown("#### Government Bonds - Country breakdown")
