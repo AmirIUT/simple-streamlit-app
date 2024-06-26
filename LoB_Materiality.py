@@ -165,8 +165,8 @@ def create_gradient_heatmap(df):
             circle_size = size_map[row['Exposure Materiality']]  # Dynamic circle size based on exposure materiality
             ax.scatter(row['Physical Risk Result'], row['Transitional Risk Result'], color='black', zorder=2, s=circle_size)
             # Shorten name if longer than 15 characters for heatmap only
-            short_name = row['Short Name'] if len(row['Lines of Business']) > 15 else row['Lines of Business']
-            ax.text(row['Physical Risk Result'] + 0.1, row['Transitional Risk Result'], short_name, color='black', fontsize=8, zorder=3, ha='left', va='center')
+            # short_name = row['Short Name'] if len(row['Lines of Business']) > 15 else row['Lines of Business']
+            # ax.text(row['Physical Risk Result'] + 0.1, row['Transitional Risk Result'], short_name, color='black', fontsize=8, zorder=3, ha='left', va='center')
             
             # Adjust position to avoid overlap
             pos = (row['Physical Risk Result'], row['Transitional Risk Result'])
