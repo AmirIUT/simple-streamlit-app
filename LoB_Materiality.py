@@ -252,7 +252,7 @@ def section_2_1_asset_allocation():
             relevant_asset_classes.append(row['Asset Class'])
 
     # Update the DataFrame with the selected asset exposure
-    asset_df['Exposure'] = asset_exposure
+    asset_df['Exposure_Assets'] = asset_exposure
 
     # Filter out rows where exposure is "Not relevant/No Exposure"
     relevant_asset_df = asset_df[asset_df['Exposure'] != "Not relevant/No Exposure"].copy()
