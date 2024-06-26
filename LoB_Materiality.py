@@ -34,7 +34,8 @@ def main():
     elif page == "Insurance Activities":
         section_1_insurance_activities(session_state)
     elif page == "Investment Activities":
-        section_2_investment_activities(session_state)
+        section_2_1_asset_allocation(session_state)
+        section_2_2_sectoral_breakdown(session_state)
     elif page == "Methodology":
         Methodology_Text()
 
