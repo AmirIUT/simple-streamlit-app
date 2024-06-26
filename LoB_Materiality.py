@@ -335,48 +335,31 @@ def section_2_2_sectoral_breakdown(df):
             for idx in range(len(cprs_categories)):
                 materiality = sectoral_cols[idx + 1].selectbox("", options=["Low", "Medium", "High", "Not relevant/No Exposure"], index=1, key=f"{asset_class}_{idx}", help=f"Select materiality for {asset_class} in {cprs_categories[idx]}", label_visibility="collapsed")
 
-                # Assign numeric values based on selection
-                if materiality == "Low":
-                    materiality_value = 1
-                elif materiality == "Medium":
-                    materiality_value = 2
-                elif materiality == "High":
-                    materiality_value = 3
-                else:
-                    materiality_value = -10  # Assign a default value for "Not relevant/No Exposure"
-
-                materiality_values.append(materiality_value)
+                materiality_values.append(materiality)  # Append the materiality level directly
 
             # Calculate CPRS factor (maximum of materiality values for different asset classes)
-            cprs_factor = max(materiality_values)
+            cprs_factor = max(df[df['Asset Class'] == asset_class]['Exposure_Assets_Numeric'])
 
             # Retrieve the exposure materiality for the current asset class from section 2.1
-            exposure_values = df[df['Asset Class'] == asset_class]['Exposure Materiality Asset']
+            exposure_values = df[df['Asset Class'] == asset_class]['Exposure_Assets_Numeric']
 
             if not exposure_values.empty:  # Check if the DataFrame is not empty
-                exposure = exposure_values.iloc[0]
+                exposure_numeric = exposure_values.iloc[0]
 
-                # Update the exposure materiality with numeric values based on your mapping
-                if exposure == "Low":
-                    exposure_numeric = 1
-                elif exposure == "Medium":
-                    exposure_numeric = 2
-                elif exposure == "High":
-                    exposure_numeric = 3
-                else:
-                    exposure_numeric = -10  # Default value if exposure materiality is not one of the above
+                # Calculate the average of Exposure_Assets_Numeric and CPRS factor
+                average_exposure_cprs = (exposure_numeric + cprs_factor) / 2
 
-                # Append the numeric exposure materiality to the DataFrame
-                df.loc[df['Asset Class'] == asset_class, 'Exposure Materiality Numeric'] = exposure_numeric
+                # Check if the average is greater than or equal to 2
+                if average_exposure_cprs >= 2:
+                    st.write("Amir is HERO")
 
-                # Display the table with the updated numeric column
+                # Display the table with the updated numeric column and average
                 st.write(df[df['Asset Class'] == asset_class])
 
             else:
                 st.write(f"No exposure materiality found for {asset_class}.")
         else:
             st.write(f"{asset_class} is not included in this section.")
-
 
 
 def create_gradient_heatmap_assets(df):
