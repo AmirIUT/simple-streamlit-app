@@ -251,6 +251,7 @@ def section_2_investment_activities(session_state):
     # Assume df is some DataFrame that needs to be updated with exposure materiality
     df = pd.DataFrame({
         'Asset Class': asset_df['Asset Class'],
+        'Short Name Asset': asset_df['Short Name Asset'],
         'Transition Risk Factor': asset_df['Transition Risk Factor'],
         'Physical Risk Factor': asset_df['Physical Risk Factor'],
         'Exposure Materiality Asset': asset_exposure
@@ -262,7 +263,7 @@ def section_2_investment_activities(session_state):
 
     # Create a DataFrame for the heatmap
     heatmap_df = pd.DataFrame({
-        'Short Name Aseet': df['Short Name Aseet'],
+        'Short Name Asset': df['Short Name Asset'],
         'Physical Risk Result': df['Physical Risk Result'],
         'Transitional Risk Result': df['Transitional Risk Result'],
         'asset_exposure': df['Exposure Materiality Asset']
