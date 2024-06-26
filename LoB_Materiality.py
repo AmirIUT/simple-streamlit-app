@@ -350,12 +350,8 @@ def section_2_investment_activities(session_state):
                 # Calculate CPRS factor (maximum of materiality values for different asset classes)
                 cprs_factor = max(materiality_values)
         
-                # Retrieve the exposure for the current asset class from section 2.1
-                exposure_values = df[df['Asset Class'] == asset_class]['Exposure Materiality Asset'].values
-                if len(exposure_values) > 0:
-                    exposure = exposure_values[0]
-                else:
-                    exposure = "Not relevant/No Exposure"
+                # Retrieve the exposure level directly from the selectbox
+                exposure = df[df['Asset Class'] == asset_class]['Exposure Materiality Asset'].iloc[0]
         
                 # Assign numeric values based on exposure level
                 if exposure == "Low":
