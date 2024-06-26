@@ -339,6 +339,25 @@ def section_2_investment_activities(session_state):
                 materiality_row = sectoral_cols[0].write("")  # Empty row (no numbering)
                 for idx in range(len(cprs_categories)):
                     materiality = sectoral_cols[idx + 1].selectbox("", options=["Low", "Medium", "High", "Not relevant/No Exposure"], index=1, key=f"{asset_class}_{idx}", help=f"Select materiality for {asset_class} in {cprs_categories[idx]}", label_visibility="collapsed")
+
+   #+++++++++++++++++++----------------------------------
+            # Calculate the average of Equity exposure and CPRS factor
+        if "Equity" in relevant_asset_classes:
+            # Calculate Equity exposure average
+            equity_exposure_avg = np.mean([1 if exp == "Low" else 2 if exp == "Medium" else 3 if exp == "High" else -10 for exp in df[df['Asset Class'] == "Equity"]['Exposure Materiality Asset']])
+            
+            # Calculate CPRS factor
+            cprs_factor = max([1 if exp == "Low" else 2 if exp == "Medium" else -10 for exp in df[df['Asset Class'] == "Equity"][cprs_categories].values.flatten()])
+    
+            # Calculate the average
+            average = (equity_exposure_avg + cprs_factor) / 2
+    
+            # Check if Equity sectoral analysis is recommended
+            if average >= 2:
+                st.write("Sectoral benchmarking is highly recommended for Equity.")
+   #+++++++++++++++++++----------------------------------
+
+
         
         # Add the "Government Bond" section
         st.markdown("#### Government Bonds - Country breakdown")
