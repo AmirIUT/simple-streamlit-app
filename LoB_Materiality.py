@@ -193,7 +193,7 @@ def section_2_investment_activities(session_state):
     st.subheader("2.1 Asset Allocation")
 
     # Define the asset allocation data as a multiline string
-    asset_csv_data = """Asset Class,Short Name,Transition Risk Factor,Physical Risk Factor,Explanation
+    asset_csv_data = """Asset Class,Short Name Asset,Transition Risk Factor,Physical Risk Factor,Explanation
     Corporate Bonds,C-BOND,2,2,"Transition Risk: Corporate bonds can be exposed to industries that may face regulatory changes and shifts towards sustainability. Physical Risk: Companies may also be affected by physical risks, but it varies by industry."
     Government Bonds,G-BOND,1,1,"Transition Risk: Governments are generally more stable and can adapt policies over time. Physical Risk: The impact on government bonds is relatively low as governments can spread risk across many sectors."
     Equity,EQUTY,3,3,"Transition Risk: Equities are highly exposed to market sentiment and regulatory changes. Physical Risk: Physical risks can directly impact company operations and revenues."
@@ -262,7 +262,7 @@ def section_2_investment_activities(session_state):
 
     # Create a DataFrame for the heatmap
     heatmap_df = pd.DataFrame({
-        'Short Name': df['Short Name'],
+        'Short Name Aseet': df['Short Name Aseet'],
         'Physical Risk Result': df['Physical Risk Result'],
         'Transitional Risk Result': df['Transitional Risk Result'],
         'asset_exposure': df['Exposure Materiality Asset']
@@ -380,7 +380,7 @@ def create_gradient_heatmap_assets(df):
                 text_positions[pos] = 0  # Initialize position
 
              # Use short name and add a comma if there's an overlap
-            short_name = row['Short Name'] if text_positions[pos] == 0 else row['Short Name'] + ','
+            short_name = row['Short Name Aseet'] if text_positions[pos] == 0 else row['Short Name Aseet'] + ','
             ax.text(row['Physical Risk Result'] + 0.1, row['Transitional Risk Result'] + text_positions[pos], short_name, color='black', fontsize=8, zorder=3, ha='left', va='center')
 
     # Set labels and title
