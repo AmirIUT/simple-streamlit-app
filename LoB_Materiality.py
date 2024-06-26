@@ -339,15 +339,19 @@ def section_2_investment_activities(session_state):
             cprs_factor = max([1 if m == "Low" else 2 if m == "Medium" else 3 if m == "High" else -10 for m in materiality_values])
 
             # Retrieve the exposure for the current asset class from section 2.1
-            exposure = df[df['Asset Class'] == asset_class]['Exposure Materiality Asset'].values[0]
-            exposure_value = 1 if exposure == "Low" else 2 if exposure == "Medium" else 3 if exposure == "High" else -10
+            exposure_values = df[df['Asset Class'] == asset_class]['Exposure Materiality Asset'].values
+            if len(exposure_values) > 0:
+                exposure = exposure_values[0]
+            else:
+                exposure = "Not relevant/No Exposure"
 
-            # Calculate average of the exposure and CPRS factor
-            average = (exposure_value + cprs_factor) / 2
+            exposure_level = ["Low", "Medium", "High"].index(exposure) + 1 if exposure in ["Low", "Medium", "High"] else 0
 
-            # Print recommendation message if average is greater or equal to 2
-            if average >= 2:
-                st.write(f"Sectoral benchmarking is highly recommended for {asset_class}.")
+            # Calculate average and print recommendation message
+            if exposure_level > 0 and cprs_factor > 0:
+                average = (exposure_level + cprs_factor) / 2
+                if average >= 2:
+                    st.write(f"Sectoral benchmarking is highly recommended for {asset_class}.")
 
         # Add the "Government Bond" section
         st.markdown("#### Government Bonds - Country breakdown")
