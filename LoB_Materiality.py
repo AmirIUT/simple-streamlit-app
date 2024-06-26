@@ -318,19 +318,21 @@ def section_2_2_sectoral_breakdown(materiality_selections):
             "Corporate Bonds": "High"
         }
 
-        materiality_value = -10  # Default value for no exposure data found
+        # Initialize exposure_materiality with a default value
+        exposure_materiality = "Not Available"
 
         # Retrieve exposure materiality for the current asset class
         if asset_class in exposure_materiality_data:
             exposure_materiality = exposure_materiality_data[asset_class]
 
-            # Map exposure materiality to numeric value
-            if exposure_materiality == "Low":
-                materiality_value = 1
-            elif exposure_materiality == "Medium":
-                materiality_value = 2
-            elif exposure_materiality == "High":
-                materiality_value = 3
+        # Map exposure materiality to numeric value
+        materiality_value = -10  # Default value for no exposure data found
+        if exposure_materiality == "Low":
+            materiality_value = 1
+        elif exposure_materiality == "Medium":
+            materiality_value = 2
+        elif exposure_materiality == "High":
+            materiality_value = 3
 
         # Append result for the current asset class
         results.append({
