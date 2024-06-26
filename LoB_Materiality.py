@@ -368,6 +368,9 @@ def section_2_investment_activities(session_state):
                 else:
                     exposure_level = 0  # Assign a default value for "Not relevant/No Exposure"
         
+                # Print debug information to check values
+                st.write(f"Asset Class: {asset_class}, Exposure Level: {exposure_level}, CPRS Factor: {cprs_factor}")
+        
                 # Calculate average and print recommendation message
                 if exposure_level > 0 and cprs_factor > 0:
                     average = (exposure_level + cprs_factor) / 2
@@ -375,7 +378,8 @@ def section_2_investment_activities(session_state):
                         st.write(f"Sectoral benchmarking is highly recommended for {asset_class}.")
                 else:
                     st.write(f"No valid exposure or materiality data found for {asset_class}.")
-
+                
+#------------------------------------------------------------------------------------------------------
         # Add the "Government Bond" section
         st.markdown("#### Government Bonds - Country breakdown")
         
