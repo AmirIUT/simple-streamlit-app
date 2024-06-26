@@ -241,14 +241,14 @@ def section_2_1_asset_allocation():
         col = st.columns([0.1, 1, 1])
         col[0].write(f"**{idx + 1}**")
         col[1].write(row['Asset Class'])
-        exposure = col[2].selectbox("", options=["Low", "Medium", "High", "Not relevant/No Exposure"], index=1,
+        Exposure_Assets = col[2].selectbox("", options=["Low", "Medium", "High", "Not relevant/No Exposure"], index=1,
                                     key=f"asset_exposure_{idx}",
                                     help=f"Select exposure level for {row['Asset Class']}",
                                     label_visibility="collapsed")
-        asset_exposure.append(exposure)
+        asset_exposure.append(Exposure_Assets)
 
         # Check if exposure level is Low or Not relevant/No Exposure
-        if exposure not in ["Low", "Not relevant/No Exposure"]:
+        if Exposure_Assets not in ["Low", "Not relevant/No Exposure"]:
             relevant_asset_classes.append(row['Asset Class'])
 
     # Update the DataFrame with the selected asset exposure
