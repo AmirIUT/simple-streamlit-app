@@ -285,106 +285,77 @@ def section_2_investment_activities(session_state):
         df[df['Exposure Materiality Asset'] != "Not relevant/No Exposure"].apply(lambda row: \
             (["Low", "Medium", "High"].index(row['Exposure Materiality Asset']) + 1 + row['Transition Risk Factor']) / 2, axis=1)
     
-    # Create a DataFrame for the heatmap
-    heatmap_df = pd.DataFrame({
-        'Short Name Asset': df['Short Name Asset'],
-        'Physical Risk Result': df['Physical Risk Result'],
-        'Transitional Risk Result': df['Transitional Risk Result'],
-        'asset_exposure': df['Exposure Materiality Asset']
-    })
+    # Iterate over each relevant asset class
+    for asset_class in relevant_asset_classes:
+        if asset_class in ["Equity", "Corporate Bonds"]:  # Only include Equity and Corporate Bonds for this section
+            st.markdown(f"#### {asset_class} - Sectoral breakdown")
     
-    # Display the heatmap and results
-    st.write("### Heatmap and Results")
+            # Create a table layout for sectoral breakdown for current asset class
+            sectoral_cols = st.columns([0.1] + [1] * len(cprs_categories))  # Column layout for index and CPRS categories
     
-    # Create a reactive plot using streamlit's st.pyplot
-    create_gradient_heatmap_assets(heatmap_df)
+            # Header row for CPRS categories
+            sectoral_cols[0].write("")  # Empty cell for the first column (no numbering)
+            for col_idx, category in enumerate(cprs_categories):
+                sectoral_cols[col_idx + 1].write(f"**{category}**")
     
-    # New question before section 2.2
-    st.write("### Are the sectoral and country breakdown of the investment activities available?")
-    breakdown_available = st.radio("Choose option:", ("Yes", "No"))
+            # Ask materiality questions for each CPRS category and calculate averages
+            materiality_values = []
+            for idx in range(len(cprs_categories)):
+                materiality = sectoral_cols[idx + 1].selectbox("", options=["Low", "Medium", "High", "Not relevant/No Exposure"], index=1, key=f"{asset_class}_{idx}", help=f"Select materiality for {asset_class} in {cprs_categories[idx]}", label_visibility="collapsed")
     
-    if breakdown_available == "No":
-        st.write("Sectoral and regional breakdown of investment activities are not available.")
-    else:
-        st.header("2.2 Sectoral and Regional Breakdown of Investment Activities")
-        st.write("Here we collect materiality levels for different asset classes across Climate Policy Relevant Sectors (CPRS) for those asset classes with a minimum medium materiality.")
-    
-        # Define CPRS categories
-        cprs_categories = ["Fossil Fuel", "Utility/Electricity", "Energy Intensive", "Buildings", "Transportation", "Agriculture"]
-    
-        # Dummy relevant asset classes for demonstration
-        relevant_asset_classes = ["Equity", "Corporate Bonds"]
-    
-        # Iterate over each relevant asset class
-        for asset_class in relevant_asset_classes:
-            if asset_class in ["Equity", "Corporate Bonds"]:  # Only include Equity and Corporate Bonds for this section
-                st.markdown(f"#### {asset_class} - Sectoral breakdown")
-    
-                # Create a table layout for sectoral breakdown for current asset class
-                sectoral_cols = st.columns([0.1] + [1] * len(cprs_categories))  # Column layout for index and CPRS categories
-    
-                # Header row for CPRS categories
-                sectoral_cols[0].write("")  # Empty cell for the first column (no numbering)
-                for col_idx, category in enumerate(cprs_categories):
-                    sectoral_cols[col_idx + 1].write(f"**{category}**")
-    
-                # Ask materiality questions for each CPRS category and calculate averages
-                materiality_values = []
-                for idx in range(len(cprs_categories)):
-                    materiality = sectoral_cols[idx + 1].selectbox("", options=["Low", "Medium", "High", "Not relevant/No Exposure"], index=1, key=f"{asset_class}_{idx}", help=f"Select materiality for {asset_class} in {cprs_categories[idx]}", label_visibility="collapsed")
-    
-                    # Assign numeric values based on selection
-                    if materiality == "Low":
-                        materiality_value = 1
-                    elif materiality == "Medium":
-                        materiality_value = 2
-                    elif materiality == "High":
-                        materiality_value = 3
-                    else:
-                        materiality_value = -10  # Assign a default value for "Not relevant/No Exposure"
-    
-                    materiality_values.append(materiality_value)
-    
-                # Calculate CPRS factor (maximum of materiality values for different asset classes)
-                cprs_factor = max(materiality_values)
-    
-                # Debug: Print asset_class and check if it matches any values in df['Asset Class']
-                print(f"DEBUG - asset_class: {asset_class}")
-                print(f"DEBUG - df['Asset Class'] values: {df['Asset Class'].unique()}")
-    
-                # Check if asset_class matches any values in df['Asset Class']
-                if asset_class not in df['Asset Class'].unique():
-                    raise ValueError(f"Asset class '{asset_class}' not found in the DataFrame.")
-    
-                # Retrieve the exposure materiality for the current asset class from section 2.1
-                exposure_values = df[df['Asset Class'] == asset_class]['Exposure Materiality Asset']
-    
-                # Continue with your logic to handle exposure_values and calculate exposure_level
-                if not exposure_values.empty:
-                    exposure = exposure_values.iloc[0]  # Get the first value
-                    if exposure == "Not relevant/No Exposure":
-                        exposure_level = -10  # Or set exposure_level to some default value
-                    else:
-                        # Assign numeric values based on exposure level
-                        if exposure == "Low":
-                            exposure_level = 1
-                        elif exposure == "Medium":
-                            exposure_level = 2
-                        elif exposure == "High":
-                            exposure_level = 3
+                # Assign numeric values based on selection
+                if materiality == "Low":
+                    materiality_value = 1
+                elif materiality == "Medium":
+                    materiality_value = 2
+                elif materiality == "High":
+                    materiality_value = 3
                 else:
-                    exposure = "Not relevant/No Exposure"
+                    materiality_value = -10  # Assign a default value for "Not relevant/No Exposure"
+    
+                materiality_values.append(materiality_value)
+    
+            # Calculate CPRS factor (maximum of materiality values for different asset classes)
+            cprs_factor = max(materiality_values)
+    
+            # Debug: Print asset_class and check if it matches any values in df['Asset Class']
+            print(f"DEBUG - asset_class: {asset_class}")
+            print(f"DEBUG - df['Asset Class'] values: {df['Asset Class'].unique()}")
+    
+            # Check if asset_class matches any values in df['Asset Class']
+            if asset_class not in df['Asset Class'].unique():
+                raise ValueError(f"Asset class '{asset_class}' not found in the DataFrame.")
+    
+            # Retrieve the exposure materiality for the current asset class from section 2.1
+            exposure_values = df[df['Asset Class'] == asset_class]['Exposure Materiality Asset']
+    
+            # Continue with your logic to handle exposure_values and calculate exposure_level
+            if not exposure_values.empty:
+                exposure = exposure_values.iloc[0]  # Get the first value
+                if exposure == "Not relevant/No Exposure":
                     exposure_level = -10  # Or set exposure_level to some default value
-    
-                print(f"DEBUG - Final exposure value for {asset_class}: {exposure}, Exposure Level: {exposure_level}")
-    
-                # Calculate average and print recommendation message
-                if exposure_level > 0 and cprs_factor > 0:
-                    average = (exposure_level + cprs_factor) / 2
-                    if average >= 2:
-                        st.write(f"Sectoral benchmarking is highly recommended for {asset_class}.")
                 else:
-                    st.write(f"No valid exposure or materiality data found for {asset_class}.")
+                    # Assign numeric values based on exposure level
+                    if exposure == "Low":
+                        exposure_level = 1
+                    elif exposure == "Medium":
+                        exposure_level = 2
+                    elif exposure == "High":
+                        exposure_level = 3
+            else:
+                exposure = "Not relevant/No Exposure"
+                exposure_level = -10  # Or set exposure_level to some default value
+    
+            print(f"DEBUG - Final exposure value for {asset_class}: {exposure}, Exposure Level: {exposure_level}")
+    
+            # Calculate average and print recommendation message
+            if exposure_level > 0 and cprs_factor > 0:
+                average = (exposure_level + cprs_factor) / 2
+                if average >= 2:
+                    st.write(f"Sectoral benchmarking is highly recommended for {asset_class}.")
+            else:
+                st.write(f"No valid exposure or materiality data found for {asset_class}.")
+
 
 #------------------------------------------------------------------------------------------------------
         # Add the "Government Bond" section
