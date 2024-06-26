@@ -257,6 +257,11 @@ def section_2_investment_activities(session_state):
         'Exposure Materiality Asset': asset_exposure
     })
 
+    # Handle "Not relevant/No Exposure" in risk calculation
+    df.loc[df['Exposure Materiality Asset'] == "Not relevant/No Exposure", 'Physical Risk Result'] = np.nan
+    df.loc[df['Exposure Materiality Asset'] == "Not relevant/No Exposure", 'Transitional Risk Result'] = np.nan
+
+
     # Calculate average exposure level for each risk factor
     df['Physical Risk Result'] = df.apply(lambda row: (["Low", "Medium", "High"].index(row['Exposure Materiality Asset']) + 1 + row['Physical Risk Factor']) / 2, axis=1)
     df['Transitional Risk Result'] = df.apply(lambda row: (["Low", "Medium", "High"].index(row['Exposure Materiality Asset']) + 1 + row['Transition Risk Factor']) / 2, axis=1)
