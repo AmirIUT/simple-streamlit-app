@@ -302,6 +302,8 @@ def section_2_investment_activities(session_state):
     create_gradient_heatmap_assets(heatmap_df)
     
     # New question before section 2.2
+    print(f"DEBUG - asset_class: {asset_class}")
+    print(f"DEBUG - df['Asset Class'] values: {df['Asset Class'].unique()}")
     st.write("### Are the sectoral and country breakdown of the investment activities available?")
     breakdown_available = st.radio("Choose option:", ("Yes", "No"))
 
