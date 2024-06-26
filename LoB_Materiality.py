@@ -61,7 +61,7 @@ def section_1_insurance_activities(session_state):
     st.header("Materiality Assessment Questionnaire")
 
     # Insurance Sector 
-    Sector = st.selectbox("Field of (re)insurance operation", ["Life/Health", "NonLife", "Pension", "Composite"])
+    Sector = st.selectbox("Field of (re)insurance operation", ["Please Select", "Life/Health", "NonLife", "Pension", "Composite"])
 
     # Define the CSV data as a multiline string (assuming it's unchanged)
     csv_data = """Lines of Business,Short Name,Transition Risk Factor,Physical Risk Factor,Exposure,Explanation
@@ -155,16 +155,31 @@ def create_gradient_heatmap(df):
 
     # Plot the gradient heatmap
     im = ax.imshow(Z, cmap=cmap, origin='lower', extent=[0.5, 3.5, 0.5, 3.5], alpha=0.5)
-
+    
+    # To avoid overlapping text, we will keep track of positions
+    text_positions = {}
+   
     # Scatter plot for LoBs with labels and varying circle sizes based on exposure
     for _, row in df.iterrows():
         if not np.isnan(row['Physical Risk Result']) and not np.isnan(row['Transitional Risk Result']):
             circle_size = size_map[row['Exposure Materiality']]  # Dynamic circle size based on exposure materiality
             ax.scatter(row['Physical Risk Result'], row['Transitional Risk Result'], color='black', zorder=2, s=circle_size)
             # Shorten name if longer than 15 characters for heatmap only
-            short_name = row['Short Name'] if len(row['Lines of Business']) > 15 else row['Lines of Business']
-            ax.text(row['Physical Risk Result'] + 0.1, row['Transitional Risk Result'], short_name, color='black', fontsize=8, zorder=3, ha='left', va='center')
+            # short_name = row['Short Name'] if len(row['Lines of Business']) > 15 else row['Lines of Business']
+            # ax.text(row['Physical Risk Result'] + 0.1, row['Transitional Risk Result'], short_name, color='black', fontsize=8, zorder=3, ha='left', va='center')
+            
+            # Adjust position to avoid overlap
+            pos = (row['Physical Risk Result'], row['Transitional Risk Result'])
+            if pos in text_positions:
+                text_positions[pos] += 0.1  # Increment y position slightly to avoid overlap
+            else:
+                text_positions[pos] = 0  # Initialize position
 
+             # Use short name and add a comma if there's an overlap
+            short_name = row['Short Name'] if text_positions[pos] == 0 else row['Short Name'] + ','
+            ax.text(row['Physical Risk Result'] + 0.1, row['Transitional Risk Result'] + text_positions[pos], short_name, color='black', fontsize=8, zorder=3, ha='left', va='center')
+
+            
     # Set labels and title
     ax.set_xlabel('Physical Risk')
     ax.set_ylabel('Transitional Risk')
@@ -208,8 +223,8 @@ def section_2_investment_activities(session_state):
     asset_df = pd.read_csv(io.StringIO(asset_csv_data.strip()))
 
     # Display the raw data to debug
-    st.write("### Debug: Raw Asset Data")
-    st.write(asset_df)
+    # st.write("### Debug: Raw Asset Data")
+    # st.write(asset_df)
 
     # Initialize an empty list to store updated asset exposure values
     asset_exposure = []
@@ -257,9 +272,20 @@ def section_2_investment_activities(session_state):
         'Exposure Materiality Asset': asset_exposure
     })
 
+    # Handle "Not relevant/No Exposure" in risk calculation
+    df.loc[df['Exposure Materiality Asset'] == "Not relevant/No Exposure", 'Physical Risk Result'] = np.nan
+    df.loc[df['Exposure Materiality Asset'] == "Not relevant/No Exposure", 'Transitional Risk Result'] = np.nan
+
+
     # Calculate average exposure level for each risk factor
-    df['Physical Risk Result'] = df.apply(lambda row: (["Low", "Medium", "High"].index(row['Exposure Materiality Asset']) + 1 + row['Physical Risk Factor']) / 2, axis=1)
-    df['Transitional Risk Result'] = df.apply(lambda row: (["Low", "Medium", "High"].index(row['Exposure Materiality Asset']) + 1 + row['Transition Risk Factor']) / 2, axis=1)
+    df.loc[df['Exposure Materiality Asset'] != "Not relevant/No Exposure", 'Physical Risk Result'] = \
+        df[df['Exposure Materiality Asset'] != "Not relevant/No Exposure"].apply(lambda row: \
+            (["Low", "Medium", "High"].index(row['Exposure Materiality Asset']) + 1 + row['Physical Risk Factor']) / 2, axis=1)
+
+    df.loc[df['Exposure Materiality Asset'] != "Not relevant/No Exposure", 'Transitional Risk Result'] = \
+        df[df['Exposure Materiality Asset'] != "Not relevant/No Exposure"].apply(lambda row: \
+            (["Low", "Medium", "High"].index(row['Exposure Materiality Asset']) + 1 + row['Transition Risk Factor']) / 2, axis=1)
+
 
     # Create a DataFrame for the heatmap
     heatmap_df = pd.DataFrame({
@@ -426,3 +452,4 @@ def Methodology_Text():
 
 if __name__ == "__main__":
     main()
+	
