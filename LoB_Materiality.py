@@ -255,7 +255,7 @@ def section_2_1_asset_allocation():
     asset_df['Exposure_Assets'] = asset_exposure
 
     # Filter out rows where exposure is "Not relevant/No Exposure"
-    relevant_asset_df = asset_df[asset_df['Exposure'] != "Not relevant/No Exposure"].copy()
+    relevant_asset_df = asset_df[asset_df['Exposure_Assets'] != "Not relevant/No Exposure"].copy()
 
     # Display the relevant asset allocation table
     st.write("### Relevant Asset Allocation")
