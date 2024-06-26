@@ -220,10 +220,6 @@ def section_2_1_asset_allocation():
     # Read the CSV from the multiline string
     asset_df = pd.read_csv(io.StringIO(asset_csv_data.strip()))
 
-    # Display the raw data to debug
-    # st.write("### Debug: Raw Asset Data")
-    # st.write(asset_df)
-
     # Initialize an empty list to store updated asset exposure values
     asset_exposure = []
 
@@ -254,10 +250,18 @@ def section_2_1_asset_allocation():
     # Update the DataFrame with the selected asset exposure
     asset_df['Exposure_Assets'] = asset_exposure
 
+    # Map string exposure levels to numeric values
+    asset_df['Exposure_Assets_Numeric'] = asset_df['Exposure_Assets'].map({
+        'Low': 1,
+        'Medium': 2,
+        'High': 3,
+        'Not relevant/No Exposure': -10
+    })
+
     # Filter out rows where exposure is "Not relevant/No Exposure"
     relevant_asset_df = asset_df[asset_df['Exposure_Assets'] != "Not relevant/No Exposure"].copy()
 
-    # Display the relevant asset allocation table
+    # Display the relevant asset allocation table with the new column
     st.write("### Relevant Asset Allocation")
     st.write(relevant_asset_df)
 
@@ -267,7 +271,8 @@ def section_2_1_asset_allocation():
         'Short Name Asset': asset_df['Short Name Asset'],
         'Transition Risk Factor': asset_df['Transition Risk Factor'],
         'Physical Risk Factor': asset_df['Physical Risk Factor'],
-        'Exposure Materiality Asset': asset_exposure
+        'Exposure Materiality Asset': asset_exposure,
+        'Exposure_Assets_Numeric': asset_df['Exposure_Assets_Numeric']  # Add this line to include numeric exposure
     })
 
     # Handle "Not relevant/No Exposure" in risk calculation
@@ -299,6 +304,7 @@ def section_2_1_asset_allocation():
 
     # Return relevant data for Section 2.2
     return df
+
 
 def section_2_2_sectoral_breakdown(df):
     # Section 2.2: Sectoral and Regional Breakdown of Investment Activities
