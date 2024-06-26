@@ -348,7 +348,28 @@ def section_2_2_sectoral_breakdown(df):
             exposure_values = df[df['Asset Class'] == asset_class]['Exposure Materiality Asset']
 
             if not exposure_values.empty:  # Check if the DataFrame is not empty
-                exposure = exposure_values.iloc[0] 
+                exposure = exposure_values.iloc[0]
+
+                # Update the exposure materiality with numeric values based on your mapping
+                if exposure == "Low":
+                    exposure_numeric = 1
+                elif exposure == "Medium":
+                    exposure_numeric = 2
+                elif exposure == "High":
+                    exposure_numeric = 3
+                else:
+                    exposure_numeric = -10  # Default value if exposure materiality is not one of the above
+
+                # Append the numeric exposure materiality to the DataFrame
+                df.loc[df['Asset Class'] == asset_class, 'Exposure Materiality Numeric'] = exposure_numeric
+
+                # Display the table with the updated numeric column
+                st.write(df[df['Asset Class'] == asset_class])
+
+            else:
+                st.write(f"No exposure materiality found for {asset_class}.")
+        else:
+            st.write(f"{asset_class} is not included in this section.")
 
 
 
