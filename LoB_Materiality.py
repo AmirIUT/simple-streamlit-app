@@ -302,8 +302,6 @@ def section_2_investment_activities(session_state):
     create_gradient_heatmap_assets(heatmap_df)
     
     # New question before section 2.2
-    print(f"DEBUG - asset_class: {asset_class}")
-    print(f"DEBUG - df['Asset Class'] values: {df['Asset Class'].unique()}")
     st.write("### Are the sectoral and country breakdown of the investment activities available?")
     breakdown_available = st.radio("Choose option:", ("Yes", "No"))
 
@@ -373,25 +371,35 @@ def section_2_investment_activities(session_state):
                 # Print debug information to check values
                 st.write(f"Asset Class: {asset_class}, Exposure Level: {exposure_level}, CPRS Factor: {cprs_factor}")
 
-                # Retrieve the exposure materiality for the current asset class from section 2.1
-                exposure_values = df[df['Asset Class'] == asset_class]['Exposure Materiality Asset']
-                
                 # Debug: Print asset_class and check if it matches any values in df['Asset Class']
                 print(f"DEBUG - asset_class: {asset_class}")
                 print(f"DEBUG - df['Asset Class'] values: {df['Asset Class'].unique()}")
                 
-                # Check if exposure_values DataFrame is not empty and retrieve the first value
+                # Check if asset_class matches any values in df['Asset Class']
+                if asset_class not in df['Asset Class'].unique():
+                    raise ValueError(f"Asset class '{asset_class}' not found in the DataFrame.")
+                
+                # Retrieve the exposure materiality for the current asset class from section 2.1
+                exposure_values = df[df['Asset Class'] == asset_class]['Exposure Materiality Asset']
+                
+                # Continue with your logic to handle exposure_values and calculate exposure_level
                 if not exposure_values.empty:
                     exposure = exposure_values.iloc[0]  # Get the first value
-                    print(f"DEBUG - Found exposure value: {exposure}")
+                    if exposure == "Not relevant/No Exposure":
+                        exposure_level = -10  # Or set exposure_level to some default value
+                    else:
+                        # Assign numeric values based on exposure level
+                        if exposure == "Low":
+                            exposure_level = 1
+                        elif exposure == "Medium":
+                            exposure_level = 2
+                        elif exposure == "High":
+                            exposure_level = 3
                 else:
                     exposure = "Not relevant/No Exposure"
-                    print("DEBUG - No exposure value found.")
+                    exposure_level = -10  # Or set exposure_level to some default value
                 
-                # Print the final exposure value
-                print(f"DEBUG - Final exposure value for {asset_class}: {exposure}")
-
-
+                print(f"DEBUG - Final exposure value for {asset_class}: {exposure}, Exposure Level: {exposure_level}")
                 
                 # Calculate average and print recommendation message
                 if exposure_level > 0 and cprs_factor > 0:
@@ -400,7 +408,6 @@ def section_2_investment_activities(session_state):
                         st.write(f"Sectoral benchmarking is highly recommended for {asset_class}.")
                 else:
                     st.write(f"No valid exposure or materiality data found for {asset_class}.")
-                
 #------------------------------------------------------------------------------------------------------
         # Add the "Government Bond" section
         st.markdown("#### Government Bonds - Country breakdown")
