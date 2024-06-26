@@ -220,6 +220,10 @@ def section_2_1_asset_allocation():
     # Read the CSV from the multiline string
     asset_df = pd.read_csv(io.StringIO(asset_csv_data.strip()))
 
+    # Display the raw data to debug
+    # st.write("### Debug: Raw Asset Data")
+    # st.write(asset_df)
+
     # Initialize an empty list to store updated asset exposure values
     asset_exposure = []
 
@@ -237,31 +241,23 @@ def section_2_1_asset_allocation():
         col = st.columns([0.1, 1, 1])
         col[0].write(f"**{idx + 1}**")
         col[1].write(row['Asset Class'])
-        Exposure_Assets = col[2].selectbox("", options=["Low", "Medium", "High", "Not relevant/No Exposure"], index=1,
+        exposure = col[2].selectbox("", options=["Low", "Medium", "High", "Not relevant/No Exposure"], index=1,
                                     key=f"asset_exposure_{idx}",
                                     help=f"Select exposure level for {row['Asset Class']}",
                                     label_visibility="collapsed")
-        asset_exposure.append(Exposure_Assets)
+        asset_exposure.append(exposure)
 
         # Check if exposure level is Low or Not relevant/No Exposure
-        if Exposure_Assets not in ["Low", "Not relevant/No Exposure"]:
+        if exposure not in ["Low", "Not relevant/No Exposure"]:
             relevant_asset_classes.append(row['Asset Class'])
 
     # Update the DataFrame with the selected asset exposure
-    asset_df['Exposure_Assets'] = asset_exposure
-
-    # Map string exposure levels to numeric values
-    asset_df['Exposure_Assets_Numeric'] = asset_df['Exposure_Assets'].map({
-        'Low': 1,
-        'Medium': 2,
-        'High': 3,
-        'Not relevant/No Exposure': -10
-    })
+    asset_df['Exposure'] = asset_exposure
 
     # Filter out rows where exposure is "Not relevant/No Exposure"
-    relevant_asset_df = asset_df[asset_df['Exposure_Assets'] != "Not relevant/No Exposure"].copy()
+    relevant_asset_df = asset_df[asset_df['Exposure'] != "Not relevant/No Exposure"].copy()
 
-    # Display the relevant asset allocation table with the new column
+    # Display the relevant asset allocation table
     st.write("### Relevant Asset Allocation")
     st.write(relevant_asset_df)
 
@@ -271,8 +267,7 @@ def section_2_1_asset_allocation():
         'Short Name Asset': asset_df['Short Name Asset'],
         'Transition Risk Factor': asset_df['Transition Risk Factor'],
         'Physical Risk Factor': asset_df['Physical Risk Factor'],
-        'Exposure Materiality Asset': asset_exposure,
-        'Exposure_Assets_Numeric': asset_df['Exposure_Assets_Numeric']  # Add this line to include numeric exposure
+        'Exposure Materiality Asset': asset_exposure
     })
 
     # Handle "Not relevant/No Exposure" in risk calculation
@@ -305,7 +300,6 @@ def section_2_1_asset_allocation():
     # Return relevant data for Section 2.2
     return df
 
-
 def section_2_2_sectoral_breakdown(df):
     # Section 2.2: Sectoral and Regional Breakdown of Investment Activities
     st.header("2.2 Sectoral and Regional Breakdown of Investment Activities")
@@ -330,38 +324,33 @@ def section_2_2_sectoral_breakdown(df):
             for col_idx, category in enumerate(cprs_categories):
                 sectoral_cols[col_idx + 1].write(f"**{category}**")
 
-            # Ask materiality questions for each CPRS category and calculate materiality values
+            # Ask materiality questions for each CPRS category and calculate averages
             materiality_values = []
             for idx in range(len(cprs_categories)):
                 materiality = sectoral_cols[idx + 1].selectbox("", options=["Low", "Medium", "High", "Not relevant/No Exposure"], index=1, key=f"{asset_class}_{idx}", help=f"Select materiality for {asset_class} in {cprs_categories[idx]}", label_visibility="collapsed")
 
                 # Assign numeric values based on selection
-                materiality_value = map_materiality_to_numeric(materiality)
+                if materiality == "Low":
+                    materiality_value = 1
+                elif materiality == "Medium":
+                    materiality_value = 2
+                elif materiality == "High":
+                    materiality_value = 3
+                else:
+                    materiality_value = -10  # Assign a default value for "Not relevant/No Exposure"
+
                 materiality_values.append(materiality_value)
 
             # Calculate CPRS factor (maximum of materiality values for different asset classes)
             cprs_factor = max(materiality_values)
 
             # Retrieve the exposure materiality for the current asset class from section 2.1
-            exposure_values = df[df['Asset Class'] == asset_class]['Exposure_Assets_Numeric']
+            exposure_values = df[df['Asset Class'] == asset_class]['Exposure Materiality Asset']
 
             if not exposure_values.empty:  # Check if the DataFrame is not empty
-                exposure_numeric = exposure_values.iloc[0]
+                exposure = exposure_values.iloc[0] 
 
-                # Calculate the average of Exposure_Assets_Numeric and CPRS factor
-                average_exposure_cprs = (exposure_numeric + cprs_factor) / 2
 
-                # Check if the average is greater than or equal to 2
-                if average_exposure_cprs >= 2:
-                    st.write("Amir is HERO")
-
-                # Display the table with the updated numeric column and average
-                st.write(df[df['Asset Class'] == asset_class])
-
-            else:
-                st.write(f"No exposure materiality found for {asset_class}.")
-        else:
-            st.write(f"{asset_class} is not included in this section.")
 
 def create_gradient_heatmap_assets(df):
     # Plotting the gradient heatmap
