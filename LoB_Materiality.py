@@ -376,10 +376,10 @@ def section_2_2_sectoral_breakdown(df):
         st.write("### Results")
         results_df = pd.DataFrame(results)
         st.write(results_df)
-
-    # Return relevant data for Section 2.2
-    return results_df
-
+        return results_df  # Return the results DataFrame if there are results
+    else:
+        st.write("No data found.")  # Display a message if no results are found
+        return pd.DataFrame()  # Return an empty DataFrame if no results are found
 
 
 def create_gradient_heatmap_assets(df):
