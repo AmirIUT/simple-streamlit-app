@@ -61,7 +61,7 @@ def section_1_insurance_activities(session_state):
     st.header("Materiality Assessment Questionnaire")
 
     # Insurance Sector 
-    Sector = st.selectbox("Field of (re)insurance operation", ["Life/Health", "NonLife", "Pension", "Composite"])
+    Sector = st.selectbox("Field of (re)insurance operation", ["Please Select", "Life/Health", "NonLife", "Pension", "Composite"])
 
     # Define the CSV data as a multiline string (assuming it's unchanged)
     csv_data = """Lines of Business,Short Name,Transition Risk Factor,Physical Risk Factor,Exposure,Explanation
