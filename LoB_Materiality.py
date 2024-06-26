@@ -311,6 +311,9 @@ def section_2_2_sectoral_breakdown(df):
     # Dummy relevant asset classes for demonstration
     relevant_asset_classes = ["Equity", "Corporate Bonds"]
 
+    # Initialize a list to store results
+    results = []
+
     # Iterate over each relevant asset class
     for asset_class in relevant_asset_classes:
         if asset_class in ["Equity", "Corporate Bonds"]:  # Only include Equity and Corporate Bonds for this section
@@ -349,6 +352,33 @@ def section_2_2_sectoral_breakdown(df):
 
             if not exposure_values.empty:  # Check if the DataFrame is not empty
                 exposure = exposure_values.iloc[0] 
+
+                # Calculate numeric exposure based on materiality
+                if exposure == "Low":
+                    exposure_numeric = 1
+                elif exposure == "Medium":
+                    exposure_numeric = 2
+                elif exposure == "High":
+                    exposure_numeric = 3
+                else:
+                    exposure_numeric = -10  # Not relevant/No Exposure
+
+                # Add to results
+                results.append({
+                    'Asset Class': asset_class,
+                    'Exposure': exposure,
+                    'exposure_numeric': exposure_numeric,
+                    'CPRS Factor': cprs_factor
+                })
+
+    # Display the results as a DataFrame
+    if results:
+        st.write("### Results")
+        results_df = pd.DataFrame(results)
+        st.write(results_df)
+
+    # Return relevant data for Section 2.2
+    return results_df
 
 
 
