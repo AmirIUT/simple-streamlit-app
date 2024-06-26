@@ -330,15 +330,17 @@ def section_2_2_sectoral_breakdown(df):
             for col_idx, category in enumerate(cprs_categories):
                 sectoral_cols[col_idx + 1].write(f"**{category}**")
 
-            # Ask materiality questions for each CPRS category and calculate averages
+            # Ask materiality questions for each CPRS category and calculate materiality values
             materiality_values = []
             for idx in range(len(cprs_categories)):
                 materiality = sectoral_cols[idx + 1].selectbox("", options=["Low", "Medium", "High", "Not relevant/No Exposure"], index=1, key=f"{asset_class}_{idx}", help=f"Select materiality for {asset_class} in {cprs_categories[idx]}", label_visibility="collapsed")
 
-                materiality_values.append(materiality)  # Append the materiality level directly
+                # Assign numeric values based on selection
+                materiality_value = map_materiality_to_numeric(materiality)
+                materiality_values.append(materiality_value)
 
             # Calculate CPRS factor (maximum of materiality values for different asset classes)
-            cprs_factor = max(df[df['Asset Class'] == asset_class]['Exposure_Assets_Numeric'])
+            cprs_factor = max(materiality_values)
 
             # Retrieve the exposure materiality for the current asset class from section 2.1
             exposure_values = df[df['Asset Class'] == asset_class]['Exposure_Assets_Numeric']
@@ -360,7 +362,6 @@ def section_2_2_sectoral_breakdown(df):
                 st.write(f"No exposure materiality found for {asset_class}.")
         else:
             st.write(f"{asset_class} is not included in this section.")
-
 
 def create_gradient_heatmap_assets(df):
     # Plotting the gradient heatmap
