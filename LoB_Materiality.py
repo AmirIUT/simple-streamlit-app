@@ -352,7 +352,7 @@ def section_2_investment_activities(session_state):
         
                 # Retrieve the exposure level directly from the selectbox
                 exposure_values = df[df['Asset Class'] == asset_class]['Exposure Materiality Asset']
-                
+        
                 if not exposure_values.empty:  # Check if the DataFrame is not empty
                     exposure = exposure_values.iloc[0]  # Get the first value if there are any
                 else:
@@ -366,7 +366,7 @@ def section_2_investment_activities(session_state):
                 elif exposure == "High":
                     exposure_level = 3
                 else:
-                    exposure_level = 0  # Assign a default value for "Not relevant/No Exposure"
+                    exposure_level = -10  # Assign a default value for "Not relevant/No Exposure"
         
                 # Print debug information to check values
                 st.write(f"Asset Class: {asset_class}, Exposure Level: {exposure_level}, CPRS Factor: {cprs_factor}")
