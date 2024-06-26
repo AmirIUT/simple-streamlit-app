@@ -208,8 +208,8 @@ def section_2_investment_activities(session_state):
     asset_df = pd.read_csv(io.StringIO(asset_csv_data.strip()))
 
     # Display the raw data to debug
-    st.write("### Debug: Raw Asset Data")
-    st.write(asset_df)
+    # st.write("### Debug: Raw Asset Data")
+    # st.write(asset_df)
 
     # Initialize an empty list to store updated asset exposure values
     asset_exposure = []
